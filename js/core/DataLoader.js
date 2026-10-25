@@ -15,7 +15,7 @@ export class DataLoader {
    */
   static async loadAllData() {
     try {
-      const v = '20261017otomo';
+      const v = '20261025_d74';
       const [scenarios, officers, provinces, clansData, governorsData, eventsData] = await Promise.all([
         DataLoader.fetchJson(`data/scenarios.json?v=${v}`),
         DataLoader.fetchJson(`data/officers.json?v=${v}`),
@@ -37,7 +37,8 @@ export class DataLoader {
         pinnedGovernors: governorsData?.pinnedGovernors || {},
         historicalEvents: eventsData?.historicalEvents || {},
         castleChanges: eventsData?.castleChanges || {},
-        daimyoLifespans: eventsData?.daimyoLifespans || {}
+        daimyoLifespans: eventsData?.daimyoLifespans || {},
+        choiceEventRules: eventsData?.choiceEventRules || {}
       };
 
       // 既存のコードとの100%完全な互換性を確保するためのグローバル参照同期
@@ -60,7 +61,8 @@ export class DataLoader {
           pinnedGovernors: window.PINNED_SCENARIO_GOVERNORS || {},
           historicalEvents: window.HISTORICAL_EVENTS_DATA || {},
           castleChanges: window.HISTORICAL_CASTLE_CHANGES || {},
-          daimyoLifespans: window.DAIMYO_LIFESPAN_DATA || {}
+          daimyoLifespans: window.DAIMYO_LIFESPAN_DATA || {},
+          choiceEventRules: window.HISTORICAL_CHOICE_EVENT_RULES || {}
         };
       }
       throw err;
@@ -102,5 +104,6 @@ export class DataLoader {
     window.HISTORICAL_EVENTS_DATA = data.historicalEvents;
     window.HISTORICAL_CASTLE_CHANGES = data.castleChanges;
     window.DAIMYO_LIFESPAN_DATA = data.daimyoLifespans;
+    window.HISTORICAL_CHOICE_EVENT_RULES = data.choiceEventRules || {};
   }
 }

@@ -1269,9 +1269,14 @@ class SengokuMusicEngine {
   }
 
   // 効果音バス（直接音・残響送り）の音量を設定に合わせる
+  // 季節オート進行中は効果音を止め BGM だけにする（2026-10-25）
+  setAutoQuiet(on) {
+    this.autoQuiet = !!on;
+    this.applySeGains();
+  }
   applySeGains() {
     if (!this.ctx) return;
-    const v = this.isSeMuted ? 0 : this.seVolume;
+    const v = (this.isSeMuted || this.autoQuiet) ? 0 : this.seVolume;
     const t = this.ctx.currentTime;
     [this.seGain, this.seWet].forEach(g => {
       if (!g) return;
@@ -1312,6 +1317,7 @@ class SengokuMusicEngine {
     this._skipFirstPercussion = !!(opts && opts.seasonRestart);
     // 画面に合わせた曲替え（イベント・当主逝去・包囲網）は、効果音 OFF なら曲頭の打楽器を鳴らさない（2026-10-11 br）
     if (opts && opts.stinger && this.isSeMuted) this._skipFirstPercussion = true;
+    if (opts && (opts.noFirstHit || opts.seasonReturn || opts.softCrossfade)) this._skipFirstPercussion = true; // 世継ぎ画面：法螺貝と重ねない
     if (this.timerId) {
       clearInterval(this.timerId);
       this.timerId = null;
@@ -2442,24 +2448,56 @@ class SengokuMusicEngine {
     this.playHyoshigiSound(this.ctx.currentTime, 0.4, 0);
   }
 
-  // 3. 能楽小鼓 (「ポンッ」とピッチが落ちる鼓)
-  playTsuzumiSound(vol = 1.0) {
-    this.init();
-    if (this.isSeMuted || !this.ctx) return;
-    this.playTsuzumi(this.ctx.currentTime, 0.45 * vol, 0);
-  }
-
   // 4. 和太鼓・陣太鼓
   playTaiko(vol = 1.0) {
     this.init();
     if (this.isSeMuted || !this.ctx) return;
-    this.playTaikoHit(this.ctx.currentTime, 0.35 * vol);
+    const t = this.ctx.currentTime;
+    this.playTaikoHit(t, 0.35 * vol);
+    // 締太鼓の皮の「カッ」と胴鳴り（小型スピーカーでも聞こえる帯域。2026-10-25 sfx39）
+    this.playDrumSkin(t, 330, 0.30 * vol, 0.14, 1800);
   }
 
   playWadaikoSound(vol = 1.0) {
     this.init();
     if (this.isSeMuted || !this.ctx) return;
-    this.playWadaiko(55, this.ctx.currentTime, 0.45 * vol);
+    const t = this.ctx.currentTime;
+    this.playWadaiko(55, t, 0.45 * vol);
+    // 38〜55Hz の正弦波だけではノート PC やスマホのスピーカーで鳴らないため、
+    // 聞こえる帯域の胴鳴りと撥の打撃音を重ねる（2026-10-25 sfx39）
+    this.playDrumSkin(t, 140, 0.42 * vol, 0.5, 900);
+  }
+
+  // 太鼓の可聴帯域レイヤー（胴鳴り＋撥の打撃ノイズ）。効果音バスへ
+  playDrumSkin(t, freq, vol, dur, noiseHz) {
+    if (!this.ctx) return;
+    const bus = this.outputBus();
+    try {
+      const osc = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq * 1.25, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.75, t + dur * 0.6);
+      g.gain.setValueAtTime(vol, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      osc.connect(g); g.connect(bus);
+      if (this.convolver) g.connect(this.reverbSend());
+      osc.start(t); osc.stop(t + dur + 0.02);
+
+      const len = Math.floor(this.ctx.sampleRate * 0.06);
+      const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      const n = this.ctx.createBufferSource();
+      n.buffer = buf;
+      const f = this.ctx.createBiquadFilter();
+      f.type = 'bandpass'; f.frequency.value = noiseHz; f.Q.value = 1.2;
+      const ng = this.ctx.createGain();
+      ng.gain.setValueAtTime(vol * 0.9, t);
+      ng.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+      n.connect(f); f.connect(ng); ng.connect(bus);
+      n.start(t);
+    } catch (e) {}
   }
 
   // 5. 祝賀金管ファンファーレ (トランペット3重奏＋ティンパニ＋シンバル)
@@ -2487,12 +2525,12 @@ class SengokuMusicEngine {
   }
 
   // 6. 征夷大将軍・天下統一 特大オーケストラファンファーレ
-  playGrandFanfare() {
+  playGrandFanfare(opts = null) {
     this.init();
     if (this.isSeMuted || !this.ctx) return;
     this.playFanfare();
     setTimeout(() => this.asSe(() => {
-      this.playHoragai(1.1);
+      if (!(opts && opts.noHoragai)) this.playHoragai(1.1);
       this.playDora(this.ctx.currentTime, 0.4);
     }), 450);
   }
@@ -2587,16 +2625,6 @@ class SengokuMusicEngine {
     osc.stop(t + 0.16);
   }
 
-  // 10. 騎馬隊突撃 (怒涛の馬蹄と地鳴り)
-  playCavalry() {
-    this.init();
-    if (this.isSeMuted || !this.ctx) return;
-    const t = this.ctx.currentTime;
-    this.playWadaiko(65, t, 0.4);
-    setTimeout(() => this.asSe(() => this.playWadaiko(70, null, 0.4)), 100);
-    setTimeout(() => this.asSe(() => this.playWadaiko(60, null, 0.45)), 200);
-  }
-
   // 11. 小判チャリン (内政・金銭獲得)
   playCoin() {
     this.init();
@@ -2647,28 +2675,6 @@ class SengokuMusicEngine {
     setTimeout(() => { if (!this.isSeMuted && this.ctx) this.playFanfare(); }, 800);
   }
 
-  // 14. 敗北・破陣の重苦しいゴング
-  playDefeat() {
-    this.init();
-    if (this.isSeMuted || !this.ctx) return;
-    this.playDora(this.ctx.currentTime, 0.45);
-    this.playWadaiko(40, this.ctx.currentTime, 0.45);
-  }
-
-  // 15. 官位昇進・武将成長 (天上のハープ・グリッサンド)
-  playRankUp() {
-    this.init();
-    if (this.isSeMuted || !this.ctx) return;
-    const t = this.ctx.currentTime;
-    [P.C4, P.E4, P.G4, P.B4, P.C5, P.E5, P.G5].forEach((freq, idx) => {
-      this.playHarp(freq, t + idx * 0.05, 0.5, 0.22, 0);
-    });
-  }
-
-  playLevelUp() {
-    this.playRankUp();
-  }
-
   // 16. 和風決定音 (上品な箏のピン音＋小鼓)
   playDecision() {
     this.init();
@@ -2686,7 +2692,50 @@ class SengokuMusicEngine {
   }
 
   // 18. 歴史事件オーケストラヒット (「ジャーン！」)
+  // イベント発生時の心地よい効果音：澄んだ鈴と琴の柔らかな上行アルペジオ（2026-10-25 驚かない音に変更）
+  playEventChime(vol = 1.0) {
+    this.init();
+    if (this.autoQuiet) this.setAutoQuiet(false);
+    if (this.isSeMuted || !this.ctx) return;
+    const t0 = this.ctx.currentTime + 0.02;
+    const notes = [587.33, 739.99, 880.0, 1174.66, 1479.98];
+    notes.forEach((f, i) => {
+      const t = t0 + i * 0.11;
+      [[1, 'sine', 0.09], [2, 'sine', 0.025], [3.01, 'triangle', 0.008]].forEach(([mul, type, v]) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(f * mul, t);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.linearRampToValueAtTime(v * vol, t + 0.025);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 1.8);
+        osc.connect(gain);
+        gain.connect(this.seGain);
+        if (this.convolver) gain.connect(this.reverbSend());
+        osc.start(t);
+        osc.stop(t + 1.85);
+      });
+    });
+    const tp = t0 + notes.length * 0.11 + 0.05;
+    [587.33, 880.0, 1174.66].forEach(f => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, tp);
+      gain.gain.setValueAtTime(0.0001, tp);
+      gain.gain.linearRampToValueAtTime(0.035 * vol, tp + 0.3);
+      gain.gain.exponentialRampToValueAtTime(0.0001, tp + 2.2);
+      osc.connect(gain);
+      gain.connect(this.seGain);
+      if (this.convolver) gain.connect(this.reverbSend());
+      osc.start(tp);
+      osc.stop(tp + 2.25);
+    });
+  }
   playEventNotice() {
+    this.playEventChime();
+  }
+  playEventNoticeOld() {
     this.init();
     if (this.isSeMuted || !this.ctx) return;
     const t = this.ctx.currentTime;
@@ -2707,42 +2756,10 @@ class SengokuMusicEngine {
     this.playCymbal(t, 0.35);
   }
 
-  // 19. 茶の湯・水琴窟 (静寂の清らかな水滴音)
-  playTea() {
-    this.init();
-    if (this.isSeMuted || !this.ctx) return;
-    const t = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(1450, t);
-    osc.frequency.exponentialRampToValueAtTime(1200, t + 0.08);
-    gain.gain.setValueAtTime(0.35, t);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-    osc.connect(gain);
-    gain.connect(this.seGain);
-    if (this.convolver) gain.connect(this.reverbSend());
-    osc.start(t);
-    osc.stop(t + 0.38);
-  }
-
   playDoraSound() {
     this.init();
     if (this.isSeMuted || !this.ctx) return;
     this.playDora(this.ctx.currentTime, 0.45);
-  }
-
-  playCymbalSound() {
-    this.init();
-    if (this.isSeMuted || !this.ctx) return;
-    this.playCymbal(this.ctx.currentTime, 0.35);
-  }
-
-  // 神楽鈴（効果音として単発で鳴らす。BGM の鈴は playSuzu を直接使う）
-  playSuzuSound(vol = 1.0) {
-    this.init();
-    if (this.isSeMuted || !this.ctx) return;
-    this.playSuzu(null, 0.18 * vol, 0.3);
   }
 
   // 20. 大名奥義専用ボイス風SE（大太鼓連打＋銅鑼＋法螺貝＋雄叫びボイス）
@@ -2943,11 +2960,11 @@ class SengokuMusicEngine {
   // ============================================================================
   // 効果音の入口メソッド。ここに挙げたものは効果音 OFF のとき何も鳴らさない
   static get SE_METHODS() {
-    return ['playHoragai', 'playHyoshigi', 'playTsuzumiSound', 'playTaiko', 'playWadaikoSound', 'playFanfare',
-      'playGrandFanfare', 'playSword', 'playGachaGacha', 'playTeppo', 'playArrow', 'playCavalry', 'playCoin',
-      'playSlash', 'playKachi', 'playDefeat', 'playRankUp', 'playLevelUp', 'playDecision', 'playCancel',
-      'playEventNotice', 'playTea', 'playDoraSound', 'playCymbalSound', 'playSuzuSound', 'playOugiVoiceSe',
-      'playDomesticSound', 'playMilitarySound', 'playSe'];
+    return ['playHoragai', 'playHyoshigi', 'playTaiko', 'playWadaikoSound', 'playFanfare',
+      'playGrandFanfare', 'playSword', 'playGachaGacha', 'playTeppo', 'playArrow', 'playCoin',
+      'playSlash', 'playKachi', 'playDecision', 'playCancel',
+      'playEventNotice', 'playEventChime', 'playDoraSound', 'playOugiVoiceSe',
+      'playDomesticSound', 'playMilitarySound'];
   }
 
   wrapSeMethods() {
@@ -3035,24 +3052,6 @@ class SengokuMusicEngine {
     const fn = this[name];
     if (typeof fn !== 'function') return undefined;
     return this.asSe(() => fn.apply(this, args));
-  }
-
-  // 汎用SEディスパッチ
-  playSe(type) {
-    switch(type) {
-      case 'sword': this.playSword(); break;
-      case 'cannon': case 'teppo': this.playTeppo(); break;
-      case 'fanfare': this.playFanfare(); break;
-      case 'horagai': this.playHoragai(); break;
-      case 'taiko': this.playTaiko(); break;
-      case 'kachi': this.playKachi(); break;
-      case 'coin': this.playCoin(); break;
-      case 'hyoshigi': this.playHyoshigi(); break;
-      case 'tsuzumi': this.playTsuzumiSound(); break;
-      case 'tea': this.playTea(); break;
-      case 'notice': this.playEventNotice(); break;
-      default: break;
-    }
   }
 
   // ============================================================================

@@ -123,7 +123,8 @@ export const ComputerLogicMethods = {
     }
 
     if (totalUprisings > 0) {
-      try { this.audio.playTaiko?.(); } catch(e) {}
+      const upKey = `${this.year}-${this.seasonIdx}`;
+      if (this._uprisingSfxSeason !== upKey) { this._uprisingSfxSeason = upKey; try { this.audio.playTaiko?.(); } catch(e) {} }
       this.updateUI();
     }
 
@@ -188,42 +189,74 @@ export const ComputerLogicMethods = {
   // それらの武将が歴史上本拠地としたところで城主としてきちんと任命されるようにする
   // ============================================================================,
 
-  staffComputerVacancies(clanId, branches, pool, aliveGov, seat) {
+  staffComputerVacancies(clanId, branches, pool, aliveGov, seat, scenGovMap = {}, pinnedGovs = {}) {
     const combat = (o) => (Number(o.military) || 0) * 2 + (Number(o.intel) || 0) + (Number(o.politic) || 0);
     const civil = (o) => (Number(o.politic) || 0) * 2 + (Number(o.intel) || 0) + (Number(o.military) || 0);
+    
+    // 史実城代判定
+    const isHistGov = (provId, o) => {
+      if (!provId || !o) return false;
+      const target = scenGovMap[provId] || pinnedGovs[provId];
+      return !!(target && (target === o.id || target === o.name));
+    };
+    // ゆかりの地に着任中判定
     const atHome = (o) => !!(o.assignedProvId && o.defaultProv === o.assignedProvId);
+    // 史実城代として着任中判定
+    const atHist = (o) => !!(o.assignedProvId && isHistGov(o.assignedProvId, o));
     let moved = 0;
 
-    const availableForFront = () => pool.filter(o => {
-      if (atHome(o)) return false;
-      if (!o.assignedProvId) return true;
+    // 前線への戦略的配置・異動候補
+    // ※史実城代・ゆかりの城主として着任中の武将は絶対に前線穴埋めへ回さず保護する！
+    const availableForFront = (targetProvId) => pool.filter(o => {
+      if (atHist(o)) return false; // 史実城代は保護
+      if (atHome(o)) return false; // ゆかりの城主は保護
+      if (!o.assignedProvId) return true; // 待機武将
       const seatP = this.provinces.find(x => x.id === o.assignedProvId && x.governorId === o.id && x.ownerId === clanId);
       if (!seatP) return true;
-      return !this.isClanFrontline(seatP);
-    }).sort((a, b) => combat(b) - combat(a));
+      return !this.isClanFrontline(seatP); // 安全な後方支城にいる一般武将
+    }).sort((a, b) => {
+      // 対象の城がゆかりの地である武将がいれば最優先
+      const aHome = a.defaultProv === targetProvId ? 1 : 0;
+      const bHome = b.defaultProv === targetProvId ? 1 : 0;
+      if (aHome !== bHome) return bHome - aHome;
+      return combat(b) - combat(a);
+    });
 
+    // 1. 前線の城（敵勢力と隣接）への戦略的配置・異動（戦闘力の高い武将を優先）
     const fronts = branches.filter(p => this.isClanFrontline(p))
       .sort((a, b) => this.frontlineWeight(b) - this.frontlineWeight(a));
     fronts.forEach(p => {
       const cur = aliveGov(p);
-      if (cur && cur.defaultProv === p.id) return;
-      const best = availableForFront()[0];
+      // 史実城代またはゆかりの地の城主は前線防衛の要として絶対に交代させない
+      if (cur && (isHistGov(p.id, cur) || cur.defaultProv === p.id)) return;
+      const cands = availableForFront(p.id);
+      const best = cands[0];
       if (!best || best.assignedProvId === p.id) return;
+      // 既に城主がいる場合、明らかに戦闘能力が勝る武将がいる場合のみ戦略的交代
       if (cur && combat(cur) >= combat(best)) return;
       if (seat(p, best)) moved++;
     });
 
+    // 2. 後方の空き城への戦略的配置（内政・経済発展重視）
     const rears = branches.filter(p => !aliveGov(p) && !this.isClanFrontline(p))
       .sort((a, b) => (Number(b.kokudaka) || 0) - (Number(a.kokudaka) || 0));
     rears.forEach(p => {
-      const next = pool.filter(o => !o.assignedProvId).sort((a, b) => civil(b) - civil(a))[0];
+      // 待機武将（未任官）の中から内政スコアの高い武将を選抜
+      // ※対象の城にゆかりがある武将がいれば最優先
+      const unassigned = pool.filter(o => !o.assignedProvId).sort((a, b) => {
+        const aHome = a.defaultProv === p.id ? 1 : 0;
+        const bHome = b.defaultProv === p.id ? 1 : 0;
+        if (aHome !== bHome) return bHome - aHome;
+        return civil(b) - civil(a);
+      });
+      const next = unassigned[0];
       if (next && seat(p, next)) moved++;
     });
     return moved;
   },
 
-  // コンピューター勢力の支城は、まずゆかりの地の家臣を城主にする。
-  // fillVacancies が真のときだけ、進行中の空き城を埋める。強い武将を前線へ、残りを後方の城へ。
+  // コンピューター勢力の支城は、史実城代とゆかりの地を最優先で城主にする。
+  // fillVacancies が真のとき（ゲーム進行中）のみ、前線の城や空き城へ最適な武将を戦略的に配置・移動する。
   // シナリオ開始時の初期配置では fillVacancies を渡さない。本拠親政は対象外。
   // プレイヤー勢力は、国司在京・天領代官の城に限って同じ規則で任命する。,
 
@@ -231,20 +264,25 @@ export const ComputerLogicMethods = {
     const fillVacancies = !!(options && options.fillVacancies);
     if (!this.provinces || !this.activeOfficers) return 0;
 
-    const scenarioGovIds = new Set(Object.values(
-      (window.SCENARIO_HISTORICAL_GOVERNORS && this.currentScenario)
-        ? (window.SCENARIO_HISTORICAL_GOVERNORS[String(this.currentScenario.id)] || {})
-        : {}
-    ));
+    const scenGovMap = (window.SCENARIO_HISTORICAL_GOVERNORS && this.currentScenario)
+      ? (window.SCENARIO_HISTORICAL_GOVERNORS[String(this.currentScenario.id)] || {})
+      : {};
+    const scenarioGovIds = new Set(Object.values(scenGovMap));
     const isUnlistedJodai = (o) => String(o.id || '').startsWith('off_jd_') && !scenarioGovIds.has(o.id);
     const pinnedGovs = (window.PINNED_SCENARIO_GOVERNORS && this.currentScenario)
       ? (window.PINNED_SCENARIO_GOVERNORS[String(this.currentScenario.id)] || {})
       : {};
+    const isHistGov = (provId, o) => {
+      if (!provId || !o) return false;
+      const target = scenGovMap[provId] || pinnedGovs[provId];
+      return !!(target && (target === o.id || target === o.name));
+    };
+
     const score = (o) => (Number(o.politic) || 0) * 2 + (Number(o.intel) || 0) + (Number(o.military) || 0);
     const blocked = (p) => {
       if (!p || !p.ownerId) return true;
       if (this.isCapitalProvince(p.id, p.ownerId)) return true;
-      if (p.ownerId === this.playerClanId && !this.getVacantRule(p, p.ownerId)) return true;
+      if (!this.isSpectatorMode && p.ownerId === this.playerClanId) return true;
       return false;
     };
     const aliveGov = (p) => {
@@ -271,6 +309,7 @@ export const ComputerLogicMethods = {
     let total = 0;
 
     for (const clanId of clanIds) {
+      if (!this.isSpectatorMode && clanId === this.playerClanId) continue;
       const branches = this.provinces.filter(p => p.ownerId === clanId && !blocked(p));
       if (branches.length === 0) continue;
 
@@ -289,9 +328,23 @@ export const ComputerLogicMethods = {
       });
 
       const pool = this.activeOfficers.filter(o =>
-        o.clanId === clanId && !o.isDead && !o.isDaimyo && !this.isCourtFigure(o) && !isUnlistedJodai(o) && !o.isStandby
+        o.clanId === clanId && !o.isDead && !o.isDaimyo && !this.isCourtFigure(o) && !isUnlistedJodai(o) && !o.isStandby && o.canBeGovernor !== false && o.id !== 'off_dm_amago_1560'
       );
 
+      // 1. 【第1優先：史実城代の配置】自勢力内にその城の史実城代がいれば最優先で着任
+      branches.forEach(p => {
+        const histTarget = scenGovMap[p.id] || pinnedGovs[p.id];
+        if (!histTarget) return;
+        const cur = aliveGov(p);
+        if (cur && (cur.id === histTarget || cur.name === histTarget)) return; // 既に史実城代が着任中
+        const histOff = pool.find(o => !o.isDead && (o.id === histTarget || o.name === histTarget));
+        if (histOff) {
+          if (clanId === this.playerClanId && aliveGov(p)) return;
+          if (seat(p, histOff)) total++;
+        }
+      });
+
+      // 2. 【第2優先：ゆかりの地の配置】史実城代がいない城に、出身国・本拠地が一致する家臣を着任
       const homes = new Map();
       pool.forEach(o => {
         if (!o.defaultProv) return;
@@ -299,9 +352,9 @@ export const ComputerLogicMethods = {
         if (!home) return;
         const cur = aliveGov(home);
         if (cur && cur.defaultProv === home.id) return;
-        // data.js の PINNED_SCENARIO_GOVERNORS で固定した史実城代は動かさない
-        if (cur && pinnedGovs[home.id] === cur.id) return;
-        // 応仁の乱向け追加武将（off_onin2_）は、ゆかりの国による城主任命の対象外（既存の配置を変えないため）
+        // 史実城代はゆかりの家臣でも交代させない（完全保護）
+        if (cur && isHistGov(home.id, cur)) return;
+        // 応仁の乱向け追加武将（off_onin2_）は、ゆかりの国による城主任命の対象外
         if (String(o.id).startsWith('off_onin2_')) return;
         if (!homes.has(home.id)) homes.set(home.id, []);
         homes.get(home.id).push(o);
@@ -317,11 +370,8 @@ export const ComputerLogicMethods = {
           if (!seated) return true;
           if (this.isCapitalProvince(seated.id, seated.ownerId)) return false;
           if (o.defaultProv === seated.id) return false;
-          if (pinnedGovs[seated.id] === o.id) return false;
-          const scenGovMap = (window.SCENARIO_HISTORICAL_GOVERNORS && this.currentScenario)
-            ? (window.SCENARIO_HISTORICAL_GOVERNORS[String(this.currentScenario.id)] || {})
-            : {};
-          if (scenGovMap[seated.id] === o.id) return false;
+          // 史実城代として座っている武将はゆかりの地であっても他城へ動かさない
+          if (isHistGov(seated.id, o)) return false;
           return true;
         });
         movable.sort((a, b) => score(b) - score(a));
@@ -329,13 +379,15 @@ export const ComputerLogicMethods = {
         if (best && seat(home, best)) total++;
       });
 
-      // シナリオ開始時はここまで。進行中だけ、ゆかり以外の待機を前線から埋める。
-      if (fillVacancies) total += this.staffComputerVacancies(clanId, branches, pool, aliveGov, seat);
+      // 3. 【第3・第4優先：ゲーム進行中（fillVacancies: true）のみ】前線の城や空き城へ最適な武将を戦略的に配置・移動
+      if (fillVacancies) {
+        total += this.staffComputerVacancies(clanId, branches, pool, aliveGov, seat, scenGovMap, pinnedGovs);
+      }
     }
 
     const inGame = document.getElementById('startModal')?.classList.contains('hidden');
     if (total > 0 && inGame) {
-      this.log(`🏯【城主配置】諸大名はゆかりの地を優先し、前線と空き城へ家臣${total}名を城主に任命しました。`);
+      this.log(`🏯【城主配置】諸大名は史実城代とゆかりの地を優先し、前線と空き城へ家臣${total}名を城主に任命しました。`);
     }
     return total;
   },
@@ -2144,6 +2196,8 @@ export const ComputerLogicMethods = {
       if (this._aiEngaged.size && clanProvs.some(p => (p.neighbors || []).some(id => { const n = this.aiProvById(id); return n && n.ownerId && n.ownerId !== clanId && this._aiEngaged.has(n.ownerId) && !this.isAllied(clanId, n.ownerId); }))) {
         attackProb *= Number(B.aiEngagedAttackMult) || 1;
       }
+      // 軍令権（領国数で1〜5）に応じた行動力補正：3を基準に1点あたり±5%
+      if (typeof this.computeMaxApForClan === 'function') attackProb *= 0.85 + 0.05 * this.computeMaxApForClan(clanId);
       attackProb = Math.min(0.95, attackProb);
 
       if (Math.random() > attackProb) continue;
@@ -2178,7 +2232,9 @@ export const ComputerLogicMethods = {
         ? `我が${this.playerDaimyo?.clan || '軍'}` : this.getClanFamilyName(target.ownerId);
 
       // 攻め込んだ時の効果音再生！
-      const canPlayBattleSfx = !this.isAutoPlay || this.autoPlaySpeed >= 0.3;
+      const sfxKey = `${this.year}-${this.seasonIdx}`;
+      const canPlayBattleSfx = (!this.isAutoPlay || this.autoPlaySpeed >= 0.3) && this._aiBattleSfxSeason !== sfxKey;
+      if (canPlayBattleSfx) this._aiBattleSfxSeason = sfxKey;
       if (isAttackingPlayer) {
         // プレイヤーへの攻撃時：緊迫した法螺貝と激しい陣太鼓！
         if (canPlayBattleSfx) {
@@ -2269,7 +2325,7 @@ export const ComputerLogicMethods = {
           if (oldOwner && oldOwner !== 'null') {
             const remainingDefProvs = (this.provinces || []).filter(p => p.ownerId === oldOwner);
             if (remainingDefProvs.length === 0) {
-              this.log(`💀【御家滅亡】名門・${defenderName}は全領国を失い、完全に滅亡しました！`, 'important');
+              this.log(`【御家滅亡】名門・${defenderName}は全領国を失い、完全に滅亡しました！`, 'important');
               // 滅亡のアラート（アイキャッチ通知）は省略し、戦国年代記の記録で確認
               try { this.audio.playHyoshigi?.(); } catch(e) {}
             }
@@ -2284,7 +2340,8 @@ export const ComputerLogicMethods = {
         supporters.forEach(s => { if (s.prov.ownerId === clanId) s.prov.troops = (Number(s.prov.troops) || 0) + Math.round(s.n * 0.40); }); // 加勢の生存兵も帰還（2026-10-11 cn）
 
         if (isAttackingPlayer) {
-          this.audio.playFanfare();
+          const repelKey = `${this.year}-${this.seasonIdx}`;
+          if (this._aiRepelSfxSeason !== repelKey) { this._aiRepelSfxSeason = repelKey; this.audio.playFanfare(); }
           this.log(`🛡【防衛成功】${attackerName}軍による${target.name}侵攻（${motive.title}）を、我が守備隊が頑強に撃退しました！`, 'important');
           this.showOrderResult('🛡️ 敵襲撃退！', `${target.name}にて ${attackerName}軍の撃退に成功しました！`, '#2ecc71');
         } else {
@@ -2476,7 +2533,7 @@ export const ComputerLogicMethods = {
           if (enemyClanId && enemyClanId !== 'null') {
             const remainingEnemyProvs = this.provinces.filter(p => p.ownerId === enemyClanId);
             if (remainingEnemyProvs.length === 0) {
-              this.log(`💀【御家滅亡】${enemyClanName}は全領国を失い、完全に滅亡しました！`, 'important');
+              this.log(`【御家滅亡】${enemyClanName}は全領国を失い、完全に滅亡しました！`, 'important');
               // 滅亡のアラート（アイキャッチ通知）は省略し、戦国年代記の記録で確認
               try { this.audio.playHyoshigi?.(); } catch(e) {}
             }

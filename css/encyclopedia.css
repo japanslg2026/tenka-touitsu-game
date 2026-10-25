@@ -1,0 +1,242 @@
+/* ===== 武将名鑑・大名名鑑 ===== */
+.meikan-top-btn { background: linear-gradient(135deg, #4a1c10 0%, #2a0f08 60%, #140704 100%) !important; box-shadow: 0 0 14px rgba(231,76,60,.3), inset 0 0 8px rgba(255,215,0,.15) !important; }
+
+.mk-overlay { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(30,18,10,.82), rgba(0,0,0,.92)); backdrop-filter: blur(4px);
+  opacity: 0; transition: opacity .2s ease; font-family: 'Sawarabi Mincho', serif; color: var(--text-color, #f7f1e3); }
+.mk-overlay.show { opacity: 1; }
+.mk-card { width: min(1500px, 96vw); height: min(900px, 94vh); display: flex; flex-direction: column; box-sizing: border-box;
+  background: linear-gradient(160deg, #1d140e 0%, #120c08 55%, #0b0705 100%); border: 2px solid #c29e49; border-radius: 14px;
+  box-shadow: 0 0 0 1px #4a3a28 inset, 0 0 40px rgba(212,175,55,.25), 0 20px 60px rgba(0,0,0,.7);
+  transform: translateY(14px) scale(.98); transition: transform .25s ease; overflow: hidden; position: relative; }
+.mk-overlay.show .mk-card { transform: none; }
+.mk-card::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(212,175,55,.22); border-radius: 10px; pointer-events: none; }
+.mk-head { display: flex; align-items: center; gap: 16px; padding: 14px 22px; border-bottom: 1px solid #4a3a28;
+  background: linear-gradient(90deg, rgba(139,0,0,.35), rgba(0,0,0,0) 60%); }
+.mk-title { display: flex; align-items: baseline; gap: 10px; font-family: 'Yuji Boku','Sawarabi Mincho',serif; font-size: 22pt; color: #ffd700;
+  text-shadow: 0 0 12px rgba(212,175,55,.5); letter-spacing: .12em; }
+.mk-title small { font-size: 16px; color: #c8b9ab; letter-spacing: .08em; font-family: 'Sawarabi Mincho',serif; text-shadow: none; }
+.mk-tabs { display: flex; gap: 6px; margin-left: auto; }
+.mk-tab { padding: 6px 16px; border-radius: 18px; border: 1px solid #8c734b; background: rgba(0,0,0,.35); color: #c8b9ab; cursor: pointer; font: inherit; transition: all .2s; }
+.mk-tab:hover { color: #fff; border-color: #d4af37; }
+.mk-tab.on { background: linear-gradient(135deg,#d4af37,#9a7b2c); color: #1a0f05; border-color: #ffd700; font-weight: bold; }
+.mk-close { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid #d4af37; background: rgba(139,0,0,.6); color: #fff; font-size: 16pt; cursor: pointer; transition: all .2s; }
+.mk-close:hover { background: #c0392b; transform: rotate(90deg); }
+.mk-body { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 12px 18px 16px; gap: 10px; }
+.mk-loading, .mk-empty { margin: auto; color: #c8b9ab; text-align: center; line-height: 2; font-size: 12pt; }
+.mk-empty::before { content: '巻'; display: block; font-family: 'Yuji Boku',serif; font-size: 64pt; color: rgba(212,175,55,.18); line-height: 1.2; }
+
+.mk-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.mk-f { display: flex; flex-direction: column; gap: 3px; font-size: 16px; color: #d4af37; min-width: 130px; flex: 1 1 140px; }
+.mk-f-search { flex: 2 1 240px; }
+.mk-f-chk { flex-direction: row; align-items: center; gap: 6px; color: #c8b9ab; flex: 0 0 auto; padding-bottom: 8px; }
+.mk-f input[type=search], .mk-f select { height: 34px; box-sizing: border-box; padding: 0 10px; border-radius: 8px; border: 1px solid #8c734b;
+  background: rgba(0,0,0,.45); color: #f7f1e3; font: inherit; font-size: 16px; outline: none; transition: border-color .2s, box-shadow .2s; }
+.mk-f input:focus, .mk-f select:focus { border-color: #ffd700; box-shadow: 0 0 0 3px rgba(212,175,55,.2); }
+.mk-f select option, .mk-f select optgroup { background: #1d140e; color: #f7f1e3; }
+.mk-reset { height: 34px; padding: 0 14px; border-radius: 8px; border: 1px solid #8c734b; background: rgba(139,0,0,.35); color: #f7f1e3; cursor: pointer; font: inherit; }
+.mk-reset:hover { border-color: #ffd700; }
+.mk-eras { display: flex; gap: 6px; flex-wrap: wrap; }
+.mk-chip { padding: 3px 12px; border-radius: 14px; border: 1px solid #4a3a28; background: rgba(255,255,255,.03); color: #c8b9ab; cursor: pointer; font: inherit; font-size: 16px; transition: all .15s; }
+.mk-chip:hover { border-color: #d4af37; color: #fff; }
+.mk-chip.on { background: #8b0000; border-color: #ffd700; color: #fff; box-shadow: 0 0 10px rgba(231,76,60,.4); }
+
+.mk-main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 14px; }
+.mk-listwrap { display: flex; flex-direction: column; min-height: 0; background: rgba(0,0,0,.28); border: 1px solid #4a3a28; border-radius: 10px; }
+.mk-count { padding: 7px 12px; font-size: 16px; color: #c8b9ab; border-bottom: 1px solid #4a3a28; }
+.mk-count b { color: #ffd700; font-size: 12pt; }
+.mk-list { flex: 1; overflow-y: auto; position: relative; scrollbar-color: #8c734b transparent; }
+.mk-vrows { position: absolute; inset: 0 0 auto 0; }
+.mk-row { position: absolute; left: 6px; right: 6px; display: flex; align-items: center; gap: 10px; padding: 0 10px 0 0; box-sizing: border-box;
+  border-radius: 8px; background: linear-gradient(90deg, rgba(36,28,22,.95), rgba(24,18,14,.9)); border: 1px solid #3a2d1f; cursor: pointer; overflow: hidden; transition: background .15s, border-color .15s; margin-top: 3px; }
+.mk-row:hover { border-color: #c29e49; background: linear-gradient(90deg, rgba(60,42,26,.95), rgba(30,22,16,.9)); }
+.mk-row.sel { border-color: #ffd700; box-shadow: 0 0 12px rgba(212,175,55,.35) inset; }
+.mk-row-bar { width: 5px; align-self: stretch; flex: none; }
+.mk-row-kamon { flex: none; display: flex; }
+.mk-row-main { flex: 1; min-width: 0; }
+.mk-row-name { font-size: 12pt; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mk-row-sub { font-size: 16px; color: #a8998b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+.mk-row-side { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex: none; }
+.mk-row-total { color: #ffd700; font-family: 'Dela Gothic One',sans-serif; font-size: 16px; }
+.mk-row-total small { font-size: 16px; color: #c8b9ab; }
+.mk-badge { font-style: normal; font-size: 16px; margin-left: 6px; padding: 1px 5px; border-radius: 4px; background: #8b0000; color: #ffd700; vertical-align: middle; }
+.mk-era-tag { font-size: 16px; padding: 1px 6px; border-radius: 8px; border: 1px solid #8c734b; color: #e8d9b0; }
+.mk-kamon { display: inline-block; border-radius: 50%; flex: none; }
+.mk-kamon-fb { display: inline-flex; align-items: center; justify-content: center; color: #fff; border: 1.5px solid #d4af37; font-family: 'Yuji Boku',serif; box-sizing: border-box; }
+
+.mk-detail { min-height: 0; overflow-y: auto; border-radius: 10px; border: 1px solid #4a3a28; background: rgba(0,0,0,.22); display: flex; scrollbar-color: #8c734b transparent; }
+.mk-dcard { flex: 1; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; animation: mkIn .3s ease; min-width: 0; }
+@keyframes mkIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.mk-dhead { display: flex; gap: 18px; align-items: center; padding: 14px 18px; border-radius: 12px;
+  background: linear-gradient(110deg, color-mix(in srgb, var(--clan) 55%, #000) 0%, rgba(20,14,10,.9) 70%); border: 1px solid #c29e49; }
+.mk-dkamon { filter: drop-shadow(0 0 10px rgba(255,215,0,.45)); }
+.mk-dname { font-family: 'Yuji Boku','Sawarabi Mincho',serif; font-size: 26pt; color: #fff; letter-spacing: .06em; text-shadow: 0 2px 6px #000; }
+.mk-dname rt { font-family: 'Sawarabi Mincho',serif; font-size: 16px; color: #e8d9b0; letter-spacing: .1em; }
+.mk-dmeta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; font-family: 'Sawarabi Mincho',serif; }
+.mk-pill { font-size: 16px; padding: 2px 10px; border-radius: 12px; color: #fff; border: 1px solid rgba(255,215,0,.5); text-shadow: 0 1px 2px #000; letter-spacing: 0; }
+.mk-pill.ghost { background: rgba(0,0,0,.35); }
+.mk-pill.gold { background: linear-gradient(135deg,#d4af37,#9a7b2c); color: #1a0f05; text-shadow: none; font-weight: bold; }
+.mk-life { font-family: 'Sawarabi Mincho',serif; font-size: 16px; color: #e8d9b0; margin-top: 6px; letter-spacing: 0; }
+.mk-dgrid { display: grid; grid-template-columns: 3fr 2fr; gap: 12px; }
+.mk-panel { padding: 12px 14px; border-radius: 10px; background: rgba(36,28,22,.7); border: 1px solid #4a3a28; min-width: 0; }
+.mk-panel h4 { margin: 0 0 8px; color: #d4af37; font-size: 16px; letter-spacing: .15em; border-left: 3px solid #8b0000; padding-left: 8px; }
+.mk-panel h4 small { color: #a8998b; letter-spacing: 0; font-weight: normal; }
+.mk-statwrap { display: flex; gap: 18px; align-items: stretch; }
+.mk-total { flex: none; width: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px;
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--clan) 45%, #000), rgba(0,0,0,.5)); border: 1px solid #c29e49; }
+.mk-total span { font-size: 16px; color: #d4af37; letter-spacing: .2em; }
+.mk-total b { font-family: 'Dela Gothic One',sans-serif; font-size: 26pt; color: #ffd700; text-shadow: 0 0 10px rgba(255,215,0,.5); line-height: 1.2; }
+.mk-total small { font-size: 16px; color: #a8998b; }
+.mk-bars { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.mk-stat { display: grid; grid-template-columns: 64px 1fr 40px; align-items: center; gap: 8px; font-size: 16px; }
+.mk-stat b { text-align: right; font-family: 'Dela Gothic One',sans-serif; color: #f7f1e3; }
+.mk-stat b.hi { color: #ffd700; text-shadow: 0 0 6px rgba(255,215,0,.6); }
+.mk-stat.total { border-top: 1px dashed #4a3a28; padding-top: 6px; }
+.mk-stat.total b { color: #ffd700; }
+.mk-bar { height: 14px; border-radius: 7px; background: rgba(0,0,0,.5); overflow: hidden; border: 1px solid #3a2d1f; }
+.mk-bar i { display: block; height: 100%; border-radius: 5px; animation: mkGrow .6s ease; transform-origin: left; }
+@keyframes mkGrow { from { transform: scaleX(0); } }
+.mk-skill { font-size: 13pt; color: #ffd700; padding: 8px 12px; border-radius: 8px; background: rgba(139,0,0,.3); border: 1px solid #8b0000; display: inline-block; }
+.mk-note { font-size: 16px; color: #a8998b; margin-top: 8px; line-height: 1.7; }
+.mk-lore { margin: 0; line-height: 1.95; font-size: 16px; text-indent: 1em; }
+.mk-aps { display: flex; flex-direction: column; gap: 4px; max-height: 260px; overflow-y: auto; }
+.mk-ap { display: grid; grid-template-columns: 56px 1fr auto auto; gap: 10px; align-items: center; font-size: 16px; padding: 4px 8px; border-radius: 6px; background: rgba(0,0,0,.25); }
+.mk-ap-y { color: #ffd700; font-family: 'Dela Gothic One',sans-serif; }
+.mk-ap-t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mk-ap-c { border-left: 4px solid; padding-left: 6px; }
+.mk-ap-p { color: #a8998b; }
+
+.mk-tl-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.mk-tl-year { font-family: inherit; font-size: 18pt; font-weight: 400; color: #ffd700; text-shadow: none; -webkit-text-stroke: 0; letter-spacing: .03em; }
+.mk-tl-title { font-size: 16px; flex: 1; }
+.mk-tl-count { font-size: 16px; color: #c8b9ab; }
+.mk-tl-count b { font-size: 16pt; color: var(--clan); filter: brightness(1.6); }
+.mk-map { border-radius: 10px; background: radial-gradient(ellipse at 60% 40%, #0f2433, #07121b); border: 1px solid #4a3a28; padding: 6px; }
+.mk-svgmap { width: 100%; height: 340px; display: block; }
+.mk-svgmap path { stroke: #0b0705; stroke-width: .6; opacity: .28; transition: fill .5s ease, opacity .5s ease; }
+.mk-svgmap path.own { opacity: 1; stroke: #ffd700; stroke-width: 1.1; filter: drop-shadow(0 0 3px rgba(255,215,0,.5)); }
+.mk-tl-ctrl { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.mk-tl-ctrl button { height: 32px; min-width: 38px; padding: 0 12px; border-radius: 16px; border: 1px solid #d4af37; background: rgba(0,0,0,.4); color: #ffd700; cursor: pointer; font: inherit; }
+.mk-tl-ctrl button:hover, .mk-tl-ctrl button.on { background: #8b0000; color: #fff; }
+.mk-tl-range { flex: 1; accent-color: #d4af37; }
+.mk-tl-ticks { display: flex; gap: 4px; overflow-x: auto; padding: 6px 0 2px; scrollbar-width: thin; }
+.mk-tl-ticks button { flex: none; font-size: 16px; padding: 2px 8px; border-radius: 10px; border: 1px solid #4a3a28; background: rgba(0,0,0,.3); color: #c8b9ab; cursor: pointer; }
+.mk-tl-ticks button.on { border-color: #ffd700; background: #d4af37; color: #1a0f05; font-weight: bold; }
+.mk-tl-provs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.mk-tl-provs span { font-size: 16px; padding: 1px 7px; border-radius: 4px; background: color-mix(in srgb, var(--clan) 45%, #000); border: 1px solid rgba(212,175,55,.4); }
+
+@media (max-width: 900px) {
+  .mk-main { grid-template-columns: 1fr; grid-template-rows: 40% 60%; }
+  .mk-dgrid { grid-template-columns: 1fr; }
+  .mk-title small { display: none; }
+}
+.mk-mappanel h4, .mk-tl-head, .mk-tl-head * { font-weight: 400 !important; text-shadow: none !important; -webkit-text-stroke: 0 !important; }
+
+/* batch8: 並び順ボタン */
+.mk-f.mk-f-sort { flex: 0 0 auto; min-width: 0; }
+.mk-sortbar { display: flex; flex-wrap: nowrap; gap: 3px; }
+.mk-sb { padding: 5px 7px; font-size: 16px; white-space: nowrap; background: rgba(40,30,20,.85); color: #e8dcc4; border: 1px solid #6b5536; border-radius: 4px; cursor: pointer; line-height: 1.2; }
+.mk-sb:hover { border-color: #d4af37; }
+.mk-sb.on { background: linear-gradient(180deg,#8e5b1f,#5a3a14); color: #ffd76a; border-color: #d4af37; font-weight: 700; }
+.mk-sb i { font-style: normal; font-size: 16px; margin-left: 2px; }
+.mk-row-total { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.1; }
+.mk-row-total .mk-vl { font-family: sans-serif; font-size: 16px; color: #b9a98f; }
+.mk-row-total { flex-direction: row !important; align-items: baseline !important; gap: 3px; white-space: nowrap; }
+
+/* batch9: 本拠ワンポイント地図 */
+.mk-dhead .mk-dname { flex: 1 1 auto; min-width: 0; }
+.mk-minimap { flex: 0 0 auto; width: 150px; display: flex; flex-direction: column; align-items: center; gap: 2px; margin-left: auto; }
+.mk-minimap svg { width: 150px; height: 104px; display: block; }
+.mk-mm-base path { fill: rgba(212,175,55,.16); stroke: rgba(212,175,55,.32); stroke-width: .6; vector-effect: non-scaling-stroke; }
+.mk-mm-hi { fill: #ffd76a; stroke: #fff6cf; stroke-width: 1.2; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px #ffcf4a) drop-shadow(0 0 7px rgba(255,190,60,.8)); animation: mkGlow 2.4s ease-in-out infinite; }
+@keyframes mkGlow { 50% { fill: #fff1b0; } }
+.mk-minimap span { font-size: 16px; color: #e8d9a8; letter-spacing: .05em; }
+.mk-era-tag.era-gendai { background: #2c4a6b; color: #dfeaf7; }
+.mk-minimap svg { background: rgba(10,8,6,.45); border: 1px solid rgba(212,175,55,.35); border-radius: 8px; padding: 4px; box-sizing: border-box; }
+.mk-mm-base path { fill: rgba(240,225,190,.30); stroke: rgba(255,240,200,.35); }
+
+/* meikan4: 全文字16px以上 */
+.mk-overlay input, .mk-overlay select, .mk-overlay option, .mk-overlay button, .mk-overlay small, .mk-panel h4 small { font-size: 16px !important; }
+.mk-sb { padding: 4px 6px; }
+
+/* ===== スマートフォン対応（デスクトップでは以下のモバイル専用要素は非表示） ===== */
+.mk-sb-ic, .mk-mtool, .mk-back, .mk-fdone { display: none; }
+@media (max-width: 768px), (pointer: coarse) and (max-width: 500px), (pointer: coarse) and (max-height: 500px) {
+  .mk-overlay { align-items: stretch; justify-content: stretch; backdrop-filter: none; }
+  .mk-overlay, .mk-overlay * { font-size: max(16px, 1em); }
+  .mk-card { width: 100vw; height: 100dvh; max-width: none; border-radius: 0; border: none; padding-top: env(safe-area-inset-top); }
+  .mk-card::before { display: none; }
+  .mk-head { gap: 6px; padding: 6px 8px; flex-wrap: nowrap; }
+  .mk-title { font-size: 18px; letter-spacing: .04em; gap: 4px; white-space: nowrap; min-width: 0; }
+  .mk-title small { display: none; }
+  .mk-in-detail .mk-title { display: none; }
+  .mk-tabs { gap: 4px; }
+  .mk-tab { min-height: 44px; padding: 0 10px; font-size: 16px; }
+  .mk-close { width: 44px; height: 44px; flex: none; font-size: 18px; }
+  .mk-back { display: none; min-height: 44px; padding: 0 12px; border-radius: 22px; border: 1px solid #d4af37; background: rgba(0,0,0,.45); color: #ffd700; font: inherit; font-size: 16px; cursor: pointer; flex: none; }
+  .mk-in-detail .mk-back { display: inline-block; }
+  .mk-in-detail .mk-tabs { margin-left: auto; }
+  .mk-body { padding: 6px 8px calc(8px + env(safe-area-inset-bottom)); gap: 6px; position: relative; }
+
+  /* ツールバー：絞り込みボタン＋並び替え */
+  .mk-mtool { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .mk-fbtn { position: relative; flex: none; width: 44px; height: 44px; border-radius: 10px; border: 1px solid #d4af37; background: rgba(0,0,0,.45); color: #ffd700; font-size: 22px; cursor: pointer; line-height: 1; transform: none; }
+  .mk-filt-open .mk-fbtn { background: #8b0000; color: #fff; }
+  .mk-fdot { display: none; position: absolute; top: 5px; right: 5px; width: 9px; height: 9px; border-radius: 50%; background: #e74c3c; box-shadow: 0 0 0 2px #120c08; }
+  .mk-fbtn.active .mk-fdot { display: block; }
+  .mk-msort { flex: 1; min-width: 0; }
+  .mk-msort .mk-f-sort { flex-direction: row; align-items: center; min-width: 0; }
+  .mk-msort .mk-f-sort > span { display: none; }
+  .mk-sortbar { overflow-x: auto; gap: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .mk-sortbar::-webkit-scrollbar { display: none; }
+  .mk-sb { flex: 1 0 auto; min-width: 44px; height: 44px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; gap: 1px; border-radius: 8px; }
+  .mk-sb-ic { display: inline; font-weight: 400; font-size: 18px; }
+  .mk-sb-l { display: none; }
+  .mk-sb i { margin-left: 1px; }
+
+  /* 絞り込みシート */
+  .mk-filters { display: none; position: absolute; left: 0; right: 0; top: 56px; z-index: 5; flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 10px;
+    max-height: calc(100% - 64px); overflow-y: auto; padding: 12px; box-sizing: border-box;
+    background: #1a120c; border-top: 1px solid #c29e49; border-bottom: 2px solid #c29e49; box-shadow: 0 12px 30px rgba(0,0,0,.8); }
+  .mk-filt-open .mk-filters { display: flex; }
+  .mk-f { flex: none; min-width: 0; }
+  .mk-f input[type=search], .mk-f select { height: 44px; width: 100%; }
+  .mk-f-chk { min-height: 44px; padding: 0; }
+  .mk-f-chk input { width: 24px; height: 24px; }
+  .mk-reset, .mk-fdone { height: 44px; font-size: 16px; }
+  .mk-fdone { display: block; border-radius: 8px; border: 1px solid #d4af37; background: linear-gradient(135deg,#d4af37,#9a7b2c); color: #1a0f05; font: inherit; font-weight: bold; cursor: pointer; }
+  .mk-eras { display: none; }
+
+  /* 一覧 → 詳細 の2段階 */
+  .mk-main { display: flex; flex-direction: column; gap: 0; }
+  .mk-listwrap { flex: 1; min-height: 0; }
+  .mk-detail { display: none; flex: 1; }
+  .mk-detail-open .mk-listwrap, .mk-detail-open .mk-mtool, .mk-detail-open .mk-filters { display: none; }
+  .mk-detail-open .mk-detail { display: flex; }
+  .mk-row-name { font-size: 17px; }
+  .mk-row { gap: 8px; padding-right: 8px; }
+
+  /* 詳細 */
+  .mk-dcard { padding: 8px; }
+  .mk-dhead { flex-wrap: wrap; gap: 10px; padding: 10px; }
+  .mk-dkamon svg, .mk-dkamon .mk-kamon { width: 52px !important; height: 52px !important; }
+  .mk-dname { font-size: 20px; }
+  .mk-dgrid { grid-template-columns: 1fr; }
+  .mk-minimap { width: 100%; margin-left: 0; }
+  .mk-minimap svg { width: 100%; height: auto; aspect-ratio: 3 / 2; touch-action: pan-y; }
+  .mk-ap { grid-template-columns: auto 1fr; gap: 4px 10px; }
+  .mk-map svg { width: 100%; height: auto; max-height: 60vh; touch-action: pan-y; }
+  .mk-tl-year { font-size: 20px; }
+  .mk-tl-title { flex: 1 1 100%; order: 3; }
+  .mk-tl-ctrl { flex-wrap: wrap; }
+  .mk-tl-ctrl button { height: 44px; min-width: 44px; border-radius: 22px; font-size: 16px; }
+  .mk-tl-range { min-width: 100%; height: 44px; order: 5; }
+  .mk-tl-ticks button { min-height: 44px; padding: 0 10px; }
+}
+.mk-row-total small, .mk-row-total .mk-unit, .mk-row-total .mk-vl { font-weight: 400 !important; text-shadow: none !important; }
+
+/* ===== bgm: 名鑑ヘッダーの音楽ON/OFF ===== */
+.mk-head .mk-bgm { flex: 0 0 auto; width: 44px; height: 44px; min-width: 44px; border-radius: 50%; border: 1.5px solid #d4af37; background: rgba(0,0,0,.35); color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0; margin-left: auto; }
+.mk-head .mk-bgm .opening-btn-icon { font-size: 20px !important; line-height: 1; }
+.mk-head .mk-bgm .opening-btn-text { display: none; }
+.mk-head .mk-bgm.is-muted { opacity: .7; }

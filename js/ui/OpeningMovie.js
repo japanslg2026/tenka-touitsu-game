@@ -307,7 +307,11 @@ export class OpeningMovie {
     if (this._audioBlocked) { // 自動再生で止められていた音声を、このタップで開始する
       this._audioBlocked = false;
       try {
-        if (this.music && typeof this.music.init === 'function') this.music.init();
+        if (this.music && typeof this.music.unlockAudio === 'function') {
+          this.music.unlockAudio();
+        } else if (this.music && typeof this.music.init === 'function') {
+          this.music.init();
+        }
         const ctx = this.music && this.music.ctx;
         const go = () => { try { if (typeof this.music.playTrack === 'function') this.music.playTrack('op', true); } catch (e) {} };
         if (ctx && ctx.state === 'suspended') ctx.resume().then(go).catch(() => {}); else go();

@@ -9,12 +9,12 @@
  * @typedef {import('./types.js').GameSaveData} GameSaveData
  */
 
-import { GameState, GameStateMethods } from './core/GameState.js?v=20261016succ';
-import { UIManager, UIManagerMethods } from './ui/UIManager.js?v=20261018milcap';
-import { MapRenderer, MapRendererMethods } from './render/MapRenderer.js?v=20261011cn';
-import { ComputerLogic, ComputerLogicMethods } from './ai/ComputerLogic.js?v=20261011cn';
-import { DataLoader } from './core/DataLoader.js?v=20261017otomo';
-import * as GameRules from './core/GameRules.js?v=20261011cn';
+import { GameState, GameStateMethods } from './core/GameState.js?v=20261025_d74';
+import { UIManager, UIManagerMethods } from './ui/UIManager.js?v=20261025_d74';
+import { MapRenderer, MapRendererMethods } from './render/MapRenderer.js?v=20261025_ui48';
+import { ComputerLogic, ComputerLogicMethods } from './ai/ComputerLogic.js?v=20261025_ui49';
+import { DataLoader } from './core/DataLoader.js?v=20261025_d74';
+import * as GameRules from './core/GameRules.js?v=20261025_d74';
 
 // 早期初期化: モジュール評価時点で即座に window.getClanAbility を配備
 if (typeof window !== 'undefined') {
@@ -27,6 +27,8 @@ if (typeof window !== 'undefined') {
 
 // 重複武将統合IDエイリアスマップ (後方互換・セーブデータ・動的参照対応)
 window.OFFICER_ID_ALIASES = {
+  "off_pl1570_134": "off_eriguchi_nobutsune",
+  "off_hist_1586_tamura_muneaki": "off_tamura_muneaki",
   "off_succ_ashina_1585_8": "off_ashina_yoshihiro",
   "off_pl1159_030": "off_dm_satake_1156",
   "off_pl1438_061": "off_dm_shoni_1438",
@@ -816,7 +818,7 @@ export class SengokuGame {
     this.renderer = new MapRenderer(this);
     this.ai = new ComputerLogic(this);
 
-    this.music = new SengokuMusicEngine();
+    this.music = window.sengokuMusic || new SengokuMusicEngine();
     this.audio = this.music;
     // 季節オート進行中は季節替わりで曲を替えない（音楽エンジンが問い合わせる。2026-10-11 bz）
     this.music.isAutoAdvanceActive = () => !!this.isAutoPlay;
@@ -849,7 +851,7 @@ export class SengokuGame {
     this.allianceCooldown = {};
 
     // オートプレーモード設定
-    this.isAutoPlay = false;
+    this.isAutoPlay = false; this.audio?.setAutoQuiet?.(false);
     this.autoPlayPausedForEvent = false;
     this.autoPlaySpeed = 0.5; // 秒単位 (0.1〜3.0)
     this.autoPlayTimer = null;

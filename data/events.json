@@ -9,7 +9,9 @@
       "desc": "浪速白肩津より河内・孔舎衛坂へ進撃した神武東征軍は長髄彦の猛反撃を受け、皇兄・五瀬命が流矢に負傷。「日の神の御子が日に向かひて戦ふは天道に背く」と紀伊半島へ迂回する。男水門にて五瀬命が雄叫びを上げて崩御するも、熊野にて高倉下が建御雷神の神剣『布都御魂』を奉献して全軍が覚醒！天照大神の遣わした霊鳥『八咫烏』が険路を先導し、大和宇陀への道を開く！",
       "changes": {
         "territory": {
-          "kii": "jimmu"
+          "kinan_kumano": "jimmu",
+          "kii_kichu": "jimmu",
+          "saika_wakayama": "jimmu"
         },
         "killOfficerIds": [
           "off_itsuse",
@@ -18,13 +20,13 @@
         ],
         "clanEffects": {
           "jimmu": {
-            "moraleDelta": 30,
-            "orderDelta": 20,
-            "troopsRate": 1.25
+            "moraleDelta": 20,
+            "orderDelta": 10,
+            "troopsRate": 1.1
           },
           "kumano_tobe": {
-            "moraleDelta": -40,
-            "orderDelta": -30
+            "moraleDelta": -30,
+            "orderDelta": -20
           }
         },
         "clanResources": {
@@ -67,13 +69,17 @@
         ],
         "clanEffects": {
           "jimmu": {
-            "moraleDelta": 35,
-            "orderDelta": 25,
-            "troopsRate": 1.2
+            "moraleDelta": 25,
+            "orderDelta": 15,
+            "troopsRate": 1.1
           },
           "nagasunehiko": {
             "moraleDelta": -30,
             "orderDelta": -20
+          },
+          "kumano_tobe": {
+            "moraleDelta": -20,
+            "orderDelta": -15
           }
         },
         "clanResources": {
@@ -119,14 +125,9 @@
         ],
         "clanEffects": {
           "jimmu": {
-            "moraleDelta": 50,
-            "orderDelta": 40,
-            "troopsRate": 1.3
-          },
-          "nagasunehiko": {
-            "moraleDelta": -60,
-            "orderDelta": -50,
-            "troopsRate": 0.2
+            "moraleDelta": 30,
+            "orderDelta": 25,
+            "troopsRate": 1.1
           }
         },
         "clanResources": {
@@ -148,6 +149,24 @@
             "moraleDelta": -30
           }
         }
+      },
+      "rules": {
+        "afterApply": {
+          "transferOfficers": {
+            "officerIds": [
+              "off_nigihayahi",
+              "off_umashimaji",
+              "off_tomiyahime"
+            ],
+            "fromClans": [
+              "nagasunehiko"
+            ],
+            "toClan": "jimmu",
+            "provId": "yamato",
+            "revive": true
+          },
+          "log": "🦅【帰順】天孫・饒速日命と宇摩志麻治命が神武軍に帰順し、物部・大和の諸族が従いました！"
+        }
       }
     },
     {
@@ -158,14 +177,11 @@
       "title": "辛酉年春正月・畝傍山橿原宮創建と神武天皇即位",
       "desc": "大和を完全に平定した神武天皇は、畝傍山の東南・橿原の地に壮麗なる宮室を造営。事代主神の娘・媛蹈鞴五十鈴媛命を正妃（皇后）に迎え、辛酉年春正月朔日、高御座に昇り日本の初代天皇『始馭天下之天皇（神武天皇）』として即位された！「八紘を掩ひて宇と為む（八紘為宇）」の建国大詔を発し、道臣命・大久米命・宇摩志麻治命・椎根津彦らに国造・県主を封じて日本建国の栄光の朝が訪れた！",
       "changes": {
-        "territory": {
-          "yamato": "jimmu"
-        },
         "clanEffects": {
           "jimmu": {
-            "moraleDelta": 50,
-            "orderDelta": 50,
-            "defenseDelta": 30
+            "moraleDelta": 30,
+            "orderDelta": 30,
+            "defenseDelta": 15
           }
         },
         "clanResources": {
@@ -184,6 +200,22 @@
             "troopsRate": 1.15
           }
         }
+      },
+      "rules": {
+        "afterApply": {
+          "state": {
+            "jimmuEnthronementDeclined": false,
+            "jimmuEnthronementAccepted": true
+          },
+          "hook": "updateJimmuEnthronement"
+        },
+        "onDecline": {
+          "state": {
+            "jimmuEnthronementDeclined": true,
+            "jimmuEnthronementAccepted": false
+          },
+          "hook": "updateJimmuEnthronement"
+        }
       }
     },
     {
@@ -196,7 +228,8 @@
       "changes": {
         "territory": {
           "satsuma": "yamato_court",
-          "higo": "yamato_court"
+          "higo_kumamoto": "yamato_court",
+          "higo_hitoyoshi": "yamato_court"
         },
         "killOfficerIds": [
           "off_kawakami_takeru"
@@ -243,7 +276,8 @@
       "changes": {
         "territory": {
           "hyuga": "yamato_court",
-          "osumi": "yamato_court"
+          "osumi": "yamato_court",
+          "nobeoka": "yamato_court"
         },
         "clanEffects": {
           "yamato_court": {
@@ -411,8 +445,11 @@
         ],
         "clanEffects": {
           "yamato_court": {
-            "orderDelta": 30,
-            "defenseDelta": 20
+            "moraleDelta": -10,
+            "orderDelta": 15
+          },
+          "ibuki": {
+            "moraleDelta": 15
           }
         },
         "clanResources": {
@@ -492,16 +529,11 @@
       "title": "不破関封鎖・東国電撃動員",
       "desc": "【物語】<br>天智天皇崩御後、近江朝廷の重囲を察知した大海人皇子は吉野宮を出家脱出！伊賀・伊勢の険路を疾駆して美濃へ電撃突入した。<br>先発した田中足麻呂が天下第一の要衝・不破関を封鎖し、近江朝廷が東国へ放った動員使を遮断！<br>さらに尾張大隅が二万騎の精鋭と莫大な兵糧を供出して合流！東海道・東山道の諸豪族が大海人皇子の赤旗のもとに怒涛の如く結集した！<br><br>【歴史解説（この時代に何があったのか）】<br>古代日本最大の内乱『壬申の乱』の勝敗を分けた電撃作戦です。<br>なぜ大海人皇子は美濃へ向かったのか？東海道と東山道が合流する不破関（岐阜県関ケ原）を抑えることで、近江朝廷が東国の軍馬・兵力を集めるのを遮断し、自らが坂東・東海の精鋭騎馬隊を味方につけるという完璧な軍事戦略でした。",
       "changes": {
-        "territory": {
-          "mino": "oama",
-          "owari": "oama",
-          "ise": "oama"
-        },
         "clanEffects": {
           "oama": {
-            "moraleDelta": 30,
-            "orderDelta": 20,
-            "troopsRate": 1.25
+            "moraleDelta": 25,
+            "orderDelta": 15,
+            "troopsRate": 1.15
           },
           "omi_court": {
             "moraleDelta": -20,
@@ -514,7 +546,12 @@
             "rice": 2500
           }
         },
-        "message": "大海人皇子が美濃不破関を封鎖し東国軍団を動員！大海人軍の士気と兵力が劇的に向上しました！"
+        "message": "大海人皇子が美濃不破関を封鎖し東国軍団を動員！大海人軍の士気と兵力が劇的に向上しました！",
+        "provinceEffects": {
+          "mino": {
+            "defenseDelta": 20
+          }
+        }
       },
       "onReject": {
         "message": "近江朝廷の動員使が東国へ到達し不破封鎖を突破！近江朝廷軍が美濃へ押し寄せます！",
@@ -537,12 +574,6 @@
       "title": "大伴吹負・飛鳥電撃急襲と大和戦線",
       "desc": "【物語】<br>大海人軍の別動隊を率いる大伴吹負（フケイ）は、数十騎の決死隊とともに飛鳥古京を急襲！玄武館を制圧して大和の在地豪族を電撃糾合した。<br>近江朝廷軍の宿将・犬養五十君が大軍を率いて猛反撃を仕掛けるが、吹負は坂上熊毛・置始菟らとともに大和盆地を死守！激戦の末に五十君を討ち取り、西の防衛線を完全に掌握した！<br><br>【歴史解説（この時代に何があったのか）】<br>壬申の乱は「美濃〜近江の主戦場」と「大和盆地の争奪戦」の二正面作戦でした。<br>大友皇子の近江朝廷は飛鳥の古都を奪回して後背を突こうとしましたが、大伴吹負の奇襲と奮戦によって大和が大海人側で維持されたため、近江朝廷軍は東西から挟撃される致命的な態勢に追い込まれました。",
       "changes": {
-        "territory": {
-          "yamato": "oama"
-        },
-        "killOfficerIds": [
-          "off_inukai_ikimi"
-        ],
         "clanEffects": {
           "oama": {
             "moraleDelta": 25,
@@ -559,7 +590,19 @@
             "rice": 1500
           }
         },
-        "message": "大伴吹負が飛鳥古京を奪取し大和を平定！近江朝廷将軍・犬養五十君を討ち破りました！"
+        "message": "大伴吹負が飛鳥古京を奪取し大和を平定！近江朝廷将軍・犬養五十君を討ち破りました！",
+        "chanceKills": [
+          {
+            "id": "off_inukai_ikimi",
+            "chance": 0.3
+          }
+        ],
+        "provinceEffects": {
+          "yamato": {
+            "defenseDelta": 15,
+            "orderDelta": 10
+          }
+        }
       },
       "onReject": {
         "message": "犬養五十君率いる朝廷大軍が大伴吹負軍を圧倒！飛鳥古京は大友朝廷が奪還しました！",
@@ -608,7 +651,7 @@
             "rice": 4000
           }
         },
-        "message": "大海人軍が瀬田橋の決戦で完全勝利！大友皇子は自害し、近江朝廷は崩壊しました！"
+        "message": "瀬田橋の決戦に大海人皇子軍が勝利！近江・山城を制圧し、大友皇子は自害しました！"
       },
       "onReject": {
         "message": "近江朝廷軍が瀬田橋の死守に成功！大友皇子が乾坤一擲の反撃に転じます！",
@@ -639,9 +682,9 @@
         },
         "clanEffects": {
           "oama": {
-            "moraleDelta": 40,
-            "orderDelta": 30,
-            "defenseDelta": 20
+            "moraleDelta": 25,
+            "orderDelta": 25,
+            "defenseDelta": 10
           }
         },
         "clanResources": {
@@ -660,6 +703,26 @@
             "troopsRate": 1.15
           }
         }
+      },
+      "rules": {
+        "acceptEffectLines": [
+          "大海人皇子が第40代「天武天皇」に即位し、勢力名が「飛鳥朝廷」へ昇格",
+          "正妃・鵜野讚良皇女を「鵜野讚良皇后」に冊立、固有戦術が「八色の姓・皇親政治」に進化"
+        ],
+        "afterApply": {
+          "state": {
+            "tenmuEnthronementDeclined": false,
+            "tenmuEnthronementAccepted": true
+          },
+          "hook": "updateTenmuEnthronement"
+        },
+        "onDecline": {
+          "state": {
+            "tenmuEnthronementDeclined": true,
+            "tenmuEnthronementAccepted": false
+          },
+          "hook": "updateTenmuEnthronement"
+        }
       }
     },
     {
@@ -670,9 +733,6 @@
       "title": "征夷大将軍・坂上田村麻呂の奥羽出陣",
       "desc": "【物語】<br>延暦20年、桓武天皇より節刀を授かった坂上田村麻呂は、十万の遠征軍を率いて奥羽へ進撃！<br>田村麻呂は軍紀を厳格にし、現地の俘囚（帰順した蝦夷）を巧みに登用しながら北上川流域へ進出。<br>敵の本拠地・胆沢の地に強大な軍事拠点『胆沢城』の築城を開始し、蝦夷軍団を圧倒的な組織力で包囲していった！<br><br>【歴史解説（この時代に何があったのか）】<br>桓武天皇が進めた『三十年戦争』と呼ばれる蝦夷征討の総決算です。<br>坂上田村麻呂は渡来系氏族出身の卓越した武人で、日本史上初めて実戦で大功を挙げた『征夷大将軍』の代名詞となりました。田村麻呂の強さは単なる武力ではなく、兵站の確保と城柵の建設、そして敵に対する深い理解と信義にありました。",
       "changes": {
-        "territory": {
-          "rikuzen": "heian_court"
-        },
         "provinceEffects": {
           "rikuzen": {
             "troops": 8000,
@@ -691,8 +751,8 @@
         },
         "clanResources": {
           "heian_court": {
-            "gold": 3000,
-            "rice": 5000
+            "gold": 1500,
+            "rice": 2500
           }
         },
         "message": "坂上田村麻呂率いる遠征軍が奥羽へ進発！胆沢城を築き前線を北上させました！"
@@ -719,19 +779,20 @@
       "changes": {
         "provinceEffects": {
           "rikuchu": {
-            "troops": 6000,
-            "defenseDelta": 25,
-            "moraleDelta": 30
+            "defenseDelta": 20,
+            "moraleDelta": 20
+          },
+          "rikuzen": {
+            "troopsRate": 0.85
           }
         },
         "clanEffects": {
           "aterui": {
-            "moraleDelta": 35,
-            "troopsRate": 1.2
+            "moraleDelta": 25,
+            "troopsRate": 1.15
           },
           "heian_court": {
-            "moraleDelta": -20,
-            "troopsRate": 0.85
+            "moraleDelta": -10
           }
         },
         "message": "阿弖流為と母礼が地の利を生かして猛反撃！朝廷軍の前進を食い止めました！"
@@ -747,7 +808,7 @@
       "changes": {
         "territory": {
           "rikuchu": "heian_court",
-          "mutsu": "heian_court"
+          "kasai": "heian_court"
         },
         "killOfficerIds": [
           "off_aterui",
@@ -765,11 +826,11 @@
         },
         "clanResources": {
           "heian_court": {
-            "gold": 3500,
-            "rice": 5000
+            "gold": 1500,
+            "rice": 2500
           }
         },
-        "message": "阿弖流為と母礼が民を救うため降伏。奥羽の胆沢・陸奥が朝廷の支配下に入りました。"
+        "message": "阿弖流為と母礼が民を救うため降伏。奥羽の胆沢・胆沢・江刺が朝廷の支配下に入りました。"
       },
       "onReject": {
         "message": "田村麻呂の助命嘆願が朝廷に認められた！阿弖流為と母礼が奥羽の首長に任命され、朝廷と同盟を結びました！",
@@ -802,14 +863,14 @@
       "changes": {
         "clanEffects": {
           "heian_court": {
-            "orderDelta": 30,
-            "moraleDelta": 25
+            "orderDelta": 15,
+            "moraleDelta": 10
           }
         },
         "clanResources": {
           "heian_court": {
-            "gold": 4000,
-            "rice": 6000
+            "gold": 2000,
+            "rice": 3000
           }
         },
         "provinceEffects": {
@@ -829,22 +890,14 @@
       "title": "新皇即位・平将門の坂東席巻",
       "desc": "【物語】<br>下総の豪傑・平将門は、一族の私戦から端を発し、受領（国司）の圧政に苦しむ民衆の声を背負って常陸・下野・上野の国府を電撃攻略！<br>八カ国に独自の国司を任命した将門は、八幡大菩薩と菅原道真の神託を受けたと宣言し、自ら『新皇』と称して朝廷に反旗を翻した！<br>坂東全土が将門の手に落ち、都の平安京は未曾有の恐怖に震え上がった！<br><br>【歴史解説（この時代に何があったのか）】<br>武士が初めて国家権力に反旗を翻した『承平・天慶の乱（平将門の乱）』です。<br>将門は最初から反乱を企てたわけではなく、伯父たちとの領地争いや国司の過酷な税の取り立てに反発する在地豪族を調停する中で、推されて坂東独立政権の主となりました。ここに『武士が歴史の主役に名乗りを上げた』瞬間がありました。",
       "changes": {
-        "territory": {
-          "hitachi": "taira_masakado",
-          "shimousa": "taira_masakado",
-          "kazusa": "taira_masakado",
-          "shimotsuke": "taira_masakado",
-          "kozuke": "taira_masakado",
-          "musashi": "taira_masakado"
-        },
+        "territory": {},
         "clanEffects": {
           "taira_masakado": {
-            "moraleDelta": 35,
-            "troopsRate": 1.3
+            "moraleDelta": 30,
+            "troopsRate": 1.2
           },
           "heian_court": {
-            "moraleDelta": -25,
-            "orderDelta": -20
+            "moraleDelta": -15
           }
         },
         "clanResources": {
@@ -866,9 +919,16 @@
       "changes": {
         "territory": {
           "hitachi": "heian_court",
-          "shimotsuke": "heian_court",
+          "shimousa": "heian_court",
+          "kazusa": "heian_court",
+          "awa_boshu": "heian_court",
           "kozuke": "heian_court",
-          "musashi": "heian_court"
+          "musashi": "heian_court",
+          "sagami": "heian_court",
+          "izu": "heian_court",
+          "shimotsuke": "fujiwara_hidesato",
+          "koga": "heian_court",
+          "nasu": "fujiwara_hidesato"
         },
         "killOfficerIds": [
           "off_taira_masakado"
@@ -882,6 +942,9 @@
           "heian_court": {
             "moraleDelta": 30,
             "orderDelta": 20
+          },
+          "fujiwara_hidesato": {
+            "moraleDelta": 30
           }
         },
         "message": "平貞盛・藤原秀郷の連合軍が勝利し、将門が討死！坂東が朝廷に復帰しました！"
@@ -897,7 +960,10 @@
             "moraleDelta": -30
           }
         }
-      }
+      },
+      "onlyFrom": [
+        "taira_masakado"
+      ]
     },
     {
       "id": "evt_940_sumitomo_seto",
@@ -908,8 +974,6 @@
       "desc": "【物語】<br>東国で将門が立つと呼応するかの如く、西海では伊予日振島（ひぶりしま）を本拠とする藤原純友が千余艘の海賊船団を率いて蜂起！<br>備前・讃岐・播磨など瀬戸内海沿岸の国府を次々に急襲し、さらに西海道の心臓部・大宰府を焼き払って官府を占拠した！<br>東西同時多発の二大反乱により、平安朝廷は東西から挟み撃ちの壊滅的危機に陥った！<br><br>【歴史解説（この時代に何があったのか）】<br>『東の将門、西の純友』と恐れられた藤原純友の乱です。<br>純友は貴族の家柄でしたが、瀬戸内海の海民・水軍集団を組織して一大勢力に育て上げました。当時の大動脈であった瀬戸内海の舟運が完全麻痺し、朝廷は武士たちの軍事力に頼らざるを得なくなりました。",
       "changes": {
         "territory": {
-          "sanuki": "fujiwara_sumitomo",
-          "bizen": "fujiwara_sumitomo",
           "chikuzen": "fujiwara_sumitomo"
         },
         "clanEffects": {
@@ -939,10 +1003,20 @@
       "desc": "【物語】<br>大宰府を焼いた純友軍に対し、朝廷の追補使長官・小野好古（おののよしふる）と次官・大蔵春実（おおくらはるざね）率いる官軍水軍が博多湾で総攻撃を敢行！<br>矢衾と火矢の応酬の末、官軍は純友の海賊船八百余艘を焼き尽くし、純友軍は壊滅。<br>純友は本拠の伊予へ逃げ延びるも警固使・橘遠保に捕らえられ討死。東西を揺るがした承平・天慶の乱はここに完全鎮圧された！<br><br>【歴史解説（この時代に何があったのか）】<br>東西二大反乱の平定により、貴族政権は辛うじて延命しましたが、同時に『武士の軍事力がなければ国家を守れない』という現実を痛感させられました。<br>功績を挙げた源経基（清和源氏の祖）や平貞盛、藤原秀郷らが中央で武官として重用され、中世の武家社会への扉が大きく開かれたのです。",
       "changes": {
         "territory": {
-          "buzen": "heian_court",
-          "chikuzen": "heian_court",
+          "bizen": "heian_court",
+          "bicchu": "heian_court",
+          "bingo": "heian_court",
+          "aki": "heian_court",
+          "suo": "heian_court",
+          "nagato": "heian_court",
+          "sanuki": "heian_court",
+          "awa_shikoku": "heian_court",
           "iyo": "heian_court",
-          "sanuki": "heian_court"
+          "awaji": "heian_court",
+          "tosa_kochi": "heian_court",
+          "tosa_nakamura": "heian_court",
+          "aki_koriyama": "heian_court",
+          "chikuzen": "heian_court"
         },
         "killOfficerIds": [
           "off_fujiwara_sumitomo"
@@ -954,7 +1028,10 @@
           }
         },
         "message": "小野好古・大蔵春実が純友軍を撃滅し、瀬戸内・九州の治安が回復されました！"
-      }
+      },
+      "onlyFrom": [
+        "fujiwara_sumitomo"
+      ]
     },
     {
       "id": "evt_1019_toi_invasion",
@@ -964,9 +1041,6 @@
       "title": "刀伊の猛襲・対馬壱岐陥落と博多警固所の危機",
       "desc": "【物語】<br>寛仁三年四月、ロシア沿海州・北朝鮮東岸の女真族『刀伊（トイ）』の船団約五十隻が突如として対馬・壱岐を強襲！<br>壱岐守・藤原理忠が奮戦の末に玉砕し、島民数千人が殺傷・拉致された。<br>勢いに乗る刀伊軍は筑前博多湾に突入！猛烈な毒矢と獰猛な上陸部隊により、警固所が炎上する未曾有の国難が勃発した！<br><br>【歴史解説（この時代に何があったのか）】<br>平安時代中期、藤原道長が『この世をば わが世とぞ思ふ』と栄華を極めていたまさにその時起きた、元寇に先立つ唯一の大規模な対外侵略事件です。<br>刀伊とは北方民族の女真族（後の金・清を建国する満洲民族の祖先）のこと。突如海を越えて押し寄せた異民族の略奪に対し、大宰府の武士たちが立ち向かいました。",
       "changes": {
-        "territory": {
-          "tsushima": "toi"
-        },
         "clanEffects": {
           "toi": {
             "moraleDelta": 35,
@@ -1011,8 +1085,8 @@
         },
         "clanResources": {
           "heian_court": {
-            "gold": 3000,
-            "rice": 4000
+            "gold": 1500,
+            "rice": 2000
           }
         },
         "message": "藤原隆家と九州武士団が刀伊軍を完全撃退！対馬を奪還し国難を平定しました！"
@@ -1060,15 +1134,10 @@
       "title": "房総の兵乱・平忠常の南関東席巻",
       "desc": "【物語】<br>坂東平氏の巨頭・前上総介の平忠常（たいらのただつね）が、安房守・平忠綱を殺害し安房国府を焼き討ちして蜂起！<br>上総・下総・安房の房総三国を瞬く間に掌握し、朝廷の命を受けた追捕使・平直方の追討軍を3年間にわたりことごとく撃退して南関東に覇を唱えた！<br><br>【歴史解説（この時代に何があったのか）】<br>将門の乱に続く坂東の大反乱『平忠常の乱』です。<br>国司の過酷な租税収奪に怒った坂東武士団が、平忠常のもとに結集して武装蜂起しました。忠常は三カ国の広大な穀倉地帯と牧場を押さえ、官軍を長期にわたり翻弄し続けました。",
       "changes": {
-        "territory": {
-          "kazusa": "taira_tadatsune",
-          "shimousa": "taira_tadatsune",
-          "awa_boshu": "taira_tadatsune"
-        },
         "clanEffects": {
           "taira_tadatsune": {
             "moraleDelta": 35,
-            "troopsRate": 1.3
+            "troopsRate": 1.2
           },
           "heian_court": {
             "moraleDelta": -20
@@ -1100,10 +1169,7 @@
           "minamoto_tsunemoto": {
             "moraleDelta": 40,
             "orderDelta": 30,
-            "troopsRate": 1.35
-          },
-          "taira_tadatsune": {
-            "troopsRate": 0.3
+            "troopsRate": 1.2
           }
         },
         "clanResources": {
@@ -1112,7 +1178,10 @@
             "rice": 4000
           }
         },
-        "message": "源頼信の威徳により忠常が無血降伏！房総三国が源氏の強固な基盤となりました！"
+        "message": "源頼信の威徳により忠常が無血降伏！房総三国が源氏の強固な基盤となりました！",
+        "killOfficerIds": [
+          "off_taira_tadanetsune"
+        ]
       },
       "onReject": {
         "message": "忠常が降伏を拒絶し徹底抗戦！房総の泥沼のゲリラ戦が継続します！",
@@ -1146,7 +1215,7 @@
         "provinceEffects": {
           "rikuchu": {
             "defenseDelta": 20,
-            "troops": 6000
+            "troopsRate": 1.2
           }
         },
         "message": "安倍頼時が鬼切部で官軍を撃破！奥六郡の防備を固めました！"
@@ -1193,7 +1262,9 @@
         "territory": {
           "rikuchu": "kiyohara",
           "mutsu": "kiyohara",
-          "tsugaru": "kiyohara"
+          "kasai": "kiyohara",
+          "nishi_tsugaru": "kiyohara",
+          "higashi_tsugaru": "kiyohara"
         },
         "killOfficerIds": [
           "off_abe_sadato",
@@ -1216,7 +1287,14 @@
           }
         },
         "message": "厨川柵が陥落し安倍氏が滅亡！出羽清原氏が奥羽の覇権を握りました！"
-      }
+      },
+      "onlyFrom": [
+        "abe"
+      ],
+      "requiresClans": [
+        "abe",
+        "kiyohara"
+      ]
     },
     {
       "id": "evt_1087_kanazawa",
@@ -1228,7 +1306,9 @@
       "changes": {
         "territory": {
           "ugo": "kiyohara",
-          "uzen": "kiyohara"
+          "kakunodate": "kiyohara",
+          "yokote": "kiyohara",
+          "rikuchu": "kiyohara"
         },
         "killOfficerIds": [
           "off_kiyohara_iehira",
@@ -1236,15 +1316,20 @@
         ],
         "clanEffects": {
           "minamoto_tsunemoto": {
-            "moraleDelta": 35,
-            "orderDelta": 25
-          },
-          "kiyohara_iehira": {
-            "moraleDelta": -60,
-            "troopsRate": 0.1
+            "moraleDelta": 30
           }
         },
         "message": "出羽金沢柵が陥落し清原家衡が敗死！義家が私財で諸将に恩賞を給しました！"
+      },
+      "onlyFrom": [
+        "kiyohara_iehira"
+      ],
+      "rules": {
+        "neverNoop": true,
+        "onApply": {
+          "flag": "kanazawaOccurred",
+          "hook": "updateKiyohiraSurname"
+        }
       }
     },
     {
@@ -1277,9 +1362,7 @@
       "desc": "【物語】<br>激戦を生き抜いた清原清衡は、養家・清原の姓を脱し、非業の死を遂げた実父の姓『藤原』へと復姓した！<br>奥州藤原氏初代・藤原清衡は平泉に本拠を定め、前九年・後三年で敵味方として散ったすべての生命を平等に供養すべく、莫大な黄金を用いて『中尊寺金色堂』の建立に着手！<br>武器を置き、争いのない仏国土を目指した百年の黄金平和都市・平泉の歴史が始まった！<br><br>【歴史解説（この時代に何があったのか）】<br>世界遺産・平泉の誕生です。<br>父や親族が互いに殺し合う地獄を生き延びた清衡は、戦乱の悲劇を二度と繰り返さぬよう、東北の豊かな砂金と北方貿易の富を文化と仏教に注ぎ込みました。平泉は平安京に次ぐ日本第二の大都市として栄華を極めることになります。",
       "changes": {
         "territory": {
-          "rikuchu": "kiyohara",
-          "mutsu": "kiyohara",
-          "rikuzen": "kiyohara"
+          "rikuchu": "kiyohara"
         },
         "clanEffects": {
           "kiyohara": {
@@ -1290,11 +1373,53 @@
         },
         "clanResources": {
           "kiyohara": {
-            "gold": 3500,
-            "rice": 4500
+            "gold": 2000,
+            "rice": 3000
           }
         },
         "message": "清原清衡が『藤原清衡』へ復姓！奥州藤原氏初代として平泉黄金文化を開府しました！"
+      },
+      "onlyFrom": [
+        "kiyohara_iehira"
+      ],
+      "rules": {
+        "neverNoop": true,
+        "linkedChoice": {
+          "choiceId": "fujiwara_kiyohira_restoration"
+        },
+        "acceptEffectLines": [
+          "清原領の治安 +15、兵力 +1,000"
+        ],
+        "afterApply": {
+          "state": {
+            "kiyohiraSurnameDeclined": false,
+            "kiyohiraFujiwaraAccepted": true
+          },
+          "hook": "updateKiyohiraSurname",
+          "ownerProvinceDelta": {
+            "clanId": "kiyohara",
+            "order": 15,
+            "orderMax": 100,
+            "troops": 1000
+          },
+          "playerBonus": {
+            "clanId": "kiyohara",
+            "gold": 1500,
+            "rice": 2000,
+            "previewLines": [
+              "清原家として金 +1,500、兵糧 +2,000"
+            ]
+          },
+          "suppressLog": true
+        },
+        "onDecline": {
+          "state": {
+            "kiyohiraSurnameDeclined": true,
+            "kiyohiraFujiwaraAccepted": false
+          },
+          "hook": "updateKiyohiraSurname",
+          "log": "🛡️【現状維持】清原清衡は清原の姓を保ち、奥州藤原氏を称しませんでした。"
+        }
       }
     },
     {
@@ -1315,7 +1440,15 @@
         "killOfficerIds": [
           "off_minamoto_tameyoshi"
         ]
-      }
+      },
+      "requiresClans": [
+        "taira",
+        "sutoku_in"
+      ],
+      "onlyFrom": [
+        "sutoku_in",
+        "heian_court"
+      ]
     },
     {
       "id": "evt_1156_hogen_night_attack",
@@ -1326,8 +1459,8 @@
       "desc": "【物語】<br>鳥羽法皇崩御を契機に、崇徳上皇と後白河天皇、摂関家の対立が爆発！<br>上皇方に源為義・平忠正、そして剛弓無双の鎮西八郎・源為朝が参集。後白河天皇方には平清盛と源義朝が結集した。<br>若き義朝は先制の火攻め夜襲を進言！清盛・義朝軍は白河北殿に火を放ち、上皇方は壊滅。崇徳上皇は讃岐へ配流、頼長は敗死した。<br><br>【歴史解説（この時代に何があったのか）】<br>古代貴族政治の決定的な終焉となった『保元の乱』です。<br>天皇家・摂関家・源平武士団がそれぞれ骨肉相食む二派に分かれて激突しました。公家の争いが武士の武力によって決着したことで、慈円は歴史書『愚管抄』で『武者の世になりにけるなり（武士の世が始まった）』と記しました。",
       "changes": {
         "territory": {
-          "yamato": "heian_court",
-          "kawachi": "heian_court"
+          "yamato": "goshirakawa_in",
+          "kawachi": "goshirakawa_in"
         },
         "killOfficerIds": [
           "off_fujiwara_yorinaga",
@@ -1353,7 +1486,10 @@
           }
         },
         "message": "白河北殿が炎上し後白河方が完全勝利！武士が天下の権力を握る時代が到来しました！"
-      }
+      },
+      "onlyFrom": [
+        "sutoku_in"
+      ]
     },
     {
       "id": "evt_1159_heiji_coup",
@@ -1363,9 +1499,6 @@
       "title": "平治の乱・三条殿急襲と信西の最期",
       "desc": "【物語】<br>保元の乱の恩賞で清盛の後塵を拝し不満を募らせた源義朝は、後白河上皇の側近・藤原信頼と結託してクーデターを断行！<br>平清盛が熊野参詣で留守の隙を突き、三条殿を焼き討ちして後白河上皇と二条天皇を幽閉、大権を握っていた碩学・信西（藤原通憲）を自害に追い込んだ！<br><br>【歴史解説（この時代に何があったのか）】<br>武門の覇権をめぐる『平治の乱』の開幕です。<br>播磨や西国の豊かな受領に任じられた平清盛に対し、源義朝は下野守にとどまり大きな格差をつけられていました。武士同士の嫉視と、朝廷内部の権力闘争が結びついたクーデターでした。",
       "changes": {
-        "territory": {
-          "yamashiro": "minamoto_yoshitomo"
-        },
         "clanEffects": {
           "minamoto_yoshitomo": {
             "moraleDelta": 35,
@@ -1402,7 +1535,15 @@
         "killOfficerIds": [
           "off_minamoto_yoshitomo"
         ]
-      }
+      },
+      "requiresClans": [
+        "taira",
+        "minamoto_yoshitomo"
+      ],
+      "onlyFrom": [
+        "heian_court",
+        "minamoto_yoshitomo"
+      ]
     },
     {
       "id": "evt_1160_rokuhara_decisive",
@@ -1415,7 +1556,9 @@
         "territory": {
           "yamashiro": "taira",
           "sagami": "taira",
-          "shimotsuke": "taira"
+          "shimotsuke": "taira",
+          "nasu": "taira",
+          "koga": "taira"
         },
         "killOfficerIds": [
           "off_minamoto_yoshitomo"
@@ -1450,7 +1593,10 @@
             "moraleDelta": -35
           }
         }
-      }
+      },
+      "onlyFrom": [
+        "minamoto_yoshitomo"
+      ]
     },
     {
       "id": "evt_1177_shishigatani",
@@ -1521,7 +1667,14 @@
           "totomi": "genji_yoritomo"
         },
         "message": "富士川の大勝！源頼朝が相模鎌倉を本拠に関東・東海道を掌握しました。"
-      }
+      },
+      "onlyFrom": [
+        "taira",
+        "heian_court"
+      ],
+      "requiresClans": [
+        "taira"
+      ]
     },
     {
       "id": "evt_1183_heike_flee",
@@ -1535,11 +1688,16 @@
           "etchu": "kiso",
           "kaga": "kiso",
           "echizen": "kiso",
-          "yamashiro": "kiso",
-          "settsu": "taira"
+          "yamashiro": "kiso"
         },
         "message": "木曾義仲が京都を占領し、平家一門は西国（屋島・壇ノ浦）へ逃亡しました！"
-      }
+      },
+      "requiresClans": [
+        "taira"
+      ],
+      "onlyFrom": [
+        "taira"
+      ]
     },
     {
       "id": "evt_1184_ujigawa",
@@ -1556,7 +1714,13 @@
           "settsu": "genji_yoritomo"
         },
         "message": "木曽義仲が敗死！源頼朝（義経）軍が京都・近江を掌握しました。"
-      }
+      },
+      "requiresClans": [
+        "kiso"
+      ],
+      "onlyFrom": [
+        "kiso"
+      ]
     },
     {
       "id": "evt_1184_ichinotani",
@@ -1572,7 +1736,14 @@
           "tamba": "genji_yoritomo"
         },
         "message": "義経の神速の奇襲により一ノ谷が陥落、摂津・播磨が鎌倉幕府軍の手に渡りました！"
-      }
+      },
+      "requiresClans": [
+        "taira"
+      ],
+      "onlyFrom": [
+        "taira",
+        "kiso"
+      ]
     },
     {
       "id": "evt_1185_yashima",
@@ -1601,7 +1772,10 @@
             "moraleDelta": -10
           }
         }
-      }
+      },
+      "onlyFrom": [
+        "taira"
+      ]
     },
     {
       "id": "evt_1185_dannoura",
@@ -1619,7 +1793,8 @@
           "buzen": "genji_yoritomo",
           "chikuzen": "genji_yoritomo",
           "awa_shikoku": "genji_yoritomo",
-          "sanuki": "genji_yoritomo"
+          "sanuki": "genji_yoritomo",
+          "chikugo": "genji_yoritomo"
         },
         "message": "壇ノ浦にて平家一門が滅亡し、源頼朝による全国支配と守護・地頭設置が成りました！",
         "killOfficerIds": [
@@ -1627,7 +1802,13 @@
           "off_taira_noritsune",
           "off_taira_munemori"
         ]
-      }
+      },
+      "requiresClans": [
+        "taira"
+      ],
+      "onlyFrom": [
+        "taira"
+      ]
     },
     {
       "id": "evt_1189_hiraizumi",
@@ -1644,13 +1825,28 @@
           "iwashiro": "genji_yoritomo",
           "iwaki": "genji_yoritomo",
           "ugo": "genji_yoritomo",
-          "uzen": "genji_yoritomo"
+          "uzen": "genji_yoritomo",
+          "kakunodate": "genji_yoritomo",
+          "yokote": "genji_yoritomo",
+          "osaki": "genji_yoritomo",
+          "kasai": "genji_yoritomo",
+          "yonezawa_date": "genji_yoritomo",
+          "soma": "genji_yoritomo",
+          "tamura": "genji_yoritomo",
+          "shirakawa": "genji_yoritomo"
         },
         "message": "奥州藤原氏が滅亡！奥羽全土が鎌倉幕府の支配下に入りました。",
         "killOfficerIds": [
           "off_fujiwara_yasuhira"
         ]
-      }
+      },
+      "requiresClans": [
+        "fujiwara_hiraizumi",
+        "genji_yoritomo"
+      ],
+      "onlyFrom": [
+        "fujiwara_hiraizumi"
+      ]
     },
     {
       "id": "evt_1221_jokyu_end",
@@ -1670,7 +1866,13 @@
           "izumi": "hojo_kamakura"
         },
         "message": "承久の乱に大勝利した鎌倉幕府が朝廷の西国領地をことごとく接収・支配しました！"
-      }
+      },
+      "requiresClans": [
+        "gotoba_in"
+      ],
+      "onlyFrom": [
+        "gotoba_in"
+      ]
     },
     {
       "id": "evt_1231_kangi_famine",
@@ -1682,8 +1884,8 @@
       "forced": true,
       "changes": {
         "famine": {
-          "troopRate": 0.6,
-          "riceRate": 0.5
+          "troopRate": 0.75,
+          "riceRate": 0.6
         },
         "message": "寛喜の飢饉で、諸国の兵力と兵糧が大きく減りました。"
       }
@@ -1804,19 +2006,26 @@
           "kozuke": "nitta",
           "shimotsuke": "ashikaga",
           "harima": "akamatsu",
-          "bizen": "akamatsu"
+          "bizen": "akamatsu",
+          "koga": "ashikaga"
         },
         "message": "鎌倉幕府が滅亡し、後醍醐天皇による建武の新政が始まりました！",
         "killOfficerIds": [
           "off_hojo_takatoki"
         ]
-      }
+      },
+      "requiresClans": [
+        "hojo_kamakura"
+      ],
+      "onlyFrom": [
+        "hojo_kamakura"
+      ]
     },
     {
       "id": "evt_1336_minatogawa",
       "scenarioId": "*",
       "year": 1336,
-      "season": "秋",
+      "season": "夏",
       "title": "湊川の戦い・大楠公の最期と室町幕府創立",
       "desc": "九州で軍勢を立て直した足利尊氏の大軍が湊川で楠木正成・新田義貞を迎撃！大楠公は壮絶な死闘の末に一族と共に自刃。尊氏は入京して光明天皇を擁立し、室町幕府を開いた！",
       "changes": {
@@ -1833,6 +2042,20 @@
           "off_kusunoki_masashige",
           "off_kusunoki_masasue"
         ]
+      },
+      "requiresClans": [
+        "kusunoki",
+        "ashikaga"
+      ],
+      "onlyFrom": [
+        "kusunoki",
+        "nitta",
+        "godaiho"
+      ],
+      "rules": {
+        "linkedChoice": {
+          "choiceId": "minatogawa"
+        }
       }
     },
     {
@@ -1844,13 +2067,20 @@
       "desc": "将軍足利尊氏の執事・高師直と、尊氏の実弟・足利直義が激しく対立！直義は南朝に降り、楠木正儀ら南朝軍と連携して京都を占領。室町幕府は二つに割れ、全国の内乱が激化した！",
       "changes": {
         "territory": {
-          "yamashiro": "kusunoki",
-          "kawachi": "kusunoki",
-          "settsu": "kusunoki",
-          "yamato": "kusunoki"
+          "yamashiro": "kusunoki"
         },
-        "message": "足利直義と南朝軍が京都を急襲奪取し、室町幕府の天下が二分されました！"
-      }
+        "message": "足利直義と南朝軍が京都を急襲奪取し、室町幕府の天下が二分されました！",
+        "troopShock": {
+          "ashikaga": 0.8
+        }
+      },
+      "requiresClans": [
+        "ashikaga",
+        "kusunoki"
+      ],
+      "onlyFrom": [
+        "ashikaga"
+      ]
     },
     {
       "id": "evt_1399_oei",
@@ -1866,7 +2096,9 @@
       "changes": {
         "territory": {
           "izumi": "ashikaga",
-          "kii": "hatakeyama"
+          "kii_kichu": "hatakeyama",
+          "saika_wakayama": "hatakeyama",
+          "kinan_kumano": "hatakeyama"
         },
         "killOfficerIds": [
           "off_ouchi_yoshihiro"
@@ -1875,7 +2107,11 @@
           "ouchi": 0.7
         },
         "message": "堺が落ち、大内義弘は討ち死にしました。和泉は幕府、紀伊は畠山の守護国となります。"
-      }
+      },
+      "onlyFrom": [
+        "ouchi",
+        "yamana"
+      ]
     },
     {
       "id": "evt_1402_date_masamune_submit",
@@ -1888,7 +2124,7 @@
         "territory": {
           "uzen": "mogami"
         },
-        "message": "政宗は鎌倉で謝罪・出家し、羽前を安東氏へ返上しました。霊山城と陸前は伊達氏に残ります。"
+        "message": "政宗は鎌倉で謝罪・出家し、羽前を最上氏へ返上しました。霊山城と陸前は伊達氏に残ります。"
       },
       "onReject": {
         "territory": {
@@ -1897,7 +2133,13 @@
           "iwaki": "date"
         },
         "message": "政宗は鎌倉の召命を拒み、陸前・羽前・磐城を守り抜きました。伊達の乱はなお続きます。"
-      }
+      },
+      "requiresClans": [
+        "date"
+      ],
+      "onlyFrom": [
+        "date"
+      ]
     },
     {
       "id": "evt_1416_zenshu",
@@ -1947,7 +2189,14 @@
           "off_dm_ashikaga_1438",
           "off_dm_akamatsu_1438"
         ]
-      }
+      },
+      "requiresClans": [
+        "akamatsu",
+        "yamana"
+      ],
+      "onlyFrom": [
+        "akamatsu"
+      ]
     },
     {
       "id": "evt_1461_kansho_famine",
@@ -1959,8 +2208,8 @@
       "forced": true,
       "changes": {
         "famine": {
-          "troopRate": 0.55,
-          "riceRate": 0.45
+          "troopRate": 0.7,
+          "riceRate": 0.6
         },
         "message": "寛正の大飢饉で、諸国の兵力と兵糧が大きく減りました。"
       }
@@ -1980,7 +2229,16 @@
           "inaba": "yamana"
         },
         "message": "応仁の乱が勃発し、都は東西両軍に分断され全国の守護大名が激突しました！"
-      }
+      },
+      "requiresClans": [
+        "hosokawa",
+        "yamana"
+      ],
+      "onlyFrom": [
+        "ashikaga",
+        "hosokawa",
+        "yamana"
+      ]
     },
     {
       "id": "evt_1485_yamashiro_ikki",
@@ -2005,7 +2263,10 @@
           "hatakeyama_bishu": 0.8,
           "hatakeyama_soshu": 0.8
         }
-      }
+      },
+      "requiresClans": [
+        "hatakeyama_bishu"
+      ]
     },
     {
       "id": "evt_1488_kaga_ikko",
@@ -2046,7 +2307,14 @@
           "yamashiro": "hosokawa"
         },
         "message": "北条早雲が伊豆を討入！堀越公方を滅ぼし、後北条氏の覇道が幕を開けました。"
-      }
+      },
+      "requiresClans": [
+        "ashikaga_horikoshi"
+      ],
+      "onlyFrom": [
+        "ashikaga_horikoshi",
+        "ashikaga"
+      ]
     },
     {
       "id": "evt_1495_soyun_odawara",
@@ -2061,13 +2329,21 @@
           "izu": "hojo"
         },
         "message": "北条早雲が小田原城を急襲奪取し、後北条氏百年の基礎を固めました！"
-      }
+      },
+      "requiresClans": [
+        "hojo"
+      ],
+      "onlyFrom": [
+        "ogigayatsu",
+        "kamakura_fu",
+        "ashikaga_horikoshi"
+      ]
     },
     {
       "id": "evt_1546_kawagoe_night",
       "scenarioId": "*",
       "year": 1546,
-      "season": "夏",
+      "season": "春",
       "title": "河越夜戦・北条氏康の奇襲大勝利",
       "desc": "両上杉氏・古河公方の連合軍八万が河越城を完全包囲。北条氏康は兵八千を率いて闇夜と暴風雨の中を奇襲突撃！大軍はパニックに陥り潰走、扇谷上杉氏は滅亡し北条の関東覇権が確立した！",
       "changes": {
@@ -2076,6 +2352,18 @@
           "kozuke": "hojo"
         },
         "message": "北条氏康が河越夜戦で八万の大軍を破り、武蔵・上野を北条領としました！"
+      },
+      "requiresClans": [
+        "hojo"
+      ],
+      "onlyFrom": [
+        "ogigayatsu",
+        "uesugi"
+      ],
+      "rules": {
+        "linkedChoice": {
+          "choiceId": "kawagoe"
+        }
       }
     },
     {
@@ -2133,7 +2421,13 @@
           "north_shinano": "takeda"
         },
         "message": "村上義清が追放され北信濃は武田領へ！上杉謙信が救援のため川中島へ出陣！"
-      }
+      },
+      "requiresClans": [
+        "takeda"
+      ],
+      "onlyFrom": [
+        "murakami"
+      ]
     },
     {
       "id": "evt_1555_itsukushima",
@@ -2152,13 +2446,20 @@
         "killOfficerIds": [
           "off_sue_harukata"
         ]
-      }
+      },
+      "requiresClans": [
+        "sue",
+        "mori"
+      ],
+      "onlyFrom": [
+        "sue"
+      ]
     },
     {
       "id": "evt_1560_okehazama",
       "scenarioId": "*",
       "year": 1560,
-      "season": "秋",
+      "season": "夏",
       "title": "桶狭間の奇跡・信長の急襲と松平自立",
       "desc": "駿河・遠江・三河四万を率いて尾張へ乱入した今川義元に対し、織田信長が田楽狭間の豪雨を突いて本陣を強襲！義元を討ち取られた今川軍は総崩れとなり、松平元康（家康）は岡崎城で劇的自立を果たした！",
       "changes": {
@@ -2170,6 +2471,26 @@
         "killOfficerIds": [
           "off_imagawa_yoshimoto"
         ]
+      },
+      "requiresClans": [
+        "imagawa",
+        "oda"
+      ],
+      "onlyFrom": [
+        "imagawa"
+      ],
+      "rules": {
+        "neverNoop": true,
+        "onApply": {
+          "flag": "okehazamaOccurred",
+          "hook": "updateTokugawaSurname"
+        },
+        "acceptEffectLines": [
+          "松平が徳川を称する"
+        ],
+        "linkedChoice": {
+          "choiceId": "okehazama"
+        }
       }
     },
     {
@@ -2267,12 +2588,20 @@
       "changes": {
         "territory": {
           "south_omi": "oda",
-          "north_omi": "oda",
           "yamashiro": "oda",
           "settsu": "oda"
         },
         "message": "織田信長が近江・京都・摂津を掌握し、足利義昭を将軍に擁立しました！"
-      }
+      },
+      "requiresClans": [
+        "oda"
+      ],
+      "onlyFrom": [
+        "rokkaku",
+        "miyoshi",
+        "ashikaga",
+        "azai"
+      ]
     },
     {
       "id": "evt_1572_mikatagahara",
@@ -2289,6 +2618,16 @@
           "totomi": "takeda"
         },
         "message": "三方ヶ原で武田軍が勝利し、遠江が武田領となりました。"
+      },
+      "onlyFrom": [
+        "tokugawa",
+        "matsudaira",
+        "imagawa"
+      ],
+      "rules": {
+        "linkedChoice": {
+          "choiceId": "sanpougahara"
+        }
       }
     },
     {
@@ -2312,7 +2651,14 @@
           "off_azai_nagamasa",
           "off_asakura_yoshikage"
         ]
-      }
+      },
+      "requiresClans": [
+        "oda"
+      ],
+      "onlyFrom": [
+        "asakura",
+        "azai"
+      ]
     },
     {
       "id": "evt_1574_nagashima",
@@ -2369,13 +2715,16 @@
           "off_yamagata_masakage",
           "off_naito_masatoyo"
         ]
-      }
+      },
+      "onlyFrom": [
+        "takeda"
+      ]
     },
     {
       "id": "evt_1577_tedorigawa",
       "scenarioId": "*",
       "year": 1577,
-      "season": "冬",
+      "season": "秋",
       "title": "手取川の戦い・上杉謙信の織田軍撃破",
       "desc": "天正五年九月、上杉謙信は能登七尾城を落とし、救援に向かう柴田勝家ら織田軍四万を加賀手取川で夜襲した。増水した川に追い落とされた織田軍は多くの将兵を失って退いた。「上杉に逢うては織田も名取川」とうたわれた。",
       "requiresClans": [
@@ -2391,12 +2740,12 @@
           "noto": "uesugi"
         },
         "troopShock": {
-          "oda": 0.8
+          "oda": 0.9
         },
         "message": "七尾城が落ちて能登は上杉領となり、手取川で敗れた織田軍は兵を大きく損ないました。",
         "clanEffects": {
           "oda": {
-            "moraleDelta": -10
+            "moraleDelta": -5
           }
         }
       }
@@ -2409,7 +2758,8 @@
       "title": "松永久秀の謀反・信貴山城の戦い",
       "desc": "天正五年八月、松永久秀は石山本願寺攻めの陣を勝手に払い、大和信貴山城に籠もって織田信長に背いた。十月、織田信忠の大軍に囲まれた久秀は、信長の望んだ名物茶釜「平蜘蛛」を渡さず、城に火を放ち、子の久通とともに自害したと伝わる。大和は筒井順慶に与えられた。",
       "requiresClans": [
-        "oda"
+        "oda",
+        "matsunaga"
       ],
       "onlyFrom": [
         "matsunaga",
@@ -2473,7 +2823,7 @@
           "off_tsunokuma_sekiso"
         ],
         "troopShock": {
-          "otomo": 0.5
+          "otomo": 0.7
         },
         "message": "耳川で大友軍が総崩れとなり、田北鎮周・佐伯惟教・角隈石宗らが討ち死にしました。日向は島津領となり、大友方の兵力は半減します。",
         "clanEffects": {
@@ -2491,7 +2841,8 @@
       "title": "鳥取城の渇え殺し",
       "desc": "天正九年、羽柴秀吉は因幡の米を高値で買い占めたうえで鳥取城を囲んだ。四か月の兵糧攻めで城内は飢えに苦しみ、十月、城将吉川経家は城兵の助命と引き換えに切腹して城を開いた。",
       "requiresClans": [
-        "oda"
+        "oda",
+        "mori"
       ],
       "onlyFrom": [
         "mori",
@@ -2540,7 +2891,8 @@
         },
         "message": "武田氏が滅亡し、甲斐・信濃が織田領に、駿河が徳川領となりました！",
         "killOfficerIds": [
-          "off_takeda_katsuyori"
+          "off_takeda_katsuyori",
+          "off_succ2_takeda_1567"
         ]
       }
     },
@@ -2585,7 +2937,7 @@
       "id": "evt_1582_honnouji_yamazaki",
       "scenarioId": "*",
       "year": 1582,
-      "season": "秋",
+      "season": "夏",
       "title": "本能寺の変・魔王落命と天下の分裂",
       "desc": "『敵は本能寺にあり！』明智光秀の謀叛により織田信長・信忠父子が落命。羽柴秀吉は中国大返しで畿内へ引き返す。光秀は山城・丹波・丹後・南近江を押さえて秀吉と対峙し、織田家の巨領は秀吉・勝家・信雄・信孝・家康の間で揺れ動いた！",
       "isHonnouji": true,
@@ -2626,6 +2978,159 @@
           "kozuke": "hojo"
         },
         "message": "織田信長公落命！天下は羽柴秀吉、柴田勝家、徳川家康ら後継勢力の割拠へ突入しました！"
+      },
+      "onlyFrom": [
+        "oda",
+        "toyotomi",
+        "shibata",
+        "tokugawa",
+        "akechi",
+        "takeda"
+      ],
+      "rules": {
+        "neverNoop": true,
+        "setFlagOnPrereqSkip": "honnoujiAverted",
+        "setFlagOnReject": "honnoujiAverted",
+        "linkedChoice": {
+          "choiceId": "honnoji"
+        },
+        "succession": {
+          "deadOfficerIds": [
+            "off_oda_nobunaga",
+            "off_oda_nobutada"
+          ],
+          "formerClan": "oda",
+          "minTroops": 3000,
+          "territory": {
+            "yamashiro": "akechi",
+            "tamba": "akechi",
+            "tango": "akechi",
+            "south_omi": "akechi",
+            "harima": "toyotomi",
+            "settsu": "toyotomi",
+            "kawachi": "toyotomi",
+            "izumi": "toyotomi",
+            "yamato": "toyotomi",
+            "tajima": "toyotomi",
+            "inaba": "toyotomi",
+            "awaji": "toyotomi",
+            "echizen": "shibata",
+            "kaga": "shibata",
+            "noto": "shibata",
+            "north_omi": "toyotomi",
+            "wakasa": "shibata",
+            "hida": "shibata",
+            "owari": "oda",
+            "mino": "oda",
+            "ise": "oda",
+            "shima": "oda",
+            "iga": "oda",
+            "kai": "tokugawa",
+            "south_shinano": "tokugawa",
+            "north_shinano": "sanada",
+            "kozuke": "hojo"
+          },
+          "successors": [
+            {
+              "clanId": "toyotomi",
+              "officerIds": [
+                "off_toyotomi_hideyoshi"
+              ]
+            },
+            {
+              "clanId": "akechi",
+              "officerIds": [
+                "off_akechi_mitsuhide"
+              ]
+            },
+            {
+              "clanId": "shibata",
+              "officerIds": [
+                "off_shibata_katsuie"
+              ]
+            },
+            {
+              "clanId": "oda",
+              "officerIds": [
+                "off_oda_nobukatsu"
+              ],
+              "houseHeir": true
+            }
+          ],
+          "retainers": [
+            {
+              "clanId": "toyotomi",
+              "officerIds": [
+                "off_toyotomi_hideyoshi",
+                "off_toyotomi_hidenaga",
+                "off_toyotomi_hidetsugu",
+                "off_kuroda_kanbei",
+                "off_kuroda_nagamasa",
+                "off_takenaka_hanbei",
+                "off_ishida_mitsunari",
+                "off_otani_yoshitsugu",
+                "off_fukushima_masanori",
+                "off_kato_kiyomasa",
+                "off_hachisuka_koroku",
+                "off_asano_nagamasa",
+                "off_yamauchi_kazutoyo",
+                "off_kato_yoshiaki",
+                "off_wakisaka_yasuharu",
+                "off_katagiri_katsumoto",
+                "off_sengoku_hidehisa",
+                "off_hori_hidemasa",
+                "off_dm_ukita_1582",
+                "off_konishi_yukinaga",
+                "off_ono_harunaga"
+              ]
+            },
+            {
+              "clanId": "akechi",
+              "officerIds": [
+                "off_akechi_mitsuhide",
+                "off_jd_018"
+              ]
+            },
+            {
+              "clanId": "shibata",
+              "officerIds": [
+                "off_shibata_katsuie",
+                "off_maeda_toshiie",
+                "off_sassa_narimasa",
+                "off_sakuma_morimasa",
+                "off_kanamori_nagachika"
+              ]
+            }
+          ],
+          "successorOptions": [
+            {
+              "clanId": "toyotomi",
+              "name": "羽柴秀吉",
+              "title": "中国大返し・山崎の戦い",
+              "desc": "備中高松から電撃の中国大返し！光秀を討ち信長の後継者として天下統一を目指す。"
+            },
+            {
+              "clanId": "akechi",
+              "name": "明智光秀",
+              "title": "敵は本能寺にあり",
+              "desc": "本能寺の変を断行！山崎の決戦に勝利して三日天下の汚名を雪ぎ、新たな武家幕府を築く。"
+            },
+            {
+              "clanId": "shibata",
+              "name": "柴田勝家",
+              "title": "織田家筆頭宿老の覚悟",
+              "desc": "越前北ノ庄城より号令！筆頭宿老として不届き者を征伐し、織田家臣団の頂点に立つ。"
+            },
+            {
+              "clanId": "oda",
+              "name": "織田信雄",
+              "title": "織田家正統の継承",
+              "desc": "織田家の嫡流として尾張・美濃の遺領を固守し、徳川と同盟して天下の正統を守る。"
+            }
+          ],
+          "log": "【天下動乱・跡継ぎ勢力分裂】織田信長公の落命に伴い、羽柴・明智・柴田・織田信雄の各後継大名に諸将の所属先が再編されました！",
+          "playerLog": "織田信長公落命。天下は分裂し後継勢力の割拠へ突入！"
+        }
       }
     },
     {
@@ -2649,6 +3154,21 @@
           "south_omi": "toyotomi"
         },
         "message": "山崎の戦いで明智光秀が討ち死にし、明智家は滅亡しました。山城・丹波・丹後・南近江は羽柴秀吉の領となりました。"
+      },
+      "rules": {
+        "neverNoop": true,
+        "skipWhenFlag": "honnoujiAverted",
+        "clanCollapse": {
+          "from": "akechi",
+          "to": "toyotomi",
+          "killOfficerIds": [
+            "off_akechi_mitsuhide"
+          ],
+          "minTroops": 3000
+        },
+        "acceptEffectLines": [
+          "明智光秀が討ち死にし、明智家は滅亡する"
+        ]
       }
     },
     {
@@ -2674,6 +3194,9 @@
         "killOfficerIds": [
           "off_shibata_katsuie"
         ]
+      },
+      "rules": {
+        "skipWhenFlag": "honnoujiAverted"
       }
     },
     {
@@ -2692,17 +3215,19 @@
       ],
       "changes": {
         "territory": {
-          "higo": "shimazu",
-          "chikugo": "shimazu"
+          "chikugo": "shimazu",
+          "higo_kumamoto": "shimazu",
+          "higo_hitoyoshi": "shimazu"
         },
         "killOfficerIds": [
           "off_ryuzoji_takanobu",
-          "off_jd_025"
+          "off_jd_025",
+          "off_eriguchi_nobutsune"
         ],
         "troopShock": {
           "ryuzoji": 0.5
         },
-        "message": "沖田畷で龍造寺隆信と四天王の成松信勝が討ち死にし、肥後・筑後は島津の支配に入りました。",
+        "message": "沖田畷で龍造寺隆信と四天王の成松信勝・江里口信常らが討ち死にし、肥後・筑後は島津の支配に入りました。",
         "alliances": [
           {
             "a": "shimazu",
@@ -2724,10 +3249,42 @@
         "territory": {
           "awa_shikoku": "hachisuka",
           "sanuki": "toyotomi",
-          "iyo": "toyotomi",
-          "tosa": "chosokabe"
+          "iyo": "toyotomi"
         },
         "message": "長宗我部元親が降伏！阿波・讃岐・伊予が豊臣政権に割譲され、土佐一国に減封されました。"
+      },
+      "requiresClans": [
+        "chosokabe",
+        "toyotomi"
+      ],
+      "onlyFrom": [
+        "chosokabe"
+      ]
+    },
+    {
+      "id": "evt_1589_suriagehara",
+      "scenarioId": "*",
+      "year": 1589,
+      "season": "夏",
+      "title": "摺上原の戦い・伊達政宗の南奥州制覇",
+      "desc": "天正十七年六月、伊達政宗は二万三千の兵を率いて会津へ攻め入り、磐梯山麓の摺上原で蘆名義広の軍一万六千と激突した。蘆名方の猪苗代盛国はすでに伊達へ寝返っており、風向きが変わると蘆名軍は総崩れとなって日橋川で多くが溺れた。義広は黒川城を捨てて常陸の佐竹氏のもとへ逃れ、名門蘆名氏は滅亡した。政宗は黒川城に入り、二本松・須賀川・白河・石川・岩城の諸氏も次々と伊達に服して、南奥州の大半が伊達の版図となった。",
+      "requiresClans": [
+        "date",
+        "ashina"
+      ],
+      "changes": {
+        "territory": {
+          "yonezawa_date": "date",
+          "rikuzen": "date",
+          "iwashiro": "date",
+          "tamura": "date",
+          "iwaki": "date",
+          "shirakawa": "date"
+        },
+        "troopShock": {
+          "ashina": 0.5
+        },
+        "message": "摺上原で蘆名軍が総崩れとなり、蘆名義広は常陸へ落ち延びました。伊達政宗は黒川城に入り、米沢・伊達、陸前、岩代、田村、磐城、白河を治める南奥州の覇者となりました。"
       }
     },
     {
@@ -2749,13 +3306,22 @@
           "totomi": "toyotomi",
           "mikawa": "toyotomi",
           "kai": "toyotomi",
-          "south_shinano": "toyotomi"
+          "south_shinano": "toyotomi",
+          "koga": "tokugawa"
         },
         "message": "後北条氏が滅亡して豊臣秀吉が天下統一を達成！徳川家康は関東へ国替えとなりました！",
         "killOfficerIds": [
           "off_hojo_ujimasa"
         ]
-      }
+      },
+      "requiresClans": [
+        "hojo",
+        "toyotomi"
+      ],
+      "onlyFrom": [
+        "hojo",
+        "tokugawa"
+      ]
     },
     {
       "id": "evt_1591_kunohe_rebellion",
@@ -2763,13 +3329,9 @@
       "year": 1591,
       "season": "夏",
       "title": "九戸政実の乱",
-      "desc": "豊臣秀吉の奥州仕置に反発した九戸政実が、陸奥九戸城で五千の精鋭とともに蜂起した。史実通り効果を適用すれば蒲生氏郷・浅野長政らの仕置軍が九戸城を落とし、乱は鎮圧されて陸奥・陸中は南部信直の支配に戻る。史実を適用しなければ、九戸政実が仕置軍を撃退し、奥州独立を果たす。",
+      "desc": "豊臣秀吉の奥州仕置に反発した九戸政実が、陸奥九戸城で五千の精鋭とともに蜂起した。史実通り効果を適用すれば蒲生氏郷・浅野長政らの仕置軍が九戸城を落として乱は鎮圧される。史実を適用しなければ、九戸政実が仕置軍を撃退し、奥州独立を果たす。",
       "changes": {
-        "territory": {
-          "mutsu": "nanbu",
-          "rikuchu": "nanbu"
-        },
-        "message": "九戸政実の乱は奥州仕置軍に鎮圧され、陸奥・陸中は南部信直の支配へ戻りました！",
+        "message": "九戸政実の乱は奥州仕置軍に鎮圧されました！",
         "killOfficerIds": [
           "off_kunohe_masazane"
         ]
@@ -2780,6 +3342,15 @@
           "rikuchu": "kunohe"
         },
         "message": "【九戸政実の乱 成功】九戸政実が仕置軍を撃退し、陸奥・陸中を掌握して奥州独立を果たしました！"
+      },
+      "rules": {
+        "linkedChoice": {
+          "choiceId": "kunohe_rebellion"
+        },
+        "rebellion": {
+          "choiceId": "kunohe_rebellion",
+          "successEventId": "evt_1591_kunohe_victory_if"
+        }
       }
     },
     {
@@ -2795,8 +3366,6 @@
           "north_omi": "ii",
           "mino": "tokugawa",
           "owari": "tokugawa",
-          "settsu": "tokugawa",
-          "kawachi": "tokugawa",
           "yamashiro": "tokugawa",
           "chikuzen": "kuroda"
         },
@@ -2804,6 +3373,23 @@
         "killOfficerIds": [
           "off_ishida_mitsunari"
         ]
+      },
+      "requiresClans": [
+        "tokugawa"
+      ],
+      "onlyFrom": [
+        "ishida",
+        "toyotomi",
+        "oda",
+        "ukita",
+        "kobayakawa"
+      ],
+      "rules": {
+        "linkedChoice": {
+          "choiceId": "sekigahara",
+          "year": 1600,
+          "season": "秋"
+        }
       }
     },
     {
@@ -2822,9 +3408,17 @@
         "message": "豊臣家が滅亡し、大坂城周辺が徳川幕府の直轄天領となりました！",
         "killOfficerIds": [
           "off_dm_toyotomi_1600",
-          "off_yododono"
+          "off_yododono",
+          "off_sanada_yukimura"
         ]
-      }
+      },
+      "requiresClans": [
+        "toyotomi",
+        "tokugawa"
+      ],
+      "onlyFrom": [
+        "toyotomi"
+      ]
     },
     {
       "id": "evt_1637_shimabara_outbreak",
@@ -2835,9 +3429,21 @@
       "desc": "肥前島原藩主・松倉勝家と肥後唐津藩主・寺沢堅高の苛酷を極める年貢取り立てとキリシタン弾圧に対し、島原・天草の領民・旧小西有馬遺臣ら三万七千が蜂起！16歳のカリスマ・天草四郎時貞を総大将に戴き、廃城となっていた原城に立て籠もって幕府へ反旗を翻した！九州全土が騒乱の渦に巻き込まれる！",
       "changes": {
         "territory": {
-          "hizen": "amakusa"
+          "shimabara": "amakusa"
         },
-        "message": "肥前島原にて三万七千の民衆・キリシタンが蜂起！天草四郎時貞率いる一揆軍が肥前（原城）を掌握しました！"
+        "message": "肥前島原にて三万七千の民衆・キリシタンが蜂起！天草四郎時貞率いる一揆軍が島原（原城）を掌握しました！"
+      },
+      "onlyFrom": [
+        "tokugawa",
+        "arima",
+        "nabeshima"
+      ],
+      "rules": {
+        "linkedChoice": {
+          "choiceId": "shimabara_rebellion",
+          "year": 1637,
+          "season": "冬"
+        }
       }
     },
     {
@@ -2850,8 +3456,8 @@
       "forced": true,
       "changes": {
         "famine": {
-          "troopRate": 0.6,
-          "riceRate": 0.5
+          "troopRate": 0.8,
+          "riceRate": 0.6
         },
         "message": "寛永の大飢饉で、諸国の兵力と兵糧が大きく減りました。"
       }
@@ -2864,10 +3470,7 @@
       "title": "由比正雪の乱（慶安の変）",
       "desc": "軍学者・由比正雪と丸橋忠弥が、家光薨去に乗じて幕府転覆を謀った。史実通り効果を適用すれば老中・松平信綱が一味を捕縛し、乱は鎮圧される。史実を適用しなければ、丸橋忠弥の江戸城夜襲が成功し、正雪が江戸・駿河・相模を押さえて浪人政権を樹立する。",
       "changes": {
-        "territory": {
-          "musashi": "tokugawa",
-          "suruga": "tokugawa"
-        },
+        "territory": {},
         "message": "慶安の変は未然に鎮圧され、武蔵・駿河は幕府の天領支配のままです！",
         "killOfficerIds": [
           "off_edo_yui_1605_0",
@@ -2881,21 +3484,38 @@
           "sagami": "yui"
         },
         "message": "【由比正雪の乱 成功】丸橋忠弥が江戸城を制圧し、由比正雪が武蔵・駿河・相模を掌握しました！"
+      },
+      "rules": {
+        "linkedChoice": {
+          "choiceId": "keian_yui_rebellion",
+          "year": 1651,
+          "season": "秋"
+        },
+        "rebellion": {
+          "choiceId": "keian_yui_rebellion",
+          "successEventId": "evt_1651_keian_success_if"
+        }
       }
     },
     {
       "id": "evt_1702_ako_raid",
       "scenarioId": "*",
       "year": 1702,
-      "season": "春",
+      "season": "冬",
       "title": "元禄赤穂事件・吉良邸討ち入りと播磨天領化",
       "desc": "大石内蔵助良雄率いる赤穂義士四十七名が本所吉良邸に乱入！亡君・浅野内匠頭の無念を晴らし吉良上野介を討ち取った。浅野家改易後の播磨赤穂藩領は幕府天領および譜代支配として編入された！",
       "changes": {
         "territory": {
           "harima": "tokugawa"
         },
-        "message": "元禄赤穂事件の結着により、播磨赤穂が幕府天領・譜代支配に確定しました！"
-      }
+        "message": "元禄赤穂事件の結着により、播磨赤穂が幕府天領・譜代支配に確定しました！",
+        "killOfficerIds": [
+          "off_kira_yoshihisa"
+        ]
+      },
+      "onlyFrom": [
+        "ako_ronin"
+      ]
     },
     {
       "id": "evt_1721_meyasubako",
@@ -2905,13 +3525,21 @@
       "title": "享保の改革・目安箱設置と天領新田開発",
       "desc": "8代将軍徳川吉宗が評定所前に『目安箱』を設置し、町奉行・大岡越前忠相を登用。全国の幕府直轄地で大規模な新田開発・治水工事を断行し、米価調整と幕府財政の黒字化を成し遂げた！",
       "changes": {
-        "territory": {
-          "musashi": "tokugawa",
-          "echigo": "tokugawa",
-          "yamashiro": "tokugawa"
+        "message": "享保の改革により全国天領の新田開発が進み、幕府直轄地が安定強化されました！",
+        "clanEffects": {
+          "tokugawa": {
+            "orderDelta": 10
+          }
         },
-        "message": "享保の改革により全国天領の新田開発が進み、幕府直轄地が安定強化されました！"
-      }
+        "clanResources": {
+          "tokugawa": {
+            "rice": 3000
+          }
+        }
+      },
+      "requiresClans": [
+        "tokugawa"
+      ]
     },
     {
       "id": "evt_1732_kyoho_famine",
@@ -2923,8 +3551,8 @@
       "forced": true,
       "changes": {
         "famine": {
-          "troopRate": 0.65,
-          "riceRate": 0.45
+          "troopRate": 0.8,
+          "riceRate": 0.6
         },
         "message": "享保の大飢饉で、諸国の兵力と兵糧が大きく減りました。"
       }
@@ -2939,8 +3567,8 @@
       "forced": true,
       "changes": {
         "famine": {
-          "troopRate": 0.5,
-          "riceRate": 0.4
+          "troopRate": 0.75,
+          "riceRate": 0.55
         },
         "message": "天明の大飢饉で、諸国の兵力と兵糧が大きく減りました。"
       }
@@ -2953,13 +3581,16 @@
       "title": "寛政の改革・棄捐令発布と直轄領統制",
       "desc": "白河藩主・松平定信が老中首座に就任し寛政の改革を断行！旗本・御家人の借金を免除する『棄捐令』を発布し、昌平坂学問所で朱子学を奨励。白河・江戸・東海道の幕府支配基盤を再構築した！",
       "changes": {
-        "territory": {
-          "musashi": "tokugawa",
-          "iwaki": "tokugawa",
-          "totomi": "tokugawa"
-        },
-        "message": "寛政の改革が推進され、親藩・譜代大名による幕政中枢支配が再編されました！"
-      }
+        "message": "寛政の改革が推進され、親藩・譜代大名による幕政中枢支配が再編されました！",
+        "clanEffects": {
+          "tokugawa": {
+            "orderDelta": 10
+          }
+        }
+      },
+      "requiresClans": [
+        "tokugawa"
+      ]
     },
     {
       "id": "evt_1836_tenpo_famine",
@@ -2971,8 +3602,8 @@
       "forced": true,
       "changes": {
         "famine": {
-          "troopRate": 0.55,
-          "riceRate": 0.45
+          "troopRate": 0.75,
+          "riceRate": 0.55
         },
         "message": "天保の大飢饉で、諸国の兵力と兵糧が大きく減りました。"
       }
@@ -2985,8 +3616,15 @@
       "title": "大塩平八郎の乱・大坂蜂起",
       "desc": "天保八年二月、元与力・大塩平八郎が門人と貧民を率いて大坂で挙兵した。町奉行所を焼き打ちしたが、史実では一日で鎮圧され、大塩は自刃した。史実を適用すれば乱は失敗して現状維持。適用しなければ大塩勢が大坂城を解放する。",
       "changes": {
-        "territory": {},
-        "message": "大塩の乱は一日で鎮圧され、摂津・河内・和泉は幕府支配のままです。"
+        "territory": {
+          "settsu": "tokugawa",
+          "kawachi": "tokugawa",
+          "izumi": "tokugawa"
+        },
+        "message": "大塩の乱は一日で鎮圧され、摂津・河内・和泉は幕府支配のままです。",
+        "killOfficerIds": [
+          "off_edo_oshio_1793_8"
+        ]
       },
       "onReject": {
         "territory": {
@@ -2995,6 +3633,21 @@
           "izumi": "oshio"
         },
         "message": "【大塩の乱 大勝利】「救民」の旗印のもと大坂城を完全解放！摂津・河内・和泉を掌握しました！"
+      },
+      "onlyFrom": [
+        "oshio"
+      ],
+      "rules": {
+        "neverNoop": true,
+        "playerRejectBonus": {
+          "clanId": "oshio",
+          "gold": 2500,
+          "rice": 5000,
+          "previewLines": [
+            "摂津・河内・和泉が大塩勢のものになる",
+            "兵糧 +5,000、金 +2,500"
+          ]
+        }
       }
     },
     {
@@ -3006,13 +3659,19 @@
       "desc": "天保八年、国学者・生田万が大塩の義挙に呼応して越後柏崎で挙兵した。史実では鎮圧され生田は自刃した。史実を適用すれば乱は失敗して現状維持。適用しなければ蜂起勢が越後を掌握する。",
       "changes": {
         "territory": {},
-        "message": "生田万の乱は鎮圧され、越後は幕府・諸藩の支配のままです。"
+        "message": "生田万の乱は鎮圧され、越後は幕府・諸藩の支配のままです。",
+        "killOfficerIds": [
+          "off_ikuta_yorozu"
+        ]
       },
       "onReject": {
         "territory": {
           "echigo": "oshio"
         },
         "message": "【生田万の乱 成功】越後柏崎を制圧し、北越の民衆救済拠点を確立しました！"
+      },
+      "rules": {
+        "neverNoop": true
       }
     },
     {
@@ -3023,13 +3682,17 @@
       "title": "ペリー来航・黒船ショックとお台場築造",
       "desc": "『泰平の眠りを覚ます上喜撰』アメリカ海軍ペリー提督率いる黒船四隻が浦賀沖に出現！幕府は海防令を発布し、江川英龍にお台場砲台の築造を命令。相模・伊豆・武蔵の江戸湾防備が急ピッチで進められた！",
       "changes": {
-        "territory": {
-          "musashi": "tokugawa",
-          "sagami": "tokugawa",
-          "izu": "tokugawa"
-        },
-        "message": "黒船来航により幕府は江戸湾要塞化を断行、直轄防衛態勢を構築しました！"
-      }
+        "message": "黒船来航により幕府は江戸湾要塞化を断行、直轄防衛態勢を構築しました！",
+        "clanEffects": {
+          "tokugawa": {
+            "moraleDelta": -5,
+            "defenseDelta": 10
+          }
+        }
+      },
+      "requiresClans": [
+        "tokugawa"
+      ]
     },
     {
       "id": "evt_1860_sakuradamon",
@@ -3039,14 +3702,16 @@
       "title": "桜田門外の変・大老井伊直弼暗殺",
       "desc": "安政の大獄で尊攘派を弾圧した大老・井伊直弼の行列が、雪の桜田門外で水戸・薩摩浪士十八名に襲撃され直弼は落命！彦根藩は衝撃に包まれ、幕府の独裁権力は致命的な打撃を受けた！",
       "changes": {
-        "territory": {
-          "musashi": "tokugawa",
-          "north_omi": "ii"
-        },
         "message": "大老井伊直弼が暗殺され、幕府の権威が失墜し尊王攘夷派が各地で台頭しました！",
         "killOfficerIds": [
           "off_edo_ii_1815_143"
-        ]
+        ],
+        "clanEffects": {
+          "tokugawa": {
+            "moraleDelta": -10,
+            "orderDelta": -5
+          }
+        }
       }
     },
     {
@@ -3065,6 +3730,9 @@
           "yamato": "nakayama"
         },
         "message": "【天誅組の変 成功】大和国が解放され、尊王攘夷義勇軍の大和拠点が確立されました！"
+      },
+      "rules": {
+        "neverNoop": true
       }
     },
     {
@@ -3083,6 +3751,9 @@
           "tajima": "hirano"
         },
         "message": "【生野の変 成功】生野銀山を掌握し、巨額の銀資金と農兵隊を確保しました！"
+      },
+      "rules": {
+        "neverNoop": true
       }
     },
     {
@@ -3103,7 +3774,7 @@
           "off_kunishi_chikasuke"
         ],
         "troopShock": {
-          "mori": 0.75
+          "mori": 0.9
         },
         "message": "長州藩は益田・国司・福原の三家老に切腹を命じて恭順し、征長軍は戦わずに兵を引きました。",
         "clanEffects": {
@@ -3121,11 +3792,7 @@
       "title": "水戸天狗党の乱",
       "desc": "武田耕雲斎・藤田小四郎率いる天狗党が筑波山で挙兵し、雪の中山道を西上して越前敦賀に達した。史実通り効果を適用すれば諸藩の追討軍が敦賀で包囲し、乱は鎮圧される。史実を適用しなければ、天狗党が包囲を突破して近江へ進出し、尊皇の主導権を握る。",
       "changes": {
-        "territory": {
-          "north_omi": "ii",
-          "south_omi": "tokugawa",
-          "hitachi": "mito"
-        },
+        "territory": {},
         "message": "天狗党の乱は越前敦賀で鎮圧されました。近江は井伊家・幕府の支配のまま、常陸は水戸藩の領です！"
       },
       "onReject": {
@@ -3135,6 +3802,15 @@
           "hitachi": "mito"
         },
         "message": "【天狗党の乱 成功】天狗党が敦賀の包囲を突破し、近江へ進出して尊皇の主導権を握りました！"
+      },
+      "rules": {
+        "linkedChoice": {
+          "choiceId": "tenguto_rebellion"
+        },
+        "rebellion": {
+          "choiceId": "tenguto_rebellion",
+          "successEventId": "evt_1864_tenguto_success_if"
+        }
       }
     },
     {
@@ -3181,13 +3857,20 @@
       "desc": "幕府軍十万による長州征伐に対し、高杉晋作の奇兵隊と大村益次郎の洋式軍備が芸州口・石州口・小倉口で幕府軍を連破！小倉城は自焼開城し、長州藩が山陽・山陰・北九州で圧倒的勝利を収めた！",
       "changes": {
         "territory": {
-          "suo": "mori",
-          "nagato": "mori",
           "buzen": "mori",
           "iwami": "mori"
         },
         "message": "長州藩が四境戦争で幕府軍を壊滅させ、周防・長門・豊前・石見を掌握しました！"
-      }
+      },
+      "requiresClans": [
+        "mori",
+        "tokugawa"
+      ],
+      "onlyFrom": [
+        "tokugawa",
+        "fukuoka_kuroda",
+        "ogasawara"
+      ]
     },
     {
       "id": "evt_1868_toba_fushimi",
@@ -3205,6 +3888,19 @@
           "yamato": "meiji"
         },
         "message": "鳥羽・伏見の戦いで新政府軍が大勝利し、近畿全土が明治新政府の支配下に入りました！"
+      },
+      "requiresClans": [
+        "tokugawa"
+      ],
+      "onlyFrom": [
+        "tokugawa",
+        "aizu",
+        "kuwana"
+      ],
+      "rules": {
+        "linkedChoice": {
+          "choiceId": "tobafushimi"
+        }
       }
     },
     {
@@ -3221,7 +3917,13 @@
           "suruga": "tokugawa"
         },
         "message": "江戸城が無血開城され、武蔵・相模が新政府領となり徳川家は駿府へ移封されました！"
-      }
+      },
+      "requiresClans": [
+        "tokugawa"
+      ],
+      "onlyFrom": [
+        "tokugawa"
+      ]
     },
     {
       "id": "evt_1868_aizu_surrender",
@@ -3235,10 +3937,28 @@
           "iwashiro": "meiji",
           "iwaki": "meiji",
           "echigo": "meiji",
-          "rikuzen": "meiji"
+          "rikuzen": "meiji",
+          "yonezawa_date": "meiji",
+          "osaki": "meiji",
+          "kasai": "meiji",
+          "soma": "meiji",
+          "tamura": "meiji",
+          "shirakawa": "meiji"
         },
         "message": "会津若松城が開城し、東北全土が明治新政府軍に平定されました！"
-      }
+      },
+      "requiresClans": [
+        "aizu"
+      ],
+      "onlyFrom": [
+        "aizu",
+        "date",
+        "makino",
+        "tokugawa",
+        "uesugi",
+        "soma",
+        "akita"
+      ]
     },
     {
       "id": "evt_1868_enomoto_ezo",
@@ -3252,7 +3972,10 @@
           "ezo": "goryokaku"
         },
         "message": "榎本武揚が蝦夷地を占拠。松前藩は津軽へ退避し、五稜郭は旧幕府軍の拠点となりました。有栖川宮熾仁親王は京都の新政府に留まります。"
-      }
+      },
+      "onlyFrom": [
+        "kakizaki"
+      ]
     },
     {
       "id": "evt_1869_goryokaku_fall",
@@ -3269,7 +3992,14 @@
         "killOfficerIds": [
           "off_hijikata_toshizo"
         ]
-      }
+      },
+      "requiresClans": [
+        "goryokaku",
+        "meiji"
+      ],
+      "onlyFrom": [
+        "goryokaku"
+      ]
     },
     {
       "id": "evt_1877_seinan",
@@ -3285,7 +4015,14 @@
           "hyuga": "saigo_gun"
         },
         "message": "西郷隆盛が鹿児島で挙兵し、薩摩・大隅・日向を掌握して西南戦争が勃発しました！"
-      }
+      },
+      "requiresClans": [
+        "meiji"
+      ],
+      "onlyFrom": [
+        "meiji",
+        "shimazu"
+      ]
     },
     {
       "id": "evt_1877_seinan_fall",
@@ -3331,9 +4068,8 @@
         ],
         "provinceEffects": {
           "kazusa": {
-            "troops": 5000,
-            "orderDelta": 30,
-            "moraleDelta": 35
+            "orderDelta": 15,
+            "moraleDelta": 20
           },
           "sagami": {
             "orderDelta": -15
@@ -3388,8 +4124,8 @@
             "moraleDelta": 40
           },
           "yamato_court": {
-            "moraleDelta": -25,
-            "troopsRate": 0.7
+            "moraleDelta": -20,
+            "troopsRate": 0.9
           }
         }
       }
@@ -3403,8 +4139,6 @@
       "desc": "【物語】<br>北関東・毛野国や日高見の蝦夷をことごとく平定したヤマトタケルは、甲斐の酒折宮を経て信濃へ抜ける碓氷峠の頂に立った。<br>南の海をはるかに見下ろしたタケルは、あの走水の海で命を捧げて散った弟橘媛を偲び、深く三度ため息をついて『吾妻はや（我が妻よ……）』と悲痛の叫びをあげた。<br>タケルの勇武と誠心に打たれた東国の諸豪族は、ことごとく大和王権への恭順を誓った！<br><br>【歴史解説（この時代に何があったのか）】<br>東国を「あづま（吾妻・東）」と呼ぶ語源となった古事記屈指の感動的な名場面です。<br>また、甲斐の酒折宮では『新治 筑波を過ぎて 幾夜か寝つる』という日本最古の連歌（問答歌）が詠まれています。関東から甲信越、東北南部に及ぶ広大な地域が大和王権の版図に組み込まれ、前方後円墳が東国全域へと急速に波及していきました。",
       "changes": {
         "territory": {
-          "iwaki": "yamato_court",
-          "iwashiro": "yamato_court",
           "hitachi": "yamato_court"
         },
         "alliances": [
@@ -3422,6 +4156,9 @@
           },
           "emishi_east": {
             "orderDelta": 20
+          },
+          "keno": {
+            "moraleDelta": -15
           }
         },
         "clanResources": {
@@ -3449,16 +4186,16 @@
         },
         "clanEffects": {
           "yamatai": {
-            "moraleDelta": 30,
-            "defenseDelta": 15,
-            "orderDelta": 20
+            "moraleDelta": 20,
+            "defenseDelta": 10,
+            "orderDelta": 10
           }
         },
         "provinceEffects": {
           "chikuzen": {
-            "defenseDelta": 20,
-            "orderDelta": 25,
-            "troops": 6500
+            "defenseDelta": 15,
+            "orderDelta": 15,
+            "troopsRate": 1.3
           }
         },
         "message": "魏帝より金印紫綬と銅鏡百枚が授与され、邪馬台国に莫大な軍資金と兵糧がもたらされました！"
@@ -3479,7 +4216,7 @@
         "clanEffects": {
           "kuna": {
             "moraleDelta": 30,
-            "troopsRate": 1.25
+            "troopsRate": 1.15
           },
           "yamatai": {
             "moraleDelta": -20
@@ -3487,12 +4224,10 @@
         },
         "provinceEffects": {
           "chikugo": {
-            "troops": 5000,
-            "defenseDelta": 20
+            "defenseDelta": 10
           },
           "bungo": {
-            "troops": 4500,
-            "defenseDelta": 15
+            "defenseDelta": 10
           }
         },
         "message": "狗古智卑狗率いる狗奴国軍が強襲！筑後と豊後が狗奴国に奪われ、前線が迫りました！"
@@ -3527,8 +4262,8 @@
         ],
         "clanEffects": {
           "yamatai": {
-            "moraleDelta": 35,
-            "troopsRate": 1.3
+            "moraleDelta": 30,
+            "troopsRate": 1.15
           },
           "kuna": {
             "moraleDelta": -30,
@@ -3564,7 +4299,8 @@
       "desc": "【物語】<br>倭国を統一に導いた初代女王・卑弥呼が静かに落命した。径百余歩の巨大な墳丘（大冢）が築かれ、百余人の殉葬者が送られた。<br>その後、男王が立つも国中が服さず千余人が相殺し合う内乱が勃発。諸国は卑弥呼の宗女で十三歳の少女『壱与（イヨ／台与）』を共立して第二代女王に迎えた！<br>壱与の霊妙なる祈祷と難升米の補佐により倭国は再統合され、狗奴国の本拠・肥後もついに開城・恭順した！<br><br>【歴史解説（この時代に何があったのか）】<br>魏志倭人伝に記された邪馬台国のクライマックスです。<br>卑弥呼の墓『径百余歩の大冢』は、奈良県桜井市の箸墓古墳（全長約280m）や九州の巨大墳丘墓が候補に挙がっています。男王ではまとまらず少女壱与が共立されたことは、当時の倭国がシャーマン女王の宗教的権威によってのみ平和を保ち得たことを示しています。",
       "changes": {
         "territory": {
-          "higo": "yamatai"
+          "higo_kumamoto": "yamatai",
+          "higo_hitoyoshi": "yamatai"
         },
         "killOfficerIds": [
           "off_himiko"
@@ -3586,7 +4322,7 @@
             "rice": 4000
           }
         },
-        "message": "卑弥呼が昇天し壱与が女王に即位！肥後が邪馬台国の支配下に入り、狗奴国は服属しました！"
+        "message": "肥後が開城し、狗奴国は南九州へ後退しました！"
       }
     },
     {
@@ -3601,7 +4337,7 @@
           "yamato_court": {
             "moraleDelta": 25,
             "orderDelta": 20,
-            "attackDelta": 20
+            "troopsRate": 1.1
           }
         },
         "clanResources": {
@@ -3611,7 +4347,8 @@
           }
         },
         "message": "倭姫命より草薙剣と火打石を拝受！ヤマトタケルの東征軍が出陣しました！"
-      }
+      },
+      "season": "春"
     },
     {
       "id": "evt_240y_gold_seal_makimuku",
@@ -3629,16 +4366,14 @@
         },
         "clanEffects": {
           "yamatai": {
-            "moraleDelta": 30,
-            "defenseDelta": 15,
-            "orderDelta": 20
+            "moraleDelta": 20,
+            "orderDelta": 10
           }
         },
         "provinceEffects": {
           "yamato": {
-            "defenseDelta": 25,
-            "orderDelta": 30,
-            "troops": 7000
+            "defenseDelta": 15,
+            "orderDelta": 15
           }
         },
         "message": "魏帝より金印紫綬と銅鏡百枚が大和に授与され、莫大な軍資金と兵糧がもたらされました！"
@@ -3660,14 +4395,14 @@
         },
         "clanEffects": {
           "yamatai": {
-            "moraleDelta": 25,
-            "troopsRate": 1.15
+            "moraleDelta": 15
           }
         },
         "provinceEffects": {
           "yamato": {
             "defenseDelta": 15,
-            "orderDelta": 15
+            "orderDelta": 10,
+            "troopsRate": 1.1
           }
         },
         "message": "難升米が洛陽より凱旋！大陸の最新鉄器と軍制が大和軍にもたらされました！"
@@ -3683,23 +4418,18 @@
       "changes": {
         "clanEffects": {
           "yamatai": {
-            "orderDelta": 30,
-            "moraleDelta": 20
+            "orderDelta": 10
           }
         },
         "provinceEffects": {
           "yamato": {
-            "orderDelta": 30,
-            "defenseDelta": 20,
-            "troops": 5000
+            "orderDelta": 20
           },
           "kawachi": {
-            "orderDelta": 25,
-            "defenseDelta": 15
+            "orderDelta": 15
           },
           "yamashiro": {
-            "orderDelta": 25,
-            "defenseDelta": 15
+            "orderDelta": 15
           }
         },
         "message": "三輪山の祭祀が執り行われ疫病が平定！畿内諸国の治安と民忠が劇的に回復しました！"
@@ -3721,9 +4451,9 @@
         },
         "provinceEffects": {
           "chikuzen": {
-            "defenseDelta": 25,
-            "orderDelta": 25,
-            "troops": 6000
+            "defenseDelta": 20,
+            "orderDelta": 20,
+            "troopsRate": 1.2
           },
           "buzen": {
             "defenseDelta": 15,
@@ -3747,25 +4477,23 @@
       "changes": {
         "clanEffects": {
           "yamatai": {
-            "orderDelta": 25,
-            "troopsRate": 1.15
+            "orderDelta": 15
           }
         },
         "provinceEffects": {
           "owari": {
-            "defenseDelta": 15,
-            "orderDelta": 15
-          },
-          "kozuke": {
-            "defenseDelta": 15,
-            "orderDelta": 15
-          },
-          "echizen": {
-            "defenseDelta": 15,
             "orderDelta": 15
           }
         },
-        "message": "三角縁神獣鏡が全国の豪族へ下賜され、大和連合の結束と治安が大幅に向上しました！"
+        "message": "三角縁神獣鏡が全国の豪族へ下賜され、大和連合の結束と治安が大幅に向上しました！",
+        "alliances": [
+          {
+            "a": "yamatai",
+            "b": "keno",
+            "label": "銅鏡の盟",
+            "durationSeasons": 12
+          }
+        ]
       }
     },
     {
@@ -3778,27 +4506,22 @@
       "changes": {
         "clanEffects": {
           "yamatai": {
-            "moraleDelta": 30,
-            "orderDelta": 25,
-            "troopsRate": 1.2
+            "moraleDelta": 20,
+            "orderDelta": 10
           }
         },
         "provinceEffects": {
-          "echizen": {
-            "defenseDelta": 20,
-            "orderDelta": 20
-          },
           "owari": {
-            "defenseDelta": 20,
-            "orderDelta": 20
+            "defenseDelta": 15
           },
           "harima": {
-            "defenseDelta": 20,
-            "orderDelta": 20
+            "defenseDelta": 15
           },
           "tamba": {
-            "defenseDelta": 20,
-            "orderDelta": 20
+            "defenseDelta": 15
+          },
+          "echizen": {
+            "orderDelta": -15
           }
         },
         "message": "四道将軍が四方へ出陣！街道が整備され、各地の防備と秩序が飛躍的に高まりました！"
@@ -3812,14 +4535,10 @@
       "title": "狗奴国の怒濤進撃・筑前一大率の危機",
       "desc": "【物語】<br>女王の支配に服さぬ南九州の男王・卑弥弓呼と軍神・狗古智卑狗が肥後より蜂起！<br>豊後・筑後を瞬く間に制圧し、大和の出先機関である筑前・伊都国の『一大率』へと猛攻を仕掛けた！<br>一大率・伊都国王は決死の防戦を続けるが、前線は孤立の危機に陥る！<br><br>【歴史解説（この時代に何があったのか）】<br>魏志倭人伝に『女王国より以北、特に一大率を置き、諸国を検察せしむ』とある一大率は、大和王権が遠隔地の九州を統制するために置いた出先機関（太宰府の先駆）と解釈されます。狗奴国の反抗により、大和と大陸を結ぶ要衝が脅かされた緊迫の情勢です。",
       "changes": {
-        "territory": {
-          "chikugo": "kuna",
-          "bungo": "kuna"
-        },
         "clanEffects": {
           "kuna": {
             "moraleDelta": 30,
-            "troopsRate": 1.25
+            "troopsRate": 1.15
           },
           "yamatai": {
             "moraleDelta": -15
@@ -3827,8 +4546,9 @@
         },
         "provinceEffects": {
           "chikuzen": {
-            "defenseDelta": -15,
-            "orderDelta": -20
+            "defenseDelta": -20,
+            "orderDelta": -20,
+            "troopsRate": 0.8
           }
         },
         "message": "狗奴国軍が北伐を敢行！筑前一大率が包囲され、防衛線が脅かされています！"
@@ -3855,18 +4575,16 @@
       "changes": {
         "clanEffects": {
           "yamatai": {
-            "moraleDelta": 30,
-            "orderDelta": 20
+            "moraleDelta": 15,
+            "orderDelta": 10
           }
         },
         "provinceEffects": {
-          "yamato": {
-            "orderDelta": 25,
-            "defenseDelta": 20
-          },
           "yamashiro": {
-            "orderDelta": 25,
-            "defenseDelta": 15
+            "orderDelta": -10
+          },
+          "yamato": {
+            "orderDelta": 15
           }
         },
         "message": "百襲姫の神託により謀反を撃破！大和王権の求心力が決定的なものとなりました！"
@@ -3875,10 +4593,13 @@
         "message": "大和軍が慎重に防衛線を張り、反乱軍の侵入を水際で押し戻しました！",
         "clanEffects": {
           "yamatai": {
-            "orderDelta": 15
-          },
-          "kuna": {
-            "moraleDelta": -10
+            "orderDelta": -10
+          }
+        },
+        "provinceEffects": {
+          "yamashiro": {
+            "orderDelta": -20,
+            "defenseDelta": -10
           }
         }
       }
@@ -3899,23 +4620,18 @@
         },
         "clanEffects": {
           "yamatai": {
-            "orderDelta": 20,
-            "troopsRate": 1.15
+            "orderDelta": 10
           }
         },
         "provinceEffects": {
           "yamato": {
-            "defenseDelta": 20,
-            "orderDelta": 25,
-            "troops": 6000
+            "orderDelta": 15
           },
           "kawachi": {
-            "defenseDelta": 15,
-            "orderDelta": 15
+            "orderDelta": 10
           },
           "settsu": {
-            "defenseDelta": 15,
-            "orderDelta": 15
+            "orderDelta": 10
           }
         },
         "message": "纒向の巨大運河が開通！全国から物資と兵糧が都に集まり、国力が爆発的に向上しました！"
@@ -3938,8 +4654,8 @@
         ],
         "clanEffects": {
           "yamatai": {
-            "moraleDelta": 35,
-            "troopsRate": 1.3
+            "moraleDelta": 25,
+            "troopsRate": 1.1
           },
           "kuna": {
             "moraleDelta": -30,
@@ -3975,16 +4691,16 @@
       "desc": "【物語】<br>列島を束ねた初代女王・卑弥呼が静かに落命した。<br>大和桜井の地に『径百余歩の大冢』が築かれ、昼夜を分かたず人々が石を運び巨大なる箸墓古墳が完成した。<br>その後、後継をめぐる動揺を鎮めるため、卑弥呼の宗女で十三歳の少女『壹与』が女王に共立された！<br>壹与の澄み渡る祈祷により諸国は再び大和のもとに団結し、狗奴国の本拠・肥後もついに開城・恭順した！<br><br>【歴史解説（この時代に何があったのか）】<br>魏志倭人伝の『卑弥呼以て死す。大いに冢を作る、径百余歩、殉葬者奴婢百余人』。大和説の決定打とされるのが奈良県桜井市の「箸墓古墳（全長約280m）」です。後円部の直径約150m（＝当時の約百歩）が倭人伝の記述と完全に合致し、出土土器の実年代も3世紀中頃の卑弥呼没年と見事に重なります。",
       "changes": {
         "territory": {
-          "higo": "yamatai"
+          "higo_kumamoto": "yamatai",
+          "higo_hitoyoshi": "yamatai"
         },
         "killOfficerIds": [
           "off_himiko"
         ],
         "clanEffects": {
           "yamatai": {
-            "orderDelta": 35,
-            "moraleDelta": 30,
-            "troopsRate": 1.2
+            "orderDelta": 10,
+            "moraleDelta": 15
           },
           "kuna": {
             "troopsRate": 0.5,
@@ -3997,7 +4713,7 @@
             "rice": 5000
           }
         },
-        "message": "卑弥呼が昇天し箸墓古墳が完成！女王壹与が即位し、肥後が開城して狗奴国は服属しました！"
+        "message": "箸墓が築かれ壹与が共立！肥後が開城し、狗奴国は南へ後退しました！"
       }
     },
     {
@@ -4010,22 +4726,12 @@
       "changes": {
         "clanEffects": {
           "yamatai": {
-            "orderDelta": 35,
-            "moraleDelta": 30,
-            "defenseDelta": 20
+            "moraleDelta": 10
           }
         },
         "provinceEffects": {
           "yamato": {
-            "orderDelta": 35,
-            "defenseDelta": 25,
-            "troops": 7000
-          },
-          "kawachi": {
-            "orderDelta": 25
-          },
-          "yamashiro": {
-            "orderDelta": 25
+            "orderDelta": 15
           }
         },
         "message": "大坂山の石運びにより箸墓古墳の葺石が完成！神話の奇跡により大和の統治が神聖化されました！"
@@ -4047,9 +4753,8 @@
         },
         "clanEffects": {
           "yamatai": {
-            "moraleDelta": 40,
-            "orderDelta": 30,
-            "troopsRate": 1.25
+            "moraleDelta": 15,
+            "orderDelta": 10
           }
         },
         "provinceEffects": {
@@ -4064,8 +4769,1599 @@
         },
         "message": "女王壹与の使節が大陸より帰還！皇帝より絶対的盟主の公認を受け、天下統一が目前となりました！"
       }
+    },
+    {
+      "id": "evt_1457_choroku_no_hen",
+      "scenarioId": "1457",
+      "year": 1457,
+      "season": "冬",
+      "title": "長禄の変・後南朝壊滅と赤松家再興の胎動",
+      "desc": "【物語】<br>長禄元年（1457年）12月2日雪深き夜、赤松氏の遺臣・上月満吉・石見太郎左衛門ら三十余人が吉野奥地・川上郷の北山御所を急襲！<br>禁闕の変以来十四年間神璽を奉じていた後南朝の皇胤・自天王（尊秀王）と弟の忠義王を襲撃して討ち取り、南朝の象徴であった神璽を奪還した。<br>この軍功により、将軍足利義政と管領細川勝元は赤松満祐の遺児・赤松政則に加賀北半国守護を授け、嘉吉の乱で滅亡していた名門・赤松家の再興が公認された！<br><br>【歴史解説】<br>嘉吉の乱（1441年）で第6代将軍足利義教を暗殺して滅亡した赤松氏の遺臣たちは、主家再興を悲願として幕府の信任を得る機会を狙っていました。彼らは吉野山奥に潜伏していた後南朝を奇襲して神璽を奪い、翌長禄2年に朝廷へ返還。これにより幼少の赤松政則が加賀北半国守護として大名復帰を果たし、のち応仁の乱で播磨・備前・美作の旧領を実力で奪還する礎となりました。",
+      "changes": {
+        "territory": {
+          "kaga": "akamatsu"
+        },
+        "killOfficerIds": [
+          "off_jitenno_sonshu",
+          "off_chuyio_tadayoshi"
+        ],
+        "clanEffects": {
+          "akamatsu": {
+            "moraleDelta": 45,
+            "orderDelta": 35,
+            "troopsRate": 1.1
+          },
+          "yamana": {
+            "moraleDelta": -20
+          }
+        },
+        "clanResources": {
+          "akamatsu": {
+            "gold": 3000,
+            "rice": 4000
+          }
+        },
+        "message": "長禄の変により後南朝が壊滅！赤松遺臣が神璽を奪還し、赤松政則が加賀北半国守護として大名家に返り咲きました！"
+      },
+      "onReject": {
+        "message": "後南朝の忠臣たちが赤松遺臣の夜襲を返り討ち！自天王は神璽を守り抜き吉野深山で命脈を保ちました。",
+        "clanEffects": {
+          "akamatsu": {
+            "moraleDelta": -30
+          }
+        }
+      },
+      "requiresClans": [
+        "akamatsu"
+      ]
+    },
+    {
+      "id": "evt_1457_dokan_edo_kawagoe",
+      "scenarioId": "1457",
+      "year": 1458,
+      "season": "春",
+      "title": "太田道灌の江戸城・河越城築城と防衛線確立",
+      "desc": "【物語】<br>古河公方・足利成氏の猛威が関東を揺るがす中、扇谷上杉家の若き俊英・太田資長（道灌）とその父・道真は、武蔵の防衛体制を一新する大計を断行。<br>康正2年から長禄元年にかけて、武蔵の要衝である河越城、岩付城、そして日比谷入江を望む要害の地に『江戸城』を相次いで築城した！<br>道灌は自ら設計した三重の土塁と水堀を巡らし、水陸交通の結節点である江戸を拠点として坂東屈指の名城を完成。扇谷上杉家の勢力基盤を劇的に強化した！<br><br>【歴史解説】<br>享徳の乱において、古河公方の侵攻から武蔵・相模を防衛するため、扇谷上杉持朝の家宰であった太田道真・道灌父子が1457年に河越城・江戸城を築城しました。特に江戸城の築城は、後の徳川家康による江戸開府へと繋がる日本史上の大転換点となりました。",
+      "changes": {
+        "clanEffects": {
+          "ogigayatsu": {
+            "moraleDelta": 20,
+            "orderDelta": 15,
+            "troopsRate": 1.1
+          },
+          "ashikaga_koga": {
+            "moraleDelta": -15
+          }
+        },
+        "clanResources": {
+          "ogigayatsu": {
+            "gold": 2500,
+            "rice": 3000
+          }
+        },
+        "message": "太田道灌が江戸城・河越城を築城！扇谷上杉家の軍事力と防衛力が大幅に向上しました！",
+        "provinceEffects": {
+          "musashi": {
+            "defenseDelta": 30
+          }
+        }
+      },
+      "onReject": {
+        "message": "太田道灌の築城計画は在地国人衆の反発により規模縮小を余儀なくされました。",
+        "clanEffects": {
+          "ogigayatsu": {
+            "moraleDelta": 10
+          }
+        }
+      }
+    },
+    {
+      "id": "evt_1457_choroku_gassen",
+      "scenarioId": "1457",
+      "year": 1458,
+      "season": "夏",
+      "title": "越前長禄合戦・朝倉孝景の台頭と斯波家の動揺",
+      "desc": "【物語】<br>三管領筆頭・斯波武衛家の越前国において、親政を目指す若き守護・斯波義敏と、長年越前の実権を握る筆頭守護代・甲斐常治の間で決定的な亀裂が生じた。<br>長禄2年、義敏が近江から越前へ親征軍を進発させると、常治は同盟者である朝倉教景（孝景・敏景）とともに金ヶ崎城・府中にて迎え撃った！<br>朝倉孝景の神速の奇襲と智謀により義敏軍は各地で撃破され、義敏は京都へ逃亡。この長禄合戦の勝利により、陪臣に過ぎなかった朝倉孝景が越前の真の実力者として天下に名声を轟かせた！<br><br>【歴史解説】<br>長禄合戦（1458〜1459年）は、斯波武衛家の守護・斯波義敏と守護代・甲斐常治・朝倉孝景が戦った典型的な下剋上争乱です。この戦いで軍功を挙げた朝倉孝景は、やがて応仁の乱を通じて主家の斯波氏を追放し、戦国大名・越前朝倉氏の基礎を確立しました。",
+      "changes": {
+        "clanEffects": {
+          "shiba": {
+            "moraleDelta": -20
+          }
+        },
+        "clanResources": {
+          "asakura": {
+            "gold": 2000,
+            "rice": 2500
+          }
+        },
+        "message": "越前長禄合戦で朝倉孝景が主家・斯波義敏軍を撃破！越前の実権が朝倉氏へと大きく傾きました！",
+        "provinceEffects": {
+          "echizen": {
+            "orderDelta": -25,
+            "moraleDelta": -15
+          }
+        }
+      },
+      "onReject": {
+        "message": "斯波義敏が幕府軍の威光を背景に守護代勢力を力で押さえ込み、守護の直轄支配を辛うじて維持しました。",
+        "clanEffects": {
+          "shiba": {
+            "moraleDelta": 25
+          }
+        }
+      }
+    },
+    {
+      "id": "evt_tsugaru_tamenobu_rebellion_1571",
+      "scenarioId": "1570",
+      "year": 1571,
+      "season": "夏",
+      "title": "大浦為信の挙兵・石川城電撃強襲",
+      "desc": "元亀二年五月五日、大浦城主・大浦為信（津軽為信）は突如挙兵し、南部晴政の叔父にして津軽郡代・石川高信が守る石川城を急襲！石川高信は自刃し、大浦為信は南部氏からの完全な独立を宣言。大浦城を本拠として津軽統一戦への狼煙を上げた！",
+      "changes": {
+        "killOfficerIds": [
+          "off_succ2_nanbu_1495"
+        ],
+        "clanEffects": {
+          "tsugaru": {
+            "moraleDelta": 30,
+            "orderDelta": 20,
+            "troopsRate": 1.25
+          },
+          "nanbu": {
+            "moraleDelta": -20,
+            "orderDelta": -15
+          }
+        },
+        "clanResources": {
+          "tsugaru": {
+            "gold": 2500,
+            "rice": 3000
+          }
+        },
+        "message": "大浦為信（津軽為信）が石川城を急襲して津軽郡代・石川高信を自刃に追い込みました！大浦氏が南部氏より独立し、大浦城を拠点とする津軽統一の戦いが始まりました！",
+        "provinceEffects": {
+          "nishi_tsugaru": {
+            "defenseDelta": 15
+          }
+        }
+      },
+      "onReject": {
+        "message": "大浦為信の奇襲は石川城守備勢力の反撃により撃退され、大浦勢は独立の機を逸して撤退しました！",
+        "clanEffects": {
+          "nanbu": {
+            "moraleDelta": 20
+          },
+          "tsugaru": {
+            "moraleDelta": -25
+          }
+        }
+      }
+    },
+    {
+      "id": "evt_684_hakuho_quake",
+      "scenarioId": "*",
+      "year": 684,
+      "season": "冬",
+      "title": "【大地震】白鳳地震・土佐の田畑海に没す",
+      "desc": "【物語】<br>天武天皇十三年十月十四日（684年11月）、夜半に大地が激しく揺れ、諸国で官舎・寺社・百姓の家屋が倒壊した。土佐では田苑五十余万頃が海に沈み、大津波が沿岸を襲った。<br><br>【歴史解説（この時代に何があったのか）】<br>『日本書紀』に記録された、確実な史料で知られる最古の南海トラフ巨大地震とされます。伊予の道後温泉の湧出が止まり、土佐の田畑が沈降して海となったと記されています。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "tosa_kochi": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "tosa_nakamura": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "iyo": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "awa_shikoku": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kii_kichu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kinan_kumano": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "awaji": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "白鳳の大地震！土佐・伊予・阿波など南海道諸国の兵が失われ、城柵と治安が大きく損なわれました。"
+      }
+    },
+    {
+      "id": "evt_869_jogan_quake",
+      "scenarioId": "*",
+      "year": 869,
+      "season": "夏",
+      "title": "【大地震】貞観地震・陸奥の大津波",
+      "desc": "【物語】<br>貞観十一年五月二十六日（869年7月）、陸奥国で大地震が起こり、人々は立っていられず、多賀城の城郭・倉庫・門櫓・垣壁がことごとく崩れ落ちた。続いて押し寄せた大津波は城下に達し、溺死者は千人に及んだ。<br><br>【歴史解説（この時代に何があったのか）】<br>『日本三代実録』に詳しく記された巨大地震・津波です。仙台平野の津波堆積物の研究から、2011年の東北地方太平洋沖地震に匹敵する規模であった可能性が指摘されています。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "rikuzen": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "soma": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "iwaki": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kasai": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "rikuchu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "iwashiro": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "陸奥国の大地震と大津波！多賀城が崩れ、陸前・相馬・磐城など沿岸諸国の兵と治安が大打撃を受けました。"
+      }
+    },
+    {
+      "id": "evt_887_ninna_quake",
+      "scenarioId": "*",
+      "year": 887,
+      "season": "秋",
+      "title": "【大地震】仁和地震・五畿七道の大震",
+      "desc": "【物語】<br>仁和三年七月三十日（887年8月）、京の都を激震が襲い、官舎や民家が倒壊、圧死者多数。摂津では大津波が押し寄せ、五畿七道の諸国で被害が相次いだ。光孝天皇はこの直後に崩御された。<br><br>【歴史解説（この時代に何があったのか）】<br>『日本三代実録』に記録された、東海・南海の連動とも考えられる巨大地震です。摂津国の津波被害が特に大きく、八ヶ岳の山体崩壊もこの地震によるとする説があります。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "settsu": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "yamashiro": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kawachi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "izumi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kii_kichu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "awa_shikoku": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "tosa_kochi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "yamato": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "awaji": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "south_shinano": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "仁和の大地震！畿内・南海道諸国が倒壊と津波に見舞われ、摂津を中心に兵と治安が大きく損なわれました。"
+      }
+    },
+    {
+      "id": "evt_1096_eicho_quake",
+      "scenarioId": "*",
+      "year": 1096,
+      "season": "冬",
+      "title": "【大地震】永長地震・東海道の大津波",
+      "desc": "【物語】<br>嘉保三年十一月二十四日（1096年12月）、東海道沖を震源とする大地震が発生。駿河では寺社・民家が津波に流され、伊勢の安濃津も大津波に襲われた。京でも大極殿や東大寺の鐘が落ちるなど被害が出た。<br><br>【歴史解説（この時代に何があったのか）】<br>東海地震の系列とされる巨大地震で、この災異を受けて「永長」と改元されました。わずか二年余り後に康和地震（南海側）が続きます。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "suruga": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "totomi": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "ise": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "mikawa": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "izu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "owari": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "shima": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "yamashiro": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "永長の大地震！駿河・遠江・伊勢の沿岸が津波に洗われ、東海道諸国の兵と城柵が大きな被害を受けました。"
+      }
+    },
+    {
+      "id": "evt_1099_kowa_quake",
+      "scenarioId": "*",
+      "year": 1099,
+      "season": "春",
+      "title": "【大地震】康和地震・南海道の大震",
+      "desc": "【物語】<br>承徳三年正月二十四日（1099年2月）、畿内と南海道を大地震が襲った。大和の興福寺では大門や回廊が倒れ、土佐では田千余町が海に沈んだと伝わる。<br><br>【歴史解説（この時代に何があったのか）】<br>南海地震の系列と考えられる大地震で、翌月「康和」と改元されました（震源については異説もあります）。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "tosa_kochi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "tosa_nakamura": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "yamato": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "settsu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "awa_shikoku": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kii_kichu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "康和の大地震！土佐の田畑が沈み、大和・摂津でも寺院や家屋が倒壊しました。"
+      }
+    },
+    {
+      "id": "evt_1185_bunji_quake",
+      "scenarioId": "*",
+      "year": 1185,
+      "season": "秋",
+      "title": "【大地震】文治地震・都の大地震",
+      "desc": "【物語】<br>元暦二年七月九日（1185年8月）、平家滅亡の直後、京都を未曽有の大地震が襲った。法勝寺の九重塔は傾き、宇治橋は落ち、近江の琵琶湖では湖水が北へ流れて岸が干上がった。余震は三か月に及んだ。<br><br>【歴史解説（この時代に何があったのか）】<br>鴨長明『方丈記』に「山は崩れて河を埋み、海は傾きて陸地をひたせり」と描かれた大地震です。人々は平家の怨霊の祟りと噂し、同年八月に「文治」と改元されました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "yamashiro": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "south_omi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "north_omi": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "yamato": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "settsu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "tamba": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "wakasa": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "文治の大地震！京都・近江で寺社や橋が倒壊し、畿内の治安と防備が大きく揺らぎました。"
+      }
+    },
+    {
+      "id": "evt_1257_shoka_quake",
+      "scenarioId": "*",
+      "year": 1257,
+      "season": "秋",
+      "title": "【大地震】正嘉地震・鎌倉の大震",
+      "desc": "【物語】<br>正嘉元年八月二十三日（1257年10月）、鎌倉を大地震が襲った。神社仏閣はことごとく倒壊し、山は崩れ、地は裂けて水が湧き出した。打ち続く飢饉・疫病と相まって世情は大いに乱れた。<br><br>【歴史解説（この時代に何があったのか）】<br>『吾妻鏡』に記録された関東の大地震です。この地震を含む相次ぐ天変地異が、日蓮に『立正安国論』を著させる契機となりました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "sagami": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "musashi": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "izu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "awa_boshu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kazusa": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "正嘉の大地震！鎌倉の社寺・家屋が倒壊し、相模・武蔵の治安と防備が損なわれました。"
+      }
+    },
+    {
+      "id": "evt_1293_einin_kamakura_quake",
+      "scenarioId": "*",
+      "year": 1293,
+      "season": "夏",
+      "title": "【大地震】永仁の鎌倉大地震",
+      "desc": "【物語】<br>正応六年四月十三日（1293年5月）、鎌倉に大地震。建長寺をはじめ諸寺が倒壊・炎上し、死者は二万三千余人に及んだと伝わる。混乱のさなか、執権北条貞時は内管領・平頼綱を討った（平禅門の乱）。<br><br>【歴史解説（この時代に何があったのか）】<br>相模トラフ沿いの地震と考えられ、この災異により「永仁」と改元されました。鎌倉の幕府中枢を直撃し、政局をも揺るがしました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "sagami": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "musashi": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "izu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "awa_boshu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "永仁の鎌倉大地震！幕府の都・鎌倉が壊滅的被害を受け、相模の兵と城柵が大きく損なわれました。"
+      }
+    },
+    {
+      "id": "evt_1361_shohei_quake",
+      "scenarioId": "*",
+      "year": 1361,
+      "season": "夏",
+      "title": "【大地震】正平地震・南海道の大津波",
+      "desc": "【物語】<br>正平十六年六月二十四日（1361年8月）、畿内・南海道を大地震が襲った。摂津の天王寺の金堂は倒れ、阿波の由岐では大津波により千七百余戸が流失。熊野の社殿も損壊し、温泉の湧出も止まった。<br><br>【歴史解説（この時代に何があったのか）】<br>『太平記』に描かれた南海トラフ巨大地震で、前々日にも大きな地震（東海側とする説あり）がありました。南北朝の争乱の只中、両朝の兵乱にも暗い影を落としました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "awa_shikoku": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "tosa_kochi": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "settsu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kii_kichu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kinan_kumano": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "tosa_nakamura": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "yamato": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "yamashiro": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kawachi": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "izumi": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "awaji": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "正平の大地震！阿波・土佐・紀伊の沿岸を大津波が襲い、南海道と畿内の兵・城柵・治安が大打撃を受けました。"
+      }
+    },
+    {
+      "id": "evt_1498_meio_quake",
+      "scenarioId": "*",
+      "year": 1498,
+      "season": "秋",
+      "title": "【大地震】明応地震・東海道の大津波",
+      "desc": "【物語】<br>明応七年八月二十五日（1498年9月）、東海道沖で巨大地震が発生。大津波が伊勢の大湊で五千人、駿河の小川で千人の命を奪い、遠江では砂州が切れて浜名湖が外海とつながった（今切）。鎌倉の大仏殿もこの津波で流されたと伝わる。<br><br>【歴史解説（この時代に何があったのか）】<br>東海地震の系列の巨大地震で、遠州灘から房総まで津波が及びました。駿河・伊豆を窺っていた伊勢宗瑞（北条早雲）の伊豆平定にも影響したとされます。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "totomi": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "ise": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "suruga": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "mikawa": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "izu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "shima": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kii_kichu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "sagami": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "owari": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kinan_kumano": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "明応の大地震！東海道沿岸を大津波が襲い、遠江・伊勢・駿河の兵と城柵が壊滅的な被害を受けました。"
+      }
+    },
+    {
+      "id": "evt_1586_tensho_quake",
+      "scenarioId": "*",
+      "year": 1585,
+      "season": "冬",
+      "title": "【大地震】天正地震・帰雲城埋没",
+      "desc": "【物語】<br>天正十三年十一月二十九日（1586年1月）、中部・近畿を内陸の大地震が襲った。飛騨では帰雲山が崩れて内ヶ島氏理の帰雲城と城下が一夜にして埋没し、一族は滅亡。近江長浜城は倒壊して山内一豊の娘が圧死、越中木舟城も崩れ前田秀継が落命した。<br><br>【歴史解説（この時代に何があったのか）】<br>複数の活断層が連動したとされる内陸巨大地震です。徳川家康討伐を準備していた羽柴秀吉は、この大被害を受けて方針を転換し、家康との和睦・臣従交渉に向かったといわれます。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "hida": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "north_omi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "mino": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "owari": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "etchu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "ise": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "echizen": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kaga": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "south_omi": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "wakasa": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "yamashiro": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "天正の大地震！飛騨の帰雲城が山崩れに埋まり、近江長浜城・越中木舟城も倒壊。中部諸国の兵と城郭が大打撃を受けました。"
+      }
+    },
+    {
+      "id": "evt_1596_keicho_fushimi_quake",
+      "scenarioId": "*",
+      "year": 1596,
+      "season": "秋",
+      "title": "【大地震】慶長伏見地震・伏見城天守倒壊",
+      "desc": "【物語】<br>文禄五年閏七月十三日（1596年9月）、畿内を大地震が襲い、豊臣秀吉の伏見城天守は倒壊、城内で数百人が圧死した。京の方広寺大仏は崩れ、堺・大坂・兵庫でも家屋がことごとく倒れた。<br><br>【歴史解説（この時代に何があったのか）】<br>有馬-高槻断層帯などの活動による内陸大地震とされます。謹慎中の加藤清正がいち早く秀吉のもとに駆け付けた「地震加藤」の逸話で知られ、この年「慶長」と改元されました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "yamashiro": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "settsu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kawachi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "awaji": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "izumi": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "yamato": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "tamba": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "south_omi": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "慶長伏見の大地震！伏見城天守が倒壊し、山城・摂津・河内の兵と城郭が大きく損なわれました。"
+      }
+    },
+    {
+      "id": "evt_1605_keicho_quake",
+      "scenarioId": "*",
+      "year": 1604,
+      "season": "冬",
+      "title": "【大地震】慶長地震・揺れなき大津波",
+      "desc": "【物語】<br>慶長九年十二月十六日（1605年2月）、揺れはさほどでもないのに、房総から土佐・九州に至る太平洋岸を大津波が襲った。八丈島、浜名湖畔、紀伊、阿波の宍喰、土佐の甲浦・室戸などで多くの人家が流され、数千の命が失われた。<br><br>【歴史解説（この時代に何があったのか）】<br>揺れに比べて津波が異常に大きい「津波地震」であったと考えられています。震源域については南海トラフ説のほか、伊豆・小笠原海溝説など諸説があります。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "tosa_kochi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "awa_shikoku": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "totomi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kii_kichu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kinan_kumano": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "tosa_nakamura": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "suruga": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "izu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "awa_boshu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kazusa": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "慶長の大津波！太平洋沿岸の諸国が津波に襲われ、土佐・阿波・遠江などで兵と治安が損なわれました。"
+      }
+    },
+    {
+      "id": "evt_1611_keicho_sanriku_quake",
+      "scenarioId": "*",
+      "year": 1611,
+      "season": "冬",
+      "title": "【大地震】慶長三陸地震・奥州の大津波",
+      "desc": "【物語】<br>慶長十六年十月二十八日（1611年12月）、三陸沖を震源とする地震が起こり、伊達・南部・相馬領の沿岸を大津波が襲った。仙台領だけで溺死者千七百余人、南部・津軽領でも三千人余が命を落としたと伝わる。<br><br>【歴史解説（この時代に何があったのか）】<br>伊達政宗の家臣の記録や、来日中のスペイン使節ビスカイノの報告にも残る大津波です。被災後、政宗は沿岸の復興と新田開発を進め、支倉常長の遣欧使節派遣にも影響を与えたとする説があります。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "rikuzen": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "rikuchu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "soma": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "mutsu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kasai": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "iwaki": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "慶長三陸の大津波！陸前・陸中・相馬の沿岸が壊滅し、奥州諸国の兵と治安が大きく損なわれました。"
+      }
+    },
+    {
+      "id": "evt_1703_genroku_quake",
+      "scenarioId": "*",
+      "year": 1703,
+      "season": "冬",
+      "title": "【大地震】元禄地震・関東の大震",
+      "desc": "【物語】<br>元禄十六年十一月二十三日（1703年12月）、深夜に関東南部を巨大地震が襲った。小田原城は天守が倒壊・炎上し城下は全滅、房総半島南端は大きく隆起した。津波は相模湾・房総沿岸を洗い、江戸でも大名屋敷が倒れ、死者は一万人を超えた。<br><br>【歴史解説（この時代に何があったのか）】<br>相模トラフで発生した巨大地震で、1923年の関東大震災の先例とされます。赤穂浪士の切腹からわずか九か月後のことで、翌年「宝永」と改元されました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "sagami": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "awa_boshu": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "kazusa": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "izu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "musashi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "shimousa": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kai": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "suruga": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "元禄の大地震！小田原城が倒壊し、相模・安房・上総など関東南部の兵と城郭が大打撃を受けました。"
+      }
+    },
+    {
+      "id": "evt_1707_hoei_quake",
+      "scenarioId": "*",
+      "year": 1707,
+      "season": "冬",
+      "title": "【大地震】宝永地震・史上最大級の大地震",
+      "desc": "【物語】<br>宝永四年十月四日（1707年10月）、東海から南海に至る広大な震源域が一度に破壊された。土佐では大津波で一万余人の死者が出て、高知城下は水没。大坂でも津波が川を遡り、橋や船を押し流した。その四十九日後、富士山が大噴火（宝永噴火）を起こした。<br><br>【歴史解説（この時代に何があったのか）】<br>南海トラフ全域が連動したとされる、記録に残る日本最大級の地震です。倒壊家屋は六万戸、死者は二万人を超えたとされ、続く宝永大噴火とともに幕府財政をも圧迫しました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "tosa_kochi": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "tosa_nakamura": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "settsu": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "kii_kichu": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "suruga": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "totomi": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "awa_shikoku": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "iyo": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kinan_kumano": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "ise": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "mikawa": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "izumi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kawachi": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "owari": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "shima": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "izu": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "sanuki": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "awaji": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "yamato": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "hyuga": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "bungo": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "宝永の大地震！東海から南海・九州に及ぶ広大な地域が激震と大津波に襲われ、多くの国の兵・城郭・治安が大打撃を受けました。"
+      }
+    },
+    {
+      "id": "evt_1847_zenkoji_quake",
+      "scenarioId": "*",
+      "year": 1847,
+      "season": "春",
+      "title": "【大地震】善光寺地震・信濃の大震",
+      "desc": "【物語】<br>弘化四年三月二十四日（1847年5月）、善光寺の御開帳で全国から参詣者が集まる夜、信濃北部を大地震が襲った。善光寺町は倒壊と大火で壊滅、参詣者を含め多数が犠牲となった。虚空蔵山が崩れて犀川を堰き止め、二十日後に決壊した大洪水が下流を呑み込んだ。<br><br>【歴史解説（この時代に何があったのか）】<br>長野盆地西縁断層帯の活動による内陸地震で、死者は八千人を超えたとされます。松代藩は真田幸貫のもとで復興に当たりました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "north_shinano": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "echigo": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "south_shinano": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "善光寺の大地震！北信濃が倒壊・大火・洪水に見舞われ、兵と治安が大きく損なわれました。"
+      }
+    },
+    {
+      "id": "evt_1854_ansei_tokai_quake",
+      "scenarioId": "*",
+      "year": 1854,
+      "season": "冬",
+      "title": "【大地震】安政東海地震・下田の大津波",
+      "desc": "【物語】<br>嘉永七年十一月四日（1854年12月）、東海道沖で巨大地震が発生。駿河・遠江で家屋が倒壊し、伊豆下田では大津波が町をさらって、日露和親条約の交渉に来航していたロシア軍艦ディアナ号も大破した。<br><br>【歴史解説（この時代に何があったのか）】<br>東海地震の系列の巨大地震で、わずか約三十二時間後に安政南海地震が続きました。この年、相次ぐ災異を理由に「安政」と改元されました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "suruga": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "izu": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "totomi": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "mikawa": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "ise": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "shima": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "owari": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kai": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "sagami": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "安政東海の大地震！駿河・伊豆・遠江の沿岸が激震と津波に襲われ、兵と城郭が大打撃を受けました。"
+      }
+    },
+    {
+      "id": "evt_1854_ansei_nankai_quake",
+      "scenarioId": "*",
+      "year": 1854,
+      "season": "冬",
+      "title": "【大地震】安政南海地震・稲むらの火",
+      "desc": "【物語】<br>安政東海地震の翌日、嘉永七年十一月五日（1854年12月）、今度は南海道沖で巨大地震が起こった。紀伊・阿波・土佐の沿岸を大津波が襲い、大坂では津波が川を遡って多くの船と橋を押し流した。紀伊広村では浜口梧陵が稲むらに火を放ち、村人を高台へ導いた。<br><br>【歴史解説（この時代に何があったのか）】<br>東海地震に続いて発生した南海地震で、二つの地震を合わせて安政東海・南海地震と呼ばれます。浜口梧陵の逸話は「稲むらの火」として語り継がれ、防災教育の礎となりました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "tosa_kochi": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "kii_kichu": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "awa_shikoku": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "settsu": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "tosa_nakamura": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "kinan_kumano": {
+            "troopsRate": 0.88,
+            "defenseDelta": -20,
+            "orderDelta": -12,
+            "moraleDelta": -8
+          },
+          "iyo": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "izumi": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "awaji": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "sanuki": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "bungo": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "安政南海の大地震！紀伊・土佐・阿波の沿岸を大津波が襲い、大坂でも被害が出て、南海道諸国の兵と治安が大打撃を受けました。"
+      }
+    },
+    {
+      "id": "evt_1855_ansei_edo_quake",
+      "scenarioId": "*",
+      "year": 1855,
+      "season": "冬",
+      "title": "【大地震】安政江戸地震・将軍のお膝元を襲う",
+      "desc": "【物語】<br>安政二年十月二日（1855年11月）夜、江戸の直下で大地震が起こった。下町や大名屋敷が倒壊し、各所から火の手が上がって死者は一万人近くに達した。水戸藩邸では藩主斉昭の懐刀・藤田東湖が母をかばって圧死した。<br><br>【歴史解説（この時代に何があったのか）】<br>江戸直下の地震で、「鯰絵」が大流行するなど世相に大きな影響を与えました。藤田東湖・戸田忠太夫を失った水戸藩の動揺は、のちの幕末政局にも影を落としました。",
+      "forced": true,
+      "changes": {
+        "provinceEffects": {
+          "musashi": {
+            "troopsRate": 0.85,
+            "defenseDelta": -25,
+            "orderDelta": -15,
+            "moraleDelta": -10
+          },
+          "shimousa": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "sagami": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "kazusa": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "koga": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          },
+          "tsuchiura": {
+            "troopsRate": 0.92,
+            "defenseDelta": -12,
+            "orderDelta": -8,
+            "moraleDelta": -5
+          }
+        },
+        "message": "安政江戸の大地震！将軍のお膝元・江戸が倒壊と大火に見舞われ、武蔵の兵と城郭・治安が大打撃を受けました。"
+      }
+    },
+    {
+      "id": "evt_1471_asakura_echizen",
+      "scenarioId": "*",
+      "year": 1471,
+      "season": "夏",
+      "title": "朝倉孝景の東軍寝返り・越前の下剋上",
+      "desc": "【物語】<br>応仁の乱のさなか、西軍の斯波義廉に従っていた越前の朝倉孝景は、密かに東軍と通じていた。<br>文明3年、将軍足利義政は孝景を越前守護に任じる約束を与え、孝景は公然と東軍へ寝返る！<br>以後、孝景は甲斐氏ら斯波方の勢力を越前から駆逐し、守護代の家臣に過ぎなかった朝倉氏が越前一国の主となった。<br><br>【歴史解説】<br>文明3年（1471年）5月、朝倉孝景（英林）は東軍に転じ、越前守護の地位を事実上認められました。主家・斯波氏から国を奪い取った朝倉氏の自立は、戦国の下剋上の先駆けとされます。",
+      "requiresClans": [
+        "shiba"
+      ],
+      "onlyFrom": [
+        "shiba"
+      ],
+      "changes": {
+        "territory": {
+          "echizen": "asakura"
+        },
+        "message": "朝倉孝景が東軍に寝返り越前守護の座を得ました！越前は斯波氏の手を離れ、朝倉氏のものとなりました。"
+      }
+    },
+    {
+      "id": "evt_1486_amago_gassantoda",
+      "scenarioId": "*",
+      "year": 1486,
+      "season": "春",
+      "title": "尼子経久の月山富田城奪回・出雲の下剋上",
+      "desc": "【物語】<br>出雲守護代でありながら守護・京極政経の命に背き、寺社領の押領や段銭の未納を重ねた尼子経久は、幕府の追討を受けて居城の月山富田城を追われた。<br>しかし経久は雌伏の末、元旦の祝いに沸く城へ鉢屋衆を潜り込ませ、夜陰に乗じて一挙に富田城を奪い返す！<br>京極氏の権威は出雲から消え、尼子経久は主家を凌ぐ実力者として山陰に覇を唱え始めた。<br><br>【歴史解説】<br>文明16年（1484年）に守護代職を剥奪され追放された経久が、文明18年（1486年）正月に富田城を奪回したと軍記物は伝えます。守護代が守護を凌いで国を手中にした、典型的な下剋上の一つです。",
+      "requiresClans": [
+        "kyogoku"
+      ],
+      "onlyFrom": [
+        "kyogoku"
+      ],
+      "changes": {
+        "territory": {
+          "izumo": "amago",
+          "oki": "amago"
+        },
+        "message": "尼子経久が月山富田城を奪回！出雲・隠岐は京極氏の手を離れ、尼子氏が自立しました。",
+        "setLeader": {
+          "amago": "off_amago_tsunehisa"
+        }
+      }
+    },
+    {
+      "id": "evt_1523_azai_kitaomi",
+      "scenarioId": "*",
+      "year": 1523,
+      "season": "春",
+      "title": "大永の内訌・浅井亮政の台頭",
+      "desc": "【物語】<br>北近江の守護・京極高清は、寵愛する次男・高慶に家督を譲ろうとし、家中は二つに割れた。<br>大永3年、浅見貞則・浅井亮政ら国人衆は長男・高延を擁して挙兵し、高清と高慶を尾張へ追い落とす！<br>やがて亮政は浅見氏をも退けて小谷城に拠り、京極氏を名目だけの主君に祭り上げて、北近江の実権を握った。<br><br>【歴史解説】<br>大永3年（1523年）閏3月、京極家の家督争い（大永の内訌）で国人一揆が高清を追放しました。この争いを足がかりに浅井亮政が台頭し、浅井氏は京極氏に代わる北近江の戦国大名となりました。",
+      "requiresClans": [
+        "kyogoku"
+      ],
+      "onlyFrom": [
+        "kyogoku"
+      ],
+      "changes": {
+        "territory": {
+          "north_omi": "azai"
+        },
+        "message": "京極高清が国人衆に追われ、浅井亮政が北近江の実権を握りました！",
+        "setLeader": {
+          "azai": "off_azai_sukemasa_add"
+        }
+      }
+    },
+    {
+      "id": "evt_1542_saito_dosan_mino",
+      "scenarioId": "*",
+      "year": 1542,
+      "season": "夏",
+      "title": "美濃の蝮・斎藤道三の国盗り",
+      "desc": "【物語】<br>油売りから身を起こしたとも伝わる斎藤道三（利政）は、守護・土岐頼芸に取り入って重用され、ついに守護代斎藤氏の名跡を継いだ。<br>天文11年、道三は頼芸の居城・大桑城を攻め落とし、主君頼芸を尾張へ追い払う！<br>土岐氏が代々守護を務めた美濃は「蝮」の手に落ち、道三は名実ともに美濃の主となった。<br><br>【歴史解説】<br>天文11年（1542年）、斎藤道三が土岐頼芸を追放し美濃を奪ったとするのが通説です（追放の時期を天文21年とする説もあります）。父子二代の国盗りともいわれる、戦国屈指の下剋上です。",
+      "requiresClans": [
+        "toki"
+      ],
+      "onlyFrom": [
+        "toki"
+      ],
+      "changes": {
+        "territory": {
+          "mino": "saito"
+        },
+        "message": "斎藤道三が土岐頼芸を追放！美濃は土岐氏の手を離れ、斎藤氏のものとなりました。"
+      }
+    },
+    {
+      "id": "evt_1549_miyoshi_eguchi",
+      "scenarioId": "*",
+      "year": 1549,
+      "season": "夏",
+      "title": "江口の戦い・三好長慶の下剋上",
+      "desc": "【物語】<br>細川晴元の重臣でありながら、父・元長を死に追いやった晴元と三好政長に恨みを抱く三好長慶は、細川氏綱を擁して主君に反旗を翻した。<br>天文18年6月、長慶は摂津江口に籠もる政長を急襲して討ち取る！<br>援軍の六角勢が間に合わぬと知った晴元は将軍足利義輝を伴って近江へ逃れ、畿内の実権は三好長慶の手に移った。<br><br>【歴史解説】<br>天文18年（1549年）6月の江口の戦いで三好政長が討死し、細川晴元は京を追われました。これにより細川京兆家の支配は崩れ、三好長慶が畿内と四国東部を押さえる「三好政権」が成立します。",
+      "requiresClans": [
+        "hosokawa"
+      ],
+      "onlyFrom": [
+        "hosokawa"
+      ],
+      "changes": {
+        "territory": {
+          "settsu": "miyoshi",
+          "izumi": "miyoshi",
+          "yamashiro": "miyoshi",
+          "awa_shikoku": "miyoshi",
+          "sanuki": "miyoshi",
+          "awaji": "miyoshi"
+        },
+        "message": "江口の戦いで三好長慶が三好政長を討ち取り、細川晴元は京を追われました！細川氏の畿内・四国の領国は三好氏のものとなりました。"
+      }
+    },
+    {
+      "id": "evt_1567_inabayama",
+      "scenarioId": "*",
+      "year": 1567,
+      "season": "秋",
+      "title": "稲葉山城の戦い・織田信長の美濃平定",
+      "desc": "【物語】<br>桶狭間の勝利の後、織田信長は義父・斎藤道三の仇でもある美濃斎藤氏の攻略に乗り出した。<br>永禄10年8月、西美濃三人衆（稲葉良通・安藤守就・氏家直元）が内応すると、信長は電撃的に稲葉山城下を焼き払い、城を鹿垣で囲んで孤立させる！<br>斎藤龍興はついに城を明け渡して長島へ落ち延び、美濃は信長の手に帰した。信長は井之口を「岐阜」と改め、「天下布武」の印を用い始める。<br><br>【歴史解説】<br>永禄10年（1567年）8月の稲葉山城の戦いで斎藤龍興が敗走し、道三以来の美濃斎藤氏は大名としての地位を失いました。美濃を得た信長は翌年、足利義昭を奉じて上洛します。",
+      "requiresClans": [
+        "saito",
+        "oda"
+      ],
+      "onlyFrom": [
+        "saito"
+      ],
+      "changes": {
+        "territory": {
+          "mino": "oda"
+        },
+        "message": "稲葉山城が落城し、斎藤龍興は長島へ落ち延びました！美濃は織田信長のものとなりました。"
+      }
     }
   ],
+  "choiceEventRules": {
+    "honnoji": {
+      "setFlagOnIfChoice": "honnoujiAverted"
+    },
+    "nanban_trade": {
+      "oncePerPlaythrough": true
+    }
+  },
   "castleChanges": {
     "yamashiro": [
       [
@@ -4111,11 +6407,19 @@
         "福原京"
       ],
       [
-        1532,
+        1391,
+        "芥川城"
+      ],
+      [
+        1552,
         "越水城"
       ],
       [
-        1580,
+        1569,
+        "芥川山城"
+      ],
+      [
+        1582,
         "石山本願寺"
       ],
       [
@@ -4655,7 +6959,7 @@
     ],
     "bizen": [
       [
-        1573,
+        1569,
         "三石城・天神山城"
       ],
       [
@@ -4695,8 +6999,12 @@
     ],
     "suo": [
       [
+        1557,
+        "大内館"
+      ],
+      [
         1863,
-        "山口館・大内館"
+        "高嶺城"
       ],
       [
         9999,
@@ -4751,16 +7059,6 @@
         "松山城"
       ]
     ],
-    "tosa": [
-      [
-        1585,
-        "岡豊城"
-      ],
-      [
-        9999,
-        "高知城"
-      ]
-    ],
     "buzen": [
       [
         1587,
@@ -4797,7 +7095,7 @@
     ],
     "chikugo": [
       [
-        1587,
+        1620,
         "柳川城"
       ],
       [
@@ -4813,20 +7111,6 @@
       [
         9999,
         "佐賀城"
-      ]
-    ],
-    "higo": [
-      [
-        1338,
-        "菊池本城・隈府城"
-      ],
-      [
-        1588,
-        "隈本城"
-      ],
-      [
-        9999,
-        "熊本城"
       ]
     ],
     "hyuga": [
@@ -4865,28 +7149,16 @@
     ],
     "iwaki": [
       [
-        1182,
-        "白河関・白河営所"
+        1457,
+        "白土城"
       ],
       [
-        1335,
-        "白河小峰城"
-      ],
-      [
-        1390,
-        "霊山城"
-      ],
-      [
-        1591,
-        "白河小峰城"
-      ],
-      [
-        1613,
-        "平城"
+        1602,
+        "大館城"
       ],
       [
         9999,
-        "相馬中村城"
+        "磐城平城"
       ]
     ],
     "iwashiro": [
@@ -4897,20 +7169,36 @@
       [
         1591,
         "会津若松城"
+      ],
+      [
+        9999,
+        "会津若松城"
       ]
     ],
     "rikuzen": [
       [
         1189,
-        "平泉・柳之御所"
+        "多賀城"
       ],
       [
-        1600,
-        "岩出山城"
+        1456,
+        "岩切城"
+      ],
+      [
+        1466,
+        "千代城"
+      ],
+      [
+        1586,
+        "利府城"
+      ],
+      [
+        1601,
+        "白石城"
       ],
       [
         9999,
-        "青葉城（仙台城）"
+        "仙台城"
       ]
     ],
     "rikuchu": [
@@ -4945,28 +7233,6 @@
         "盛岡城"
       ]
     ],
-    "tsugaru": [
-      [
-        1087,
-        "津軽平野館・柵"
-      ],
-      [
-        1495,
-        "浪岡城"
-      ],
-      [
-        1590,
-        "大浦城"
-      ],
-      [
-        1611,
-        "堀越城"
-      ],
-      [
-        9999,
-        "弘前城"
-      ]
-    ],
     "ugo": [
       [
         1087,
@@ -4983,12 +7249,12 @@
     ],
     "uzen": [
       [
-        1600,
+        1622,
         "山形城"
       ],
       [
         9999,
-        "米沢城"
+        "新庄城"
       ]
     ],
     "ezo": [
@@ -5071,6 +7337,148 @@
       [
         9999,
         "厳原城・府中城"
+      ]
+    ],
+    "higo_kumamoto": [
+      [
+        1338,
+        "菊池本城・隈府城"
+      ],
+      [
+        1457,
+        "隈本城"
+      ],
+      [
+        1588,
+        "隈本城"
+      ],
+      [
+        1590,
+        "熊本城"
+      ],
+      [
+        9999,
+        "熊本城"
+      ]
+    ],
+    "higo_hitoyoshi": [
+      [
+        9999,
+        "人吉城"
+      ]
+    ],
+    "tosa_kochi": [
+      [
+        1585,
+        "岡豊城"
+      ],
+      [
+        9999,
+        "高知城"
+      ]
+    ],
+    "tosa_nakamura": [
+      [
+        1615,
+        "中村城"
+      ],
+      [
+        9999,
+        "中村陣屋"
+      ]
+    ],
+    "yonezawa_date": [
+      [
+        1456,
+        "米沢城"
+      ],
+      [
+        1532,
+        "染川城"
+      ],
+      [
+        1548,
+        "桑折西山城"
+      ],
+      [
+        9999,
+        "米沢城"
+      ]
+    ],
+    "soma": [
+      [
+        1600,
+        "小高城"
+      ],
+      [
+        9999,
+        "相馬中村城"
+      ]
+    ],
+    "osaki": [
+      [
+        1591,
+        "名生城"
+      ],
+      [
+        9999,
+        "岩出山城"
+      ]
+    ],
+    "kasai": [
+      [
+        1189,
+        "柳之御所"
+      ],
+      [
+        1603,
+        "寺池城"
+      ],
+      [
+        9999,
+        "一関陣屋"
+      ]
+    ],
+    "shirakawa": [
+      [
+        1189,
+        "白河関・白河営所"
+      ],
+      [
+        1335,
+        "白川城"
+      ],
+      [
+        9999,
+        "白河小峰城"
+      ]
+    ],
+    "nobeoka": [
+      [
+        1443,
+        "西階城"
+      ],
+      [
+        1586,
+        "松尾城"
+      ],
+      [
+        9999,
+        "延岡城"
+      ]
+    ],
+    "nishi_tsugaru": [
+      [
+        1590,
+        "大浦城"
+      ],
+      [
+        1611,
+        "堀越城"
+      ],
+      [
+        9999,
+        "弘前城"
       ]
     ]
   },

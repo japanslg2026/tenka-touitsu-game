@@ -16,6 +16,53 @@ export class MapRenderer {
 }
 
 export const MapRendererMethods = {
+  /** 国境線を細く・滑らか・半透明にするモダン地図スタイル（CSS注入、1回のみ） */
+  showHoverOutline(path) {
+    const o = this._hoverOutline || document.getElementById('provHoverOutline');
+    if (!o || !path) return;
+    o.setAttribute('d', path.getAttribute('d'));
+    o.setAttribute('transform', path.getAttribute('transform') || '');
+    o.style.display = '';
+    this._hoverPathId = path.id;
+  },
+
+  hideHoverOutline(path) {
+    const o = this._hoverOutline || document.getElementById('provHoverOutline');
+    if (!o) return;
+    if (path && this._hoverPathId && this._hoverPathId !== path.id) return;
+    o.style.display = 'none';
+    this._hoverPathId = null;
+  },
+
+  injectModernMapStyle() {
+    if (typeof document === 'undefined' || document.getElementById('modernMapStyle')) return;
+    const st = document.createElement('style');
+    st.id = 'modernMapStyle';
+    st.textContent = `
+      #sengokuMapSvg { shape-rendering: geometricPrecision; text-rendering: geometricPrecision; }
+      #sengokuMapSvg .prov-path {
+        stroke: rgba(20, 14, 8, 0.55);
+        stroke-width: 0.6px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        stroke-miterlimit: 2;
+        vector-effect: non-scaling-stroke;
+        fill-opacity: 0.86;
+        paint-order: fill stroke;
+        transition: fill-opacity .15s ease, stroke .15s ease, filter .15s ease;
+        cursor: pointer;
+      }
+      #sengokuMapSvg .prov-path:hover {
+        fill-opacity: 1;
+        stroke: rgba(255, 240, 200, 0.9);
+        filter: brightness(1.12);
+      }
+      #sengokuMapSvg .prov-path.selected { fill-opacity: 1; }
+      #mapRoadsGroup path, #mapRoadsGroup line { vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-width: 1px; }
+    `;
+    document.head.appendChild(st);
+  },
+
   provinceCenterXY(prov) {
     if (!prov) return null;
     let cx = Number(prov.cx), cy = Number(prov.cy);
@@ -52,12 +99,49 @@ export const MapRendererMethods = {
       mapWrapper.style.setProperty('transform', 'none', 'important');
     }
 
+    // 【地図スタイル】国境線を細く滑らかに（最新ゲーム風）
+    if (typeof this.injectModernMapStyle === 'function') this.injectModernMapStyle();
+
     const roadsGroup = document.getElementById('mapRoadsGroup');
     const provGroup = document.getElementById('mapProvincesGroup');
     const markGroup = document.getElementById('mapMarkersGroup');
     if (!provGroup) return;
 
+    // 日本列島と離島グループの右2度回転（背景は回転させず、列島と離島のみ回転）
+    let archGroup = document.getElementById('mapArchipelagoGroup');
+    const panLayer = document.getElementById('mapPanZoomLayer');
+    if (!archGroup && panLayer) {
+      archGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      archGroup.setAttribute('id', 'mapArchipelagoGroup');
+      archGroup.setAttribute('transform', 'rotate(1, 500, 340)');
+      if (roadsGroup) archGroup.appendChild(roadsGroup);
+      archGroup.appendChild(provGroup);
+      if (markGroup) archGroup.appendChild(markGroup);
+      panLayer.appendChild(archGroup);
+    } else if (archGroup) {
+      archGroup.setAttribute('transform', 'rotate(1, 500, 340)');
+    }
+
+    if (!document.getElementById('provHoverOutline')) {
+      // ホバー輪郭用レイヤー（領国の上・家紋の下、マウス判定は透過）
+      const hoverLayer = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      hoverLayer.setAttribute('id', 'provHoverOutline');
+      hoverLayer.setAttribute('fill', 'none');
+      hoverLayer.setAttribute('stroke', '#f3d27a');
+      hoverLayer.setAttribute('stroke-width', '1.6');
+      hoverLayer.setAttribute('stroke-linejoin', 'round');
+      hoverLayer.setAttribute('stroke-linecap', 'round');
+      hoverLayer.setAttribute('vector-effect', 'non-scaling-stroke');
+      hoverLayer.style.pointerEvents = 'none';
+      hoverLayer.style.display = 'none';
+      hoverLayer.style.filter = 'drop-shadow(0 0 2px rgba(0,0,0,0.85))';
+      provGroup.parentNode.insertBefore(hoverLayer, provGroup.nextSibling);
+      this._hoverOutline = hoverLayer;
+    } else {
+      this._hoverOutline = document.getElementById('provHoverOutline');
+    }
     if (roadsGroup) roadsGroup.innerHTML = '';
+    if (this._hoverOutline) this._hoverOutline.style.display = 'none';
     if (provGroup) provGroup.innerHTML = '';
     if (markGroup) markGroup.innerHTML = '';
 
@@ -69,13 +153,26 @@ export const MapRendererMethods = {
         if (!drawnPairs.has(key)) {
           drawnPairs.add(key);
           const target = this.provinces.find(x => x.id === nId);
-          if (target && p.cx !== undefined && target.cx !== undefined) {
+          // 陸地に重なるため非表示にする航路
+          const hiddenRoute = key === 'ezo-mutsu' || key === 'ezo-nishi_tsugaru' || key === 'iyo-nagato' || key === 'etchu-noto';
+          if (!hiddenRoute && target && p.cx !== undefined && target.cx !== undefined) {
             if ((p.id === 'ryukyu' && nId === 'satsuma') || (p.id === 'satsuma' && nId === 'ryukyu')) {
               // 琉球 - 薩摩間の航路は九州南西海域を優美に周回する曲線航路
               const satsumaP = p.id === 'satsuma' ? p : target;
               const ryukyuP = p.id === 'ryukyu' ? p : target;
               const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
               path.setAttribute('d', `M ${satsumaP.cx} ${satsumaP.cy} C 25 540, 60 595, ${ryukyuP.cx} ${ryukyuP.cy}`);
+              path.setAttribute('stroke', 'rgba(180, 140, 70, 0.45)');
+              path.setAttribute('stroke-width', '1.5');
+              path.setAttribute('stroke-dasharray', '3,3');
+              path.setAttribute('fill', 'none');
+              roadsGroup.appendChild(path);
+            } else if ((p.id === 'ugo' && nId === 'ezo') || (p.id === 'ezo' && nId === 'ugo')) {
+              // 羽後 - 蝦夷間の航路は日本海側を優美に周回する曲線航路（陸地と重ならないよう実際の日本海航路に沿って描画）
+              const ugoP = p.id === 'ugo' ? p : target;
+              const ezoP = p.id === 'ezo' ? p : target;
+              const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+              path.setAttribute('d', `M ${ugoP.cx} ${ugoP.cy} C 805.3 216.6, 857.6 84.8, ${ezoP.cx} ${ezoP.cy}`);
               path.setAttribute('stroke', 'rgba(180, 140, 70, 0.45)');
               path.setAttribute('stroke-width', '1.5');
               path.setAttribute('stroke-dasharray', '3,3');
@@ -112,6 +209,9 @@ export const MapRendererMethods = {
         this.audio.playHyoshigi();
       });
 
+      path.addEventListener('mouseenter', () => this.showHoverOutline(path));
+      path.addEventListener('mouseleave', () => this.hideHoverOutline(path));
+
       provGroup.appendChild(path);
 
       // 家紋バッジ（各領国の中心点に配置）
@@ -128,8 +228,10 @@ export const MapRendererMethods = {
         const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
         use.setAttribute('id', `kamon-use-${p.id}`);
         use.setAttribute('href', p.ownerId ? `#${this.getClanKamonId(p.ownerId)}` : '');
-        use.setAttribute('x', p.cx - badgeSize / 2);
-        use.setAttribute('y', p.cy - badgeSize / 2);
+        const kamonX = p.kamonX !== undefined ? p.kamonX : p.cx;
+        const kamonY = p.kamonY !== undefined ? p.kamonY : p.cy;
+        use.setAttribute('x', kamonX - badgeSize / 2);
+        use.setAttribute('y', kamonY - badgeSize / 2);
         use.setAttribute('width', badgeSize);
         use.setAttribute('height', badgeSize);
         if (!p.ownerId) {
@@ -143,7 +245,6 @@ export const MapRendererMethods = {
 
     // パン・ズーム
     const wrapper = document.getElementById('mapWrapper');
-    const panLayer = document.getElementById('mapPanZoomLayer');
     if (wrapper && panLayer && !this.mapGestureBound) {
       // シナリオを切り替えて地図を描き直しても、ドラッグ操作が二重にならないようにする
       this.mapGestureBound = true;
@@ -478,8 +579,8 @@ export const MapRendererMethods = {
           path.style.stroke = isSelected
             ? this.brightenHexColor(this.getRegisteredProvinceColor(p), 50)
             : highlightColor;
-          path.style.strokeWidth = isSelected ? '3.2px' : '1.3px';
-          path.style.filter = 'none';
+          path.style.strokeWidth = isSelected ? '1.8px' : '0.9px';
+          path.style.filter = isSelected ? 'drop-shadow(0 0 2.5px rgba(255,236,170,0.85))' : 'none';
         } else {
           if (!isSelected) {
             path.style.stroke = '';
@@ -487,8 +588,8 @@ export const MapRendererMethods = {
             path.style.filter = 'none';
           } else {
             path.style.stroke = this.brightenHexColor(this.getRegisteredProvinceColor(p), 50);
-            path.style.strokeWidth = '3.0px';
-            path.style.filter = 'none';
+            path.style.strokeWidth = '1.8px';
+            path.style.filter = 'drop-shadow(0 0 2.5px rgba(255,236,170,0.85))';
           }
         }
       }
