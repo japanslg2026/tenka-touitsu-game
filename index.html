@@ -3259,16 +3259,28 @@
             }
 
             var age = o.birthYear != null ? (year - Number(o.birthYear)) + '歳' : '年齢不詳';
-            var dispClanId = (o.clanId && o.clanId !== 'ronin') ? o.clanId : getOfficerDisplayClanForBio(o.id);
-            var clanCol = getClanColor(dispClanId);
+            // 浪人の場合は dispClanId を null にして家紋を表示させない
+            var isRonin = (o.clanId === 'ronin' || !o.clanId || o.clanId === 'null');
+            var dispClanId = isRonin ? null : o.clanId;
+            var clanCol = isRonin ? '#7f8c8d' : getClanColor(dispClanId);
+            
+            // 丸の中に「浪」が入るマークのHTML
+            var isRonin = (o.clanId === 'ronin' || !o.clanId || o.clanId === 'null');
+            var dispClanId = isRonin ? null : o.clanId;
+            var clanCol = isRonin ? '#7f8c8d' : getClanColor(dispClanId);
+            
+            // 丸の中に「浪」が入るマークのHTML（文字ラベル「🍂 浪人」は削除）
+            var roninMarkHtml = '<div style="width:30px;height:30px;border-radius:50%;background:#7f8c8d;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:11pt;color:#fff;border:1px solid rgba(255,255,255,0.4);" title="浪人">浪</div>';
 
             return (
               '<div class="officer-item-card" data-off-id="' + esc(o.id) + '" style="border-left-color:' + clanCol + ';">' +
-                '<div style="width:30px;height:30px;flex-shrink:0;">' + renderKamonSvgHtml(dispClanId, 30) + '</div>' +
+                '<div style="width:30px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">' + 
+                  (isRonin ? roninMarkHtml : renderKamonSvgHtml(dispClanId, 30)) + 
+                '</div>' +
                 '<div class="officer-item-main">' +
                   '<div class="officer-name-row">' +
                     '<span class="officer-name">' + esc(o.name) + '</span>' +
-                    (isCastellan ? roleBadgeHtml : '') +
+                    (isCastellan ? roleBadgeHtml : '') + // 浪人の場合はバッジを表示しない
                     '<span style="font-size:12pt; color:var(--text-sub);">（' + esc(age) + '）</span>' +
                   '</div>' +
                 '</div>' +
