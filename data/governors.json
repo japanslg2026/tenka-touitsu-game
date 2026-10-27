@@ -2197,7 +2197,7 @@
       "satsuma": "off_shimazu_proto_tadahisa",
       "higo_hitoyoshi": "off_dm_kikuchi_1221",
       "chikugo": "off_genpei_chr_123",
-      "hyuga": "off_kudo_suketsune",
+      "hyuga": "off_pl1159_015",
       "bungo": "off_otomo_yoshinao_early_bridge",
       "chikuzen": "off_succ2_shoni_1215",
       "sado": "off_dm_honma_1180",
@@ -3378,7 +3378,8 @@
     },
     "1185": {
       "sagami": "off_minamoto_yoritomo",
-      "aki_koriyama": "off_minamoto_yoshitsune"
+      "aki_koriyama": "off_minamoto_yoshitsune",
+      "hyuga": "off_pl1159_015"
     },
     "1189": {
       "sagami": "off_minamoto_yoritomo",

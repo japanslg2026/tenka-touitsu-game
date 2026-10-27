@@ -128199,26 +128199,6 @@
     "skill": "文武両道"
   },
   {
-    "id": "off_kudo_suketsune",
-    "name": "工藤祐経",
-    "reading": "くどう すけつね",
-    "clanId": "kudo",
-    "defaultProv": "hyuga",
-    "birth": 1123,
-    "death": 1193,
-    "birthYear": 1147,
-    "deathYear": 1193,
-    "era": "kamakura",
-    "military": 72,
-    "intel": 70,
-    "politic": 75,
-    "skill": "日向国地頭",
-    "lore": "【頼朝の寵臣・日向伊東氏の祖】藤原南家工藤氏当主。生没年1123〜1193年。伊東荘をめぐり伊東祐親と激しく対立、源頼朝の挙兵に従い寵臣として厚遇された。頼朝より日向国地頭職を得て日向伊東氏の祖となる。建久4年（1193年）、富士の巻狩りの陣中にて、祐親の孫である曾我兄弟（祐成・時致）の夜襲により討たれた（曾我兄弟の仇討ち）。",
-    "isDaimyo": true,
-    "comment": "頼朝の寵臣・日向国地頭職・日向伊東氏の祖",
-    "aliases": "工藤藤次"
-  },
-  {
     "id": "off_saeki_koreharu_early",
     "name": "佐伯惟治",
     "yomi": "さえきこれすけ",

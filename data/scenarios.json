@@ -15848,7 +15848,7 @@
       "higo_hitoyoshi": "kikuchi",
       "shimabara": "arima",
       "hyuga": "tsuchimochi",
-      "satsuma": "shimazu_proto",
+      "satsuma": "shimazu",
       "osumi": "kimotsuki",
       "ryukyu": "ryukyu",
       "nobeoka": "tsuchimochi"
@@ -16227,7 +16227,7 @@
         "desc": "肥後国の名族・菊池氏。以仁王の令旨を受け平家追討の兵を挙げ、九州で反平家の旗を掲げる。"
       },
       {
-        "id": "shimazu_proto",
+        "id": "shimazu",
         "name": "惟宗忠久",
         "difficulty": "上級",
         "winRate": 48,
@@ -16356,10 +16356,8 @@
       "takeda": "kai",
       "satake": "hitachi",
       "ezo_native": "ezo",
-      "otomo": "bungo",
       "jo": "echigo",
       "kumano": "kinan_kumano",
-      "shimazu_proto": "satsuma",
       "kikuchi": "higo_kumamoto",
       "ryukyu": "ryukyu",
       "tsuchimochi": "nobeoka",
@@ -16367,7 +16365,9 @@
       "kimotsuki": "osumi",
       "matsura": "hirado",
       "omura": "omura",
-      "arima": "shimabara"
+      "arima": "shimabara",
+      "shimazu": "satsuma",
+      "kono": "iyo"
     },
     "officerAffiliations": {
       "off_minamoto_yoritomo": {
@@ -18214,7 +18214,7 @@
       "higo_hitoyoshi": "kikuchi",
       "shimabara": "arima",
       "hyuga": "tsuchimochi",
-      "satsuma": "shimazu_proto",
+      "satsuma": "shimazu",
       "osumi": "kimotsuki",
       "ryukyu": "ryukyu",
       "nobeoka": "tsuchimochi"
@@ -18338,19 +18338,17 @@
       "fujiwara_hiraizumi": "kasai",
       "takeda": "kai",
       "satake": "hitachi",
-      "ezo_native": "ezo",
       "kumano": "kinan_kumano",
       "kono": "iyo",
-      "otomo": "bungo",
       "kikuchi": "higo_kumamoto",
-      "shimazu_proto": "satsuma",
       "ryukyu": "ryukyu",
-      "sagara": "higo_hitoyoshi",
       "tsuchimochi": "nobeoka",
       "kimotsuki": "osumi",
       "matsura": "hirado",
       "omura": "omura",
-      "arima": "shimabara"
+      "arima": "shimabara",
+      "shimazu": "satsuma",
+      "ogata": "bungo"
     },
     "playables": [
       {
@@ -18614,7 +18612,7 @@
         "desc": "肥後国の名族・菊池氏。都落ちして大宰府へ逃れてきた平家に反旗を翻し、肥後を堅守する。"
       },
       {
-        "id": "shimazu_proto",
+        "id": "shimazu",
         "difficulty": "上級",
         "winRate": 48,
         "startProvId": "satsuma",
@@ -21914,8 +21912,8 @@
       "higo_kumamoto": "kikuchi",
       "higo_hitoyoshi": "kikuchi",
       "shimabara": "arima",
-      "hyuga": "genji_yoritomo",
-      "satsuma": "shimazu_proto",
+      "hyuga": "kudo",
+      "satsuma": "shimazu",
       "osumi": "kimotsuki",
       "ryukyu": "ryukyu",
       "nobeoka": "tsuchimochi"
@@ -22040,7 +22038,6 @@
       "kono": "iyo",
       "kikuchi": "higo_kumamoto",
       "matsura": "hirado",
-      "shimazu_proto": "satsuma",
       "ezo_native": "ezo",
       "ryukyu": "ryukyu",
       "tsuchimochi": "nobeoka",
@@ -22049,7 +22046,10 @@
       "arima": "shimabara",
       "kofukuji": "yamato",
       "honma": "sado",
-      "masuda": "iwami"
+      "masuda": "iwami",
+      "kudo": "hyuga",
+      "shimazu": "satsuma",
+      "ogata": "bungo"
     },
     "playables": [
       {
@@ -22320,7 +22320,7 @@
         "name": "菊池隆直"
       },
       {
-        "id": "shimazu_proto",
+        "id": "shimazu",
         "difficulty": "上級",
         "winRate": 48,
         "startProvId": "satsuma",
@@ -22430,6 +22430,12 @@
         "difficulty": "中級",
         "winRate": 50,
         "desc": "石見国の雄・益田兼高。壇ノ浦の戦いで水軍を率いて源氏の勝利に貢献し、石見一国の支配を確立する。"
+      },
+      {
+        "id": "kudo",
+        "difficulty": "中級",
+        "startProvId": "hyuga",
+        "officerId": "off_pl1159_015"
       }
     ],
     "officerAffiliations": {
@@ -22660,8 +22666,8 @@
         "isDaimyo": false
       },
       "off_pl1159_015": {
-        "clanId": "genji_yoritomo",
-        "defaultProv": "izu",
+        "clanId": "kudo",
+        "defaultProv": "hyuga",
         "clearAssignment": true,
         "isDaimyo": false
       },
@@ -24355,7 +24361,6 @@
       "off_pl1159_015": {
         "clanId": "kudo",
         "defaultProv": "hyuga",
-        "assignedProvId": "hyuga",
         "isDaimyo": true
       },
       "off_pl1159_016": {
@@ -37421,7 +37426,7 @@
       "takeda": "kai",
       "imagawa": "suruga",
       "kitabatake": "ise",
-      "yamana": "tamba",
+      "yamana": "tajima",
       "kusunoki": "kawachi",
       "akamatsu": "harima",
       "kyogoku": "izumo",
@@ -41951,7 +41956,7 @@
     ],
     "capitals": {
       "ashikaga": "yamashiro",
-      "yamana": "tamba",
+      "yamana": "tajima",
       "hosokawa": "settsu",
       "shiba": "echizen",
       "ouchi": "suo",
@@ -105029,7 +105034,7 @@
       "maeda": "kaga",
       "date": "rikuzen",
       "shimazu": "satsuma",
-      "mori": "suo",
+      "mori": "nagato",
       "kakizaki": "ezo",
       "tsugaru": "nishi_tsugaru",
       "nanbu": "rikuchu",
@@ -108218,7 +108223,7 @@
       "maeda": "kaga",
       "date": "rikuzen",
       "shimazu": "satsuma",
-      "mori": "suo",
+      "mori": "nagato",
       "kakizaki": "ezo",
       "tsugaru": "nishi_tsugaru",
       "nanbu": "rikuchu",
