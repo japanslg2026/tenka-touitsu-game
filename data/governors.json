@@ -815,7 +815,8 @@
       "nishi_tsugaru": "off_tsugaru_tamenobu",
       "aki": "off_mori_terumoto",
       "uzen": "off_mogami_yoshiaki",
-      "nobeoka": "off_pl1590_074"
+      "nobeoka": "off_pl1590_074",
+      "rikuzen": "off_katakura_kagenori"
     },
     "1868": {
       "suo": "off_omura_masujiro",
@@ -1457,7 +1458,7 @@
       "kazusa": "off_hojo_ujikuni",
       "chikugo": "off_shimazu_yoshihiro",
       "tosa_nakamura": "off_kira_chikasane",
-      "rikuzen": "off_jd_336",
+      "rikuzen": "off_katakura_kagenori",
       "shirakawa": "off_hist_1578_shirakawa_yoshichika",
       "higo_kumamoto": "off_pl1570_152",
       "kinan_kumano": "off_horiuchi_ujiyoshi",

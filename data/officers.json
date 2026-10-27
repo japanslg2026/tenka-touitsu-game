@@ -1068,7 +1068,7 @@
   {
     "id": "off_jd_212",
     "name": "伊東祐時",
-    "clanId": "shimazu",
+    "clanId": "ito",
     "defaultProv": "hyuga",
     "military": 54,
     "politic": 53,
@@ -1167,7 +1167,7 @@
   {
     "id": "off_edo_ito_sukeyoshi_1789",
     "name": "伊東祐福",
-    "clanId": "shimazu",
+    "clanId": "ito",
     "defaultProv": "hyuga",
     "military": 33,
     "politic": 52,
