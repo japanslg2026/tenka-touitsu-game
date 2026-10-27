@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="ja"><head>
+  <meta charset="UTF-8">
+  <style data-tippy-stylesheet="">.tippy-box[data-animation=fade][data-state=hidden]{opacity:0}[data-tippy-root]{max-width:calc(100vw - 10px)}.tippy-box{position:relative;background-color:#333;color:#fff;border-radius:4px;font-size:14px;line-height:1.4;white-space:normal;outline:0;transition-property:transform,visibility,opacity}.tippy-box[data-placement^=top]>.tippy-arrow{bottom:0}.tippy-box[data-placement^=top]>.tippy-arrow:before{bottom:-7px;left:0;border-width:8px 8px 0;border-top-color:initial;transform-origin:center top}.tippy-box[data-placement^=bottom]>.tippy-arrow{top:0}.tippy-box[data-placement^=bottom]>.tippy-arrow:before{top:-7px;left:0;border-width:0 8px 8px;border-bottom-color:initial;transform-origin:center bottom}.tippy-box[data-placement^=left]>.tippy-arrow{right:0}.tippy-box[data-placement^=left]>.tippy-arrow:before{border-width:8px 0 8px 8px;border-left-color:initial;right:-7px;transform-origin:center left}.tippy-box[data-placement^=right]>.tippy-arrow{left:0}.tippy-box[data-placement^=right]>.tippy-arrow:before{left:-7px;border-width:8px 8px 8px 0;border-right-color:initial;transform-origin:center right}.tippy-box[data-inertia][data-state=visible]{transition-timing-function:cubic-bezier(.54,1.5,.38,1.11)}.tippy-arrow{width:16px;height:16px;color:#333}.tippy-arrow:before{content:"";position:absolute;border-color:transparent;border-style:solid}.tippy-content{position:relative;padding:5px 9px;z-index:1}</style><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CradialGradient id='bg' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%233a1e12'/%3E%3Cstop offset='100%25' stop-color='%23120805'/%3E%3C/radialGradient%3E%3ClinearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ffe082'/%3E%3Cstop offset='50%25' stop-color='%23d4af37'/%3E%3Cstop offset='100%25' stop-color='%23aa7c11'/%3E%3C/linearGradient%3E%3ClinearGradient id='blade' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='60%25' stop-color='%23cccccc'/%3E%3Cstop offset='100%25' stop-color='%23777777'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='30' fill='url(%23bg)' stroke='url(%23gold)' stroke-width='2.5'/%3E%3Cpath d='M14 50 L48 16 L50 18 L16 52 Z' fill='url(%23blade)'/%3E%3Cpath d='M50 50 L16 16 L14 18 L48 52 Z' fill='url(%23blade)'/%3E%3Cpath d='M32 10 Q38 18 46 20 Q36 24 32 30 Q28 24 18 20 Q26 18 32 10 Z' fill='url(%23gold)'/%3E%3Ccircle cx='32' cy='32' r='8' fill='%23c0392b' stroke='url(%23gold)' stroke-width='1.5'/%3E%3Ccircle cx='32' cy='32' r='4' fill='url(%23gold)'/%3E%3C/svg%3E">
+  <!-- スマホの幅に合わせ、ホームインジケータ分の余白（safe-area）も使えるようにする -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>戦国天下統一伝 〜群雄割拠の覇道〜</title>
+
+  <!-- 外部CDNライブラリ群 -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script><style>:root{--swal2-outline: 0 0 0 3px rgba(100, 150, 200, 0.5);--swal2-container-padding: 0.625em;--swal2-backdrop: rgba(0, 0, 0, 0.4);--swal2-backdrop-transition: background-color 0.15s;--swal2-width: 32em;--swal2-padding: 0 0 1.25em;--swal2-border: none;--swal2-border-radius: 0.3125rem;--swal2-background: white;--swal2-color: #545454;--swal2-show-animation: swal2-show 0.3s;--swal2-hide-animation: swal2-hide 0.15s forwards;--swal2-icon-zoom: 1;--swal2-title-padding: 0.8em 1em 0;--swal2-html-container-padding: 1em 1.6em 0.3em;--swal2-input-border: 1px solid #d9d9d9;--swal2-input-border-radius: 0.1875em;--swal2-input-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px transparent;--swal2-input-background: transparent;--swal2-input-transition: border-color 0.2s, box-shadow 0.2s;--swal2-input-hover-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px transparent;--swal2-input-focus-border: 1px solid #b4dbed;--swal2-input-focus-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.06), 0 0 0 3px rgba(100, 150, 200, 0.5);--swal2-progress-step-background: #add8e6;--swal2-validation-message-background: #f0f0f0;--swal2-validation-message-color: #666;--swal2-footer-border-color: #eee;--swal2-footer-background: transparent;--swal2-footer-color: inherit;--swal2-timer-progress-bar-background: rgba(0, 0, 0, 0.3);--swal2-close-button-position: initial;--swal2-close-button-inset: auto;--swal2-close-button-font-size: 2.5em;--swal2-close-button-color: #ccc;--swal2-close-button-transition: color 0.2s, box-shadow 0.2s;--swal2-close-button-outline: initial;--swal2-close-button-box-shadow: inset 0 0 0 3px transparent;--swal2-close-button-focus-box-shadow: inset var(--swal2-outline);--swal2-close-button-hover-transform: none;--swal2-actions-justify-content: center;--swal2-actions-width: auto;--swal2-actions-margin: 1.25em auto 0;--swal2-actions-padding: 0;--swal2-actions-border-radius: 0;--swal2-actions-background: transparent;--swal2-action-button-transition: background-color 0.2s, box-shadow 0.2s;--swal2-action-button-hover: black 10%;--swal2-action-button-active: black 10%;--swal2-confirm-button-box-shadow: none;--swal2-confirm-button-border-radius: 0.25em;--swal2-confirm-button-background-color: #7066e0;--swal2-confirm-button-color: #fff;--swal2-deny-button-box-shadow: none;--swal2-deny-button-border-radius: 0.25em;--swal2-deny-button-background-color: #dc3741;--swal2-deny-button-color: #fff;--swal2-cancel-button-box-shadow: none;--swal2-cancel-button-border-radius: 0.25em;--swal2-cancel-button-background-color: #6e7881;--swal2-cancel-button-color: #fff;--swal2-toast-show-animation: swal2-toast-show 0.5s;--swal2-toast-hide-animation: swal2-toast-hide 0.1s forwards;--swal2-toast-border: none;--swal2-toast-box-shadow: 0 0 1px hsl(0deg 0% 0% / 0.075), 0 1px 2px hsl(0deg 0% 0% / 0.075), 1px 2px 4px hsl(0deg 0% 0% / 0.075), 1px 3px 8px hsl(0deg 0% 0% / 0.075), 2px 4px 16px hsl(0deg 0% 0% / 0.075)}[data-swal2-theme=dark]{--swal2-dark-theme-black: #19191a;--swal2-dark-theme-white: #e1e1e1;--swal2-background: var(--swal2-dark-theme-black);--swal2-color: var(--swal2-dark-theme-white);--swal2-footer-border-color: #555;--swal2-input-background: color-mix(in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10%);--swal2-validation-message-background: color-mix( in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10% );--swal2-validation-message-color: var(--swal2-dark-theme-white);--swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.7)}@media(prefers-color-scheme: dark){[data-swal2-theme=auto]{--swal2-dark-theme-black: #19191a;--swal2-dark-theme-white: #e1e1e1;--swal2-background: var(--swal2-dark-theme-black);--swal2-color: var(--swal2-dark-theme-white);--swal2-footer-border-color: #555;--swal2-input-background: color-mix(in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10%);--swal2-validation-message-background: color-mix( in srgb, var(--swal2-dark-theme-black), var(--swal2-dark-theme-white) 10% );--swal2-validation-message-color: var(--swal2-dark-theme-white);--swal2-timer-progress-bar-background: rgba(255, 255, 255, 0.7)}}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto !important}body.swal2-no-backdrop .swal2-container{background-color:rgba(0,0,0,0) !important;pointer-events:none}body.swal2-no-backdrop .swal2-container .swal2-popup{pointer-events:auto}body.swal2-no-backdrop .swal2-container .swal2-modal{box-shadow:0 0 10px var(--swal2-backdrop)}body.swal2-toast-shown .swal2-container{box-sizing:border-box;width:360px;max-width:100%;background-color:rgba(0,0,0,0);pointer-events:none}body.swal2-toast-shown .swal2-container.swal2-top{inset:0 auto auto 50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{inset:0 0 auto auto}body.swal2-toast-shown .swal2-container.swal2-top-start,body.swal2-toast-shown .swal2-container.swal2-top-left{inset:0 auto auto 0}body.swal2-toast-shown .swal2-container.swal2-center-start,body.swal2-toast-shown .swal2-container.swal2-center-left{inset:50% auto auto 0;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{inset:50% auto auto 50%;transform:translate(-50%, -50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{inset:50% 0 auto auto;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-start,body.swal2-toast-shown .swal2-container.swal2-bottom-left{inset:auto auto 0 0}body.swal2-toast-shown .swal2-container.swal2-bottom{inset:auto auto 0 50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{inset:auto 0 0 auto}@media print{body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown){overflow-y:scroll !important}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop,.swal2-toast-shown) .swal2-container{position:static !important}}div:where(.swal2-container){display:grid;position:fixed;z-index:1060;inset:0;box-sizing:border-box;grid-template-areas:"top-start     top            top-end" "center-start  center         center-end" "bottom-start  bottom-center  bottom-end";grid-template-rows:minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);height:100%;padding:var(--swal2-container-padding);overflow-x:hidden;transition:var(--swal2-backdrop-transition);-webkit-overflow-scrolling:touch}div:where(.swal2-container).swal2-backdrop-show,div:where(.swal2-container).swal2-noanimation{background:var(--swal2-backdrop)}div:where(.swal2-container).swal2-backdrop-hide{background:rgba(0,0,0,0) !important}div:where(.swal2-container).swal2-top-start,div:where(.swal2-container).swal2-center-start,div:where(.swal2-container).swal2-bottom-start{grid-template-columns:minmax(0, 1fr) auto auto}div:where(.swal2-container).swal2-top,div:where(.swal2-container).swal2-center,div:where(.swal2-container).swal2-bottom{grid-template-columns:auto minmax(0, 1fr) auto}div:where(.swal2-container).swal2-top-end,div:where(.swal2-container).swal2-center-end,div:where(.swal2-container).swal2-bottom-end{grid-template-columns:auto auto minmax(0, 1fr)}div:where(.swal2-container).swal2-top-start>.swal2-popup{align-self:start}div:where(.swal2-container).swal2-top>.swal2-popup{grid-column:2;place-self:start center}div:where(.swal2-container).swal2-top-end>.swal2-popup,div:where(.swal2-container).swal2-top-right>.swal2-popup{grid-column:3;place-self:start end}div:where(.swal2-container).swal2-center-start>.swal2-popup,div:where(.swal2-container).swal2-center-left>.swal2-popup{grid-row:2;align-self:center}div:where(.swal2-container).swal2-center>.swal2-popup{grid-column:2;grid-row:2;place-self:center center}div:where(.swal2-container).swal2-center-end>.swal2-popup,div:where(.swal2-container).swal2-center-right>.swal2-popup{grid-column:3;grid-row:2;place-self:center end}div:where(.swal2-container).swal2-bottom-start>.swal2-popup,div:where(.swal2-container).swal2-bottom-left>.swal2-popup{grid-column:1;grid-row:3;align-self:end}div:where(.swal2-container).swal2-bottom>.swal2-popup{grid-column:2;grid-row:3;place-self:end center}div:where(.swal2-container).swal2-bottom-end>.swal2-popup,div:where(.swal2-container).swal2-bottom-right>.swal2-popup{grid-column:3;grid-row:3;place-self:end end}div:where(.swal2-container).swal2-grow-row>.swal2-popup,div:where(.swal2-container).swal2-grow-fullscreen>.swal2-popup{grid-column:1/4;width:100%}div:where(.swal2-container).swal2-grow-column>.swal2-popup,div:where(.swal2-container).swal2-grow-fullscreen>.swal2-popup{grid-row:1/4;align-self:stretch}div:where(.swal2-container).swal2-no-transition{transition:none !important}div:where(.swal2-container)[popover]{width:auto;border:0}div:where(.swal2-container) div:where(.swal2-popup){display:none;position:relative;box-sizing:border-box;grid-template-columns:minmax(0, 100%);width:var(--swal2-width);max-width:100%;padding:var(--swal2-padding);border:var(--swal2-border);border-radius:var(--swal2-border-radius);background:var(--swal2-background);color:var(--swal2-color);font-family:inherit;font-size:1rem}div:where(.swal2-container) div:where(.swal2-popup):focus{outline:none}div:where(.swal2-container) div:where(.swal2-popup).swal2-loading{overflow-y:hidden}div:where(.swal2-container) div:where(.swal2-popup).swal2-draggable{cursor:grab}div:where(.swal2-container) div:where(.swal2-popup).swal2-draggable div:where(.swal2-icon){cursor:grab}div:where(.swal2-container) div:where(.swal2-popup).swal2-dragging{cursor:grabbing}div:where(.swal2-container) div:where(.swal2-popup).swal2-dragging div:where(.swal2-icon){cursor:grabbing}div:where(.swal2-container) h2:where(.swal2-title){position:relative;max-width:100%;margin:0;padding:var(--swal2-title-padding);color:inherit;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;overflow-wrap:break-word;cursor:initial}div:where(.swal2-container) div:where(.swal2-actions){display:flex;z-index:1;box-sizing:border-box;flex-wrap:wrap;align-items:center;justify-content:var(--swal2-actions-justify-content);width:var(--swal2-actions-width);margin:var(--swal2-actions-margin);padding:var(--swal2-actions-padding);border-radius:var(--swal2-actions-border-radius);background:var(--swal2-actions-background)}div:where(.swal2-container) div:where(.swal2-loader){display:none;align-items:center;justify-content:center;width:2.2em;height:2.2em;margin:0 1.875em;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border-width:.25em;border-style:solid;border-radius:100%;border-color:#2778c4 rgba(0,0,0,0) #2778c4 rgba(0,0,0,0)}div:where(.swal2-container) button:where(.swal2-styled){margin:.3125em;padding:.625em 1.1em;transition:var(--swal2-action-button-transition);border:none;box-shadow:0 0 0 3px rgba(0,0,0,0);font-weight:500}div:where(.swal2-container) button:where(.swal2-styled):not([disabled]){cursor:pointer}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm){border-radius:var(--swal2-confirm-button-border-radius);background:initial;background-color:var(--swal2-confirm-button-background-color);box-shadow:var(--swal2-confirm-button-box-shadow);color:var(--swal2-confirm-button-color);font-size:1em}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):hover{background-color:color-mix(in srgb, var(--swal2-confirm-button-background-color), var(--swal2-action-button-hover))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm):active{background-color:color-mix(in srgb, var(--swal2-confirm-button-background-color), var(--swal2-action-button-active))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-deny){border-radius:var(--swal2-deny-button-border-radius);background:initial;background-color:var(--swal2-deny-button-background-color);box-shadow:var(--swal2-deny-button-box-shadow);color:var(--swal2-deny-button-color);font-size:1em}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-deny):hover{background-color:color-mix(in srgb, var(--swal2-deny-button-background-color), var(--swal2-action-button-hover))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-deny):active{background-color:color-mix(in srgb, var(--swal2-deny-button-background-color), var(--swal2-action-button-active))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel){border-radius:var(--swal2-cancel-button-border-radius);background:initial;background-color:var(--swal2-cancel-button-background-color);box-shadow:var(--swal2-cancel-button-box-shadow);color:var(--swal2-cancel-button-color);font-size:1em}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel):hover{background-color:color-mix(in srgb, var(--swal2-cancel-button-background-color), var(--swal2-action-button-hover))}div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-cancel):active{background-color:color-mix(in srgb, var(--swal2-cancel-button-background-color), var(--swal2-action-button-active))}div:where(.swal2-container) button:where(.swal2-styled):focus-visible{outline:none;box-shadow:var(--swal2-action-button-focus-box-shadow)}div:where(.swal2-container) button:where(.swal2-styled)[disabled]:not(.swal2-loading){opacity:.4}div:where(.swal2-container) button:where(.swal2-styled)::-moz-focus-inner{border:0}div:where(.swal2-container) div:where(.swal2-footer){margin:1em 0 0;padding:1em 1em 0;border-top:1px solid var(--swal2-footer-border-color);background:var(--swal2-footer-background);color:var(--swal2-footer-color);font-size:1em;text-align:center;cursor:initial}div:where(.swal2-container) .swal2-timer-progress-bar-container{position:absolute;right:0;bottom:0;left:0;grid-column:auto !important;overflow:hidden;border-bottom-right-radius:var(--swal2-border-radius);border-bottom-left-radius:var(--swal2-border-radius)}div:where(.swal2-container) div:where(.swal2-timer-progress-bar){width:100%;height:.25em;background:var(--swal2-timer-progress-bar-background)}div:where(.swal2-container) img:where(.swal2-image){max-width:100%;margin:2em auto 1em;cursor:initial}div:where(.swal2-container) button:where(.swal2-close){position:var(--swal2-close-button-position);inset:var(--swal2-close-button-inset);z-index:2;align-items:center;justify-content:center;width:1.2em;height:1.2em;margin-top:0;margin-right:0;margin-bottom:-1.2em;padding:0;overflow:hidden;transition:var(--swal2-close-button-transition);border:none;border-radius:var(--swal2-border-radius);outline:var(--swal2-close-button-outline);background:rgba(0,0,0,0);color:var(--swal2-close-button-color);font-family:monospace;font-size:var(--swal2-close-button-font-size);cursor:pointer;justify-self:end}div:where(.swal2-container) button:where(.swal2-close):hover{transform:var(--swal2-close-button-hover-transform);background:rgba(0,0,0,0);color:#f27474}div:where(.swal2-container) button:where(.swal2-close):focus-visible{outline:none;box-shadow:var(--swal2-close-button-focus-box-shadow)}div:where(.swal2-container) button:where(.swal2-close)::-moz-focus-inner{border:0}div:where(.swal2-container) div:where(.swal2-html-container){z-index:1;justify-content:center;margin:0;padding:var(--swal2-html-container-padding);overflow:auto;color:inherit;font-size:1.125em;font-weight:normal;line-height:normal;text-align:center;overflow-wrap:break-word;word-break:break-word;cursor:initial}div:where(.swal2-container) input:where(.swal2-input),div:where(.swal2-container) input:where(.swal2-file),div:where(.swal2-container) textarea:where(.swal2-textarea),div:where(.swal2-container) select:where(.swal2-select),div:where(.swal2-container) div:where(.swal2-radio),div:where(.swal2-container) label:where(.swal2-checkbox){margin:1em 2em 3px}div:where(.swal2-container) input:where(.swal2-input),div:where(.swal2-container) input:where(.swal2-file),div:where(.swal2-container) textarea:where(.swal2-textarea){box-sizing:border-box;width:auto;transition:var(--swal2-input-transition);border:var(--swal2-input-border);border-radius:var(--swal2-input-border-radius);background:var(--swal2-input-background);box-shadow:var(--swal2-input-box-shadow);color:inherit;font-size:1.125em}div:where(.swal2-container) input:where(.swal2-input).swal2-inputerror,div:where(.swal2-container) input:where(.swal2-file).swal2-inputerror,div:where(.swal2-container) textarea:where(.swal2-textarea).swal2-inputerror{border-color:#f27474 !important;box-shadow:0 0 2px #f27474 !important}div:where(.swal2-container) input:where(.swal2-input):hover,div:where(.swal2-container) input:where(.swal2-file):hover,div:where(.swal2-container) textarea:where(.swal2-textarea):hover{box-shadow:var(--swal2-input-hover-box-shadow)}div:where(.swal2-container) input:where(.swal2-input):focus,div:where(.swal2-container) input:where(.swal2-file):focus,div:where(.swal2-container) textarea:where(.swal2-textarea):focus{border:var(--swal2-input-focus-border);outline:none;box-shadow:var(--swal2-input-focus-box-shadow)}div:where(.swal2-container) input:where(.swal2-input)::placeholder,div:where(.swal2-container) input:where(.swal2-file)::placeholder,div:where(.swal2-container) textarea:where(.swal2-textarea)::placeholder{color:#ccc}div:where(.swal2-container) .swal2-range{margin:1em 2em 3px;background:var(--swal2-background)}div:where(.swal2-container) .swal2-range input{width:80%}div:where(.swal2-container) .swal2-range output{width:20%;color:inherit;font-weight:600;text-align:center}div:where(.swal2-container) .swal2-range input,div:where(.swal2-container) .swal2-range output{height:2.625em;padding:0;font-size:1.125em;line-height:2.625em}div:where(.swal2-container) .swal2-input{height:2.625em;padding:0 .75em}div:where(.swal2-container) .swal2-file{width:75%;margin-right:auto;margin-left:auto;background:var(--swal2-input-background);font-size:1.125em}div:where(.swal2-container) .swal2-textarea{height:6.75em;padding:.75em}div:where(.swal2-container) .swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;background:var(--swal2-input-background);color:inherit;font-size:1.125em}div:where(.swal2-container) .swal2-radio,div:where(.swal2-container) .swal2-checkbox{align-items:center;justify-content:center;background:var(--swal2-background);color:inherit}div:where(.swal2-container) .swal2-radio label,div:where(.swal2-container) .swal2-checkbox label{margin:0 .6em;font-size:1.125em}div:where(.swal2-container) .swal2-radio input,div:where(.swal2-container) .swal2-checkbox input{flex-shrink:0;margin:0 .4em}div:where(.swal2-container) label:where(.swal2-input-label){display:flex;justify-content:center;margin:1em auto 0}div:where(.swal2-container) div:where(.swal2-validation-message){align-items:center;justify-content:center;margin:1em 0 0;padding:.625em;overflow:hidden;background:var(--swal2-validation-message-background);color:var(--swal2-validation-message-color);font-size:1em;font-weight:300}div:where(.swal2-container) div:where(.swal2-validation-message)::before{content:"!";display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center}div:where(.swal2-container) .swal2-progress-steps{flex-wrap:wrap;align-items:center;max-width:100%;margin:1.25em auto;padding:0;background:rgba(0,0,0,0);font-weight:600}div:where(.swal2-container) .swal2-progress-steps li{display:inline-block;position:relative}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step{z-index:20;flex-shrink:0;width:2em;height:2em;border-radius:2em;background:#2778c4;color:#fff;line-height:2em;text-align:center}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step{background:#2778c4}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step{background:var(--swal2-progress-step-background);color:#fff}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line{background:var(--swal2-progress-step-background)}div:where(.swal2-container) .swal2-progress-steps .swal2-progress-step-line{z-index:10;flex-shrink:0;width:2.5em;height:.4em;margin:0 -1px;background:#2778c4}div:where(.swal2-icon){position:relative;box-sizing:content-box;justify-content:center;width:5em;height:5em;margin:2.5em auto .6em;zoom:var(--swal2-icon-zoom);border:.25em solid rgba(0,0,0,0);border-radius:50%;border-color:#000;font-family:inherit;line-height:5em;cursor:default;user-select:none}div:where(.swal2-icon) .swal2-icon-content{display:flex;align-items:center;font-size:3.75em}div:where(.swal2-icon).swal2-error{border-color:#f27474;color:#f27474}div:where(.swal2-icon).swal2-error .swal2-x-mark{position:relative;flex-grow:1}div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;transform:rotate(45deg)}div:where(.swal2-icon).swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;transform:rotate(-45deg)}div:where(.swal2-icon).swal2-error.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-error.swal2-icon-show .swal2-x-mark{animation:swal2-animate-error-x-mark .5s}div:where(.swal2-icon).swal2-warning{border-color:#f8bb86;color:#f8bb86}div:where(.swal2-icon).swal2-warning.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-warning.swal2-icon-show .swal2-icon-content{animation:swal2-animate-i-mark .5s}div:where(.swal2-icon).swal2-info{border-color:#3fc3ee;color:#3fc3ee}div:where(.swal2-icon).swal2-info.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-info.swal2-icon-show .swal2-icon-content{animation:swal2-animate-i-mark .8s}div:where(.swal2-icon).swal2-question{border-color:#87adbd;color:#87adbd}div:where(.swal2-icon).swal2-question.swal2-icon-show{animation:swal2-animate-error-icon .5s}div:where(.swal2-icon).swal2-question.swal2-icon-show .swal2-icon-content{animation:swal2-animate-question-mark .8s}div:where(.swal2-icon).swal2-success{border-color:#a5dc86;color:#a5dc86}div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;border-radius:50%}div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=left]{top:-0.4375em;left:-2.0635em;transform:rotate(-45deg);transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}div:where(.swal2-icon).swal2-success [class^=swal2-success-circular-line][class$=right]{top:-0.6875em;left:1.875em;transform:rotate(-45deg);transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}div:where(.swal2-icon).swal2-success .swal2-success-ring{position:absolute;z-index:2;top:-0.25em;left:-0.25em;box-sizing:content-box;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%}div:where(.swal2-icon).swal2-success .swal2-success-fix{position:absolute;z-index:1;top:.5em;left:1.625em;width:.4375em;height:5.625em;transform:rotate(-45deg)}div:where(.swal2-icon).swal2-success [class^=swal2-success-line]{display:block;position:absolute;z-index:2;height:.3125em;border-radius:.125em;background-color:#a5dc86}div:where(.swal2-icon).swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.8125em;width:1.5625em;transform:rotate(45deg)}div:where(.swal2-icon).swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;transform:rotate(-45deg)}div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-line-tip{animation:swal2-animate-success-line-tip .75s}div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-line-long{animation:swal2-animate-success-line-long .75s}div:where(.swal2-icon).swal2-success.swal2-icon-show .swal2-success-circular-line-right{animation:swal2-rotate-success-circular-line 4.25s ease-in}[class^=swal2]{-webkit-tap-highlight-color:rgba(0,0,0,0)}.swal2-show{animation:var(--swal2-show-animation)}.swal2-hide{animation:var(--swal2-hide-animation)}.swal2-noanimation{transition:none}.swal2-scrollbar-measure{position:absolute;top:-9999px;width:50px;height:50px;overflow:scroll}.swal2-rtl .swal2-close{margin-right:initial;margin-left:0}.swal2-rtl .swal2-timer-progress-bar{right:0;left:auto}.swal2-toast{box-sizing:border-box;grid-column:1/4 !important;grid-row:1/4 !important;grid-template-columns:min-content auto min-content;padding:1em;overflow-y:hidden;border:var(--swal2-toast-border);background:var(--swal2-background);box-shadow:var(--swal2-toast-box-shadow);pointer-events:auto}.swal2-toast>*{grid-column:2}.swal2-toast h2:where(.swal2-title){margin:.5em 1em;padding:0;font-size:1em;text-align:initial}.swal2-toast .swal2-loading{justify-content:center}.swal2-toast input:where(.swal2-input){height:2em;margin:.5em;font-size:1em}.swal2-toast .swal2-validation-message{font-size:1em}.swal2-toast div:where(.swal2-footer){margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-toast button:where(.swal2-close){grid-column:3/3;grid-row:1/99;align-self:center;width:.8em;height:.8em;margin:0;font-size:2em}.swal2-toast div:where(.swal2-html-container){margin:.5em 1em;padding:0;overflow:initial;font-size:1em;text-align:initial}.swal2-toast div:where(.swal2-html-container):empty{padding:0}.swal2-toast .swal2-loader{grid-column:1;grid-row:1/99;align-self:center;width:2em;height:2em;margin:.25em}.swal2-toast .swal2-icon{grid-column:1;grid-row:1/99;align-self:center;width:2em;min-width:2em;height:2em;margin:0 .5em 0 0}.swal2-toast .swal2-icon .swal2-icon-content{display:flex;align-items:center;font-size:1.8em;font-weight:bold}.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-toast div:where(.swal2-actions){justify-content:flex-start;height:auto;margin:0;margin-top:.5em;padding:0 .5em}.swal2-toast button:where(.swal2-styled){margin:.25em .5em;padding:.4em .6em;font-size:1em}.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:1.6em;height:3em;border-radius:50%}.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-0.8em;left:-0.5em;transform:rotate(-45deg);transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-0.25em;left:.9375em;transform-origin:0 1.5em;border-radius:0 4em 4em 0}.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-tip{animation:swal2-toast-animate-success-line-tip .75s}.swal2-toast .swal2-success.swal2-icon-show .swal2-success-line-long{animation:swal2-toast-animate-success-line-long .75s}.swal2-toast.swal2-show{animation:var(--swal2-toast-show-animation)}.swal2-toast.swal2-hide{animation:var(--swal2-toast-hide-animation)}@keyframes swal2-show{0%{transform:translate3d(0, -50px, 0) scale(0.9);opacity:0}100%{transform:translate3d(0, 0, 0) scale(1);opacity:1}}@keyframes swal2-hide{0%{transform:translate3d(0, 0, 0) scale(1);opacity:1}100%{transform:translate3d(0, -50px, 0) scale(0.9);opacity:0}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-0.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.8125em;width:1.5625em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(0.4);opacity:0}50%{margin-top:1.625em;transform:scale(0.4);opacity:0}80%{margin-top:-0.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0deg);opacity:1}}@keyframes swal2-rotate-loading{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}@keyframes swal2-animate-question-mark{0%{transform:rotateY(-360deg)}100%{transform:rotateY(0)}}@keyframes swal2-animate-i-mark{0%{transform:rotateZ(45deg);opacity:0}25%{transform:rotateZ(-25deg);opacity:.4}50%{transform:rotateZ(15deg);opacity:.8}75%{transform:rotateZ(-5deg);opacity:1}100%{transform:rotateX(0);opacity:1}}@keyframes swal2-toast-show{0%{transform:translateY(-0.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(0.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0deg)}}@keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-0.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}</style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+
+  <!-- Google Fonts: 武士の魂が宿る力強い和風・毛筆フォント -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&amp;family=Sawarabi+Mincho&amp;family=Yuji+Boku&amp;display=swap" rel="stylesheet">
+
+  <!-- モジュール化されたCSSスタイルシート (1080p最適化・和風デザイン) -->
+  <link rel="stylesheet" href="css/style.css?v=20261024_allies">
+  <link rel="stylesheet" href="css/encyclopedia.css?v=20261025_bgm">
+  <link rel="stylesheet" href="css/startscreen.css?v=20261025_ui48">
+  <script>
+    // スマホ判定: 画面幅768px以下、またはタッチ主体(pointer:coarse)で短辺500px以下 → スマホ用レスポンシブ新レイアウト
+    (function(){var mm=function(q){return window.matchMedia&&matchMedia(q).matches;};
+      var phone=mm('(max-width: 768px)')||(mm('(pointer: coarse)')&&Math.min(screen.width,screen.height)<=500);
+      window.SENGOKU_IS_PHONE=phone; var de=document.documentElement; de.classList.add('sl-desktop'); if(phone) de.classList.add('sl-phone');})();
+  </script>
+</head>
+<body>
+
+
+<div id="game-container">
+  <!-- ヘッダー (高さ約42px・シンプル洗練) -->
+  <header>
+    <div class="title-group">
+      <h1>戦国天下統一伝</h1>
+      <span class="coalition-header-badge" id="coalitionHeaderBadge" title="⚠ 反覇道包囲網 結成中：諸大名が同盟を結び、貴家打倒に立ち上がりました！前線各城の防備を固めてください！">包囲網</span>
+      <span class="season-info" id="seasonDisplay">
+        <i data-lucide="calendar" style="width:16px; height:16px;"></i>
+        <span>天文20年 (1551) 春</span>
+      </span>
+      <span class="weather-badge" id="weatherDisplay">🌤️ 天候: 晴天</span>
+      <span class="diff-badge-header" id="diffBadgeDisplay" style="color:#f39c12; border-color:#d68910; background:rgba(243, 156, 18, 0.2);">【中級】</span>
+    </div>
+
+    <!-- スマホ用クイックアクションボタングループ：全記録一覧(📖)、操作メニュー(⚙️)、勢力情勢(🏯)を1行で配置 -->
+    <div class="header-mobile-quick-actions" id="headerMobileQuickActions">
+      <button type="button" id="headerChronicleBtnMobile" class="mobile-quick-btn" title="戦況年代記・全記録一覧">
+        <span class="btn-icon">📖</span>
+      </button>
+      <button type="button" id="headerControlsToggle" class="mobile-accordion-btn mobile-quick-btn" aria-expanded="false" aria-controls="headerControls" title="操作メニュー一覧">
+        <span class="btn-icon">⚙️</span>
+      </button>
+      <button type="button" id="clanBarToggle" class="mobile-accordion-btn mobile-quick-btn" aria-expanded="false" aria-controls="clanBar" title="勢力情勢">
+        <span class="btn-icon">🏯</span>
+      </button>
+    </div>
+
+    <div class="header-controls" id="headerControls">
+      <button class="header-btn" id="openJukeboxBtn" title="菅野よう子風 戦国管弦楽 響宴録 (全24曲BGM・効果音鑑賞)" style="border-color:var(--gold-bright); color:var(--gold-bright); font-weight:bold;">
+        <i data-lucide="music" style="width:15px; height:15px;"></i>
+        <span class="btn-label-full">管弦楽</span>
+        <span class="btn-label-short">音楽</span>
+      </button>
+      <button class="header-btn" id="factionListModalBtn" title="各大名の支配勢力と外交・同盟関係を確認" style="border-color:var(--gold-bright); color:var(--gold-bright); font-weight:bold;">
+        <i data-lucide="shield" style="width:15px; height:15px;"></i>
+        <span class="btn-label-full">勢力</span>
+        <span class="btn-label-short">勢力</span>
+      </button>
+      <button class="header-btn" id="provinceListModalBtn" title="全国の領国・城主・石高を確認" style="border-color:var(--gold-bright); color:var(--gold-bright); font-weight:bold;">
+        <i data-lucide="landmark" style="width:15px; height:15px;"></i>
+        <span class="btn-label-full">領国</span>
+        <span class="btn-label-short">領国</span>
+      </button>
+      <button class="header-btn" id="officerListModalBtn" title="配下・参陣武将の一覧と列伝を確認" style="border-color:var(--gold-bright); color:var(--gold-bright); font-weight:bold;">
+        <i data-lucide="users" style="width:15px; height:15px;"></i>
+        <span class="btn-label-full">武将</span>
+        <span class="btn-label-short">武将</span>
+      </button>
+      <button class="header-btn" id="governModalBtn" title="複数の国をまとめて委任統治" style="border-color:var(--gold-bright); color:var(--gold-bright); font-weight:bold;">
+        <i data-lucide="briefcase" style="width:15px; height:15px;"></i>
+        <span class="btn-label-full">委任</span>
+        <span class="btn-label-short">委任</span>
+      </button>
+      <button class="header-btn" id="spectatorToggleBtn" title="プレイヤー操作をやめ、AI同士の戦いを見守る観戦モードに切り替えます" style="border-color:#5dade2; color:#d4e6f1; font-weight:bold;">
+        <i data-lucide="eye" style="width:15px; height:15px;"></i>
+        <span class="btn-label-full">見守り</span>
+        <span class="btn-label-short">見守り</span>
+      </button>
+      <button class="header-btn hidden" id="spectatorAutoPlayPauseBtn" title="観戦オート進行を一時停止します" style="border-color:#e74c3c; color:#ff7675; font-weight:bold;">
+        <span id="spectatorPauseIcon" style="font-size:10pt; line-height:1; display:inline-flex; align-items:center;">⏸</span>
+        <span class="btn-label-full" id="spectatorPauseTextFull">停止</span>
+        <span class="btn-label-short" id="spectatorPauseTextShort">停止</span>
+      </button>
+      <button class="header-btn hidden" id="spectatorSelectDaimyoBtn" title="任意の大名を選んでプレイヤーとして参戦します" style="border-color:#e67e22; color:#ffd700; font-weight:bold;">
+        <i data-lucide="swords" style="width:15px; height:15px;"></i>
+        <span class="btn-label-full">途中参加</span>
+        <span class="btn-label-short">途中参加</span>
+      </button>
+      <button class="header-btn" id="saveGameBtn" title="戦況セーブ・ロード">
+        <i data-lucide="save" style="width:15px; height:15px;"></i>
+        <span class="btn-label-full">セーブ</span>
+        <span class="btn-label-short">セーブ</span>
+      </button>
+      <button class="sound-btn" id="soundToggleBtn">
+        <span id="soundIcon">🔊</span> <span id="soundText">音: ON</span>
+      </button>
+      <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0.75" title="主音量">
+    </div>
+  </header>
+
+  <!-- 反覇道包囲網警報バナー -->
+  <div class="coalition-banner" id="coalitionBanner">
+    <span class="coalition-text-full">⚠【反覇道包囲網 結成】諸大名が同盟を結び、貴家打倒に立ち上がりました！前線各城の防備を固めてください！</span>
+    <span class="coalition-text-short">⚠【包囲網結成】諸大名が貴家包囲網を結成！国境防備を固めよ</span>
+  </div>
+
+  <!-- 天下観戦モード（一行増やさずヘッダーで切り替えるためバナーは非表示） -->
+  <div id="spectatorBanner" class="spectator-banner" style="display:none !important;"></div>
+
+  <!-- 戦況年代記（幅広バー：一つ下のボックス上端・覇道進捗の上・クリックで全年代記モーダル展開） -->
+  <div class="chronicle-wide-bar" id="headerChronicleWrap" title="クリックで全年代記記録を展開">
+    <div class="chronicle-bar-label" id="openChronicleBtn">
+      <i data-lucide="scroll" style="width:16px; height:16px;"></i>
+      <span>戦況年代記</span>
+      <i data-lucide="chevron-down" style="width:13px; height:13px; opacity:0.8;"></i>
+    </div>
+    <div class="chronicle-bar-box" id="gameLog">
+      <div class="log-entry important">戦国乱世の幕が開きました。当主を選択して覇道を開始してください。</div>
+    </div>
+    <div class="chronicle-bar-hint">
+      <span>📜 全記録一覧</span>
+    </div>
+  </div>
+
+  <!-- 勢力ステータスバー (高さ約46px・7分割・武将省略) -->
+  <div class="clan-bar" id="clanBar">
+    <div class="stat-card" style="display:flex; flex-direction:row; align-items:center; gap:8px; overflow:hidden; padding:2px 6px;">
+      <svg id="headerKamonSvg" width="34" height="34" viewBox="0 0 32 32" style="border-radius:50%; box-shadow:0 0 6px rgba(212,175,55,0.5); flex-shrink:0;">
+        <circle cx="16" cy="16" r="15" fill="#d4ac0d" stroke="#ffd700" stroke-width="2"></circle>
+        <text x="16" y="21" font-family="'Yu Mincho', serif" font-size="15" font-weight="bold" fill="#fff" text-anchor="middle">長</text>
+      </svg>
+      <div style="flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; gap:1px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; line-height:1.15;">
+          <span id="statDaimyo" style="font-size:12.5pt; font-weight:bold; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">--</span>
+          <span id="statPersonalityBadge" style="font-size:11pt; padding:1px 5px; border-radius:3px; background:rgba(52,152,219,0.18); color:#88ccff; border:1px solid rgba(52,152,219,0.4); white-space:nowrap;">--</span>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; line-height:1.15;">
+          <span id="statClan" style="font-size:11.5pt; color:var(--gold-bright); font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">--</span>
+          <span id="statAbilities" style="font-size:11.5pt; color:#e0e0e0; white-space:nowrap; font-family:sans-serif;">
+            <span style="color:#ff8888; font-weight:bold;">武<span id="statMil">--</span></span>
+            <span style="color:#88ff88; font-weight:bold; margin-left:5px;">内<span id="statPol">--</span></span>
+            <span style="color:#88ccff; font-weight:bold; margin-left:5px;">知<span id="statStrat">--</span></span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card" id="probCard" style="border-color: #d4af37;">
+      <span class="label"><i data-lucide="target" style="width:13px; height:13px;"></i> 覇道進捗</span>
+      <span class="value" id="statProbability" style="color:#ffd700;">20%</span>
+      <div class="prob-bar-track" style="margin-top:1px; height:4px;">
+        <div class="prob-bar-fill" id="statProbBar" style="width: 20%;"></div>
+      </div>
+      <span class="sub-value" id="statProbDesc">天下統一確率 二割</span>
+    </div>
+    <div class="stat-card">
+      <span class="label"><i data-lucide="map" style="width:13px; height:13px;"></i> 支配領国</span>
+      <span class="value" id="statProvinces" style="color:#fff;">1 / 77 国</span>
+      <span class="sub-value" id="statProgression">天下統一まで 76国</span>
+    </div>
+    <div class="stat-card ap-highlight">
+      <span class="label"><i data-lucide="scroll" style="width:13px; height:13px;"></i> 軍令権<span class="stat-label-sub"> (行動力)</span></span>
+      <span class="value" id="statAp" style="color:var(--gold-bright);">3 / 3</span>
+      <div class="ap-tokens-wrap" id="apTokensContainer" style="margin-top:1px;"></div>
+    </div>
+    <div class="stat-card">
+      <span class="label"><i data-lucide="coins" style="width:13px; height:13px;"></i> 備蓄金<span class="stat-label-sub"> (貫)</span></span>
+      <span class="value" id="statGold" style="color:#ffd700;">400</span>
+      <span class="sub-value">夏・冬に商業運上</span>
+    </div>
+    <div class="stat-card">
+      <span class="label"><i data-lucide="wheat" style="width:13px; height:13px;"></i> 兵糧米<span class="stat-label-sub"> (石)</span></span>
+      <span class="value" id="statRice" style="color:#ffcc66;">600</span>
+      <span class="sub-value">秋に収穫 / 毎季消費</span>
+    </div>
+    <div class="stat-card">
+      <span class="label"><i data-lucide="swords" style="width:13px; height:13px;"></i> 総動員兵力</span>
+      <span class="value" id="statTroops" style="color:#ff8888;">5,000</span>
+      <span class="sub-value">全領地駐留総数</span>
+    </div>
+  </div>
+
+  <!-- メイン画面：精緻な50か国SVGマップ ＋ 指揮卓 (24インチ1画面収容) -->
+  <div class="main-layout">
+    <!-- 50か国精緻SVG日本地図 (国名・兵力テキスト非表示、家紋バッジのみ配置) -->
+    <div class="map-wrapper" id="mapWrapper">
+      <div class="map-controls-group">
+        <button class="map-ctrl-btn" id="mapZoomInBtn" title="拡大 (ホイール上)">＋</button>
+        <button class="map-ctrl-btn" id="mapZoomOutBtn" title="縮小 (ホイール下)">−</button>
+        <button class="map-ctrl-btn" id="mapResetBtn" title="全体表示リセット">⟲</button>
+      </div>
+      <svg id="sengokuMapSvg" viewBox="17 90 966 500" class="sengoku-svg-map">
+        <defs id="mapSvgDefs"></defs>
+
+        <g id="mapPanZoomLayer">
+          <!-- 街道・航路接続線グループ -->
+          <g id="mapRoadsGroup"></g>
+          <!-- 50領国ポリゴングループ -->
+          <g id="mapProvincesGroup"></g>
+          <!-- 大名家紋バッジグループ -->
+          <g id="mapMarkersGroup"></g>
+        </g>
+      </svg>
+      
+      <!-- 地図表示モード切替 ＆ 凡例パネル（右上端にピクトグラムでコンパクト表示） -->
+      <div class="map-heat-panel" id="mapHeatPanel">
+        <div class="map-heat-filter" id="mapHeatFilter" title="地図表示モード切替">
+          <button type="button" class="map-heat-btn active" data-heat="owner" title="領国（各大名家の領国色）" aria-label="領国">
+            <span class="heat-icon">🏯</span>
+          </button>
+          <button type="button" class="map-heat-btn" data-heat="diplomacy" title="外交（同盟・敵対関係図）" aria-label="外交">
+            <span class="heat-icon">🤝</span>
+          </button>
+          <button type="button" class="map-heat-btn" data-heat="troops" title="兵力（駐留軍勢ヒートマップ）" aria-label="兵力">
+            <span class="heat-icon">⚔️</span>
+          </button>
+          <button type="button" class="map-heat-btn" data-heat="rice" title="石高（領国石高ヒートマップ）" aria-label="石高">
+            <span class="heat-icon">🌾</span>
+          </button>
+        </div>
+        <div class="map-heat-legend" id="mapHeatLegend">
+          <span class="heat-note">各大名家の領国色</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右側：領地軍情 & 指令コマンド -->
+    <div class="side-panel">
+      <!-- 領地詳細情報 ＆ 統治方針設定 -->
+      <div class="panel-box prov-panel">
+        <div class="panel-title prov-panel-title">
+          <div class="prov-panel-title-left">
+            <span>領国軍情</span>
+            <div id="mobileGovernPolicyWrap" class="mobile-govern-policy-wrap">
+              <select id="mobileProvGovernSelect" class="mobile-govern-select" aria-label="統治方針">
+                <option value="direct">👑直轄</option>
+                <option value="military">⚔️軍事</option>
+                <option value="domestic">🌾内政</option>
+                <option value="balanced">⚖️均衡</option>
+                <option value="logistics">🚚兵站</option>
+              </select>
+            </div>
+          </div>
+          <div class="prov-panel-title-right">
+            <span id="selectedProvBadge" style="font-size: 12pt; color:var(--gold);">選択なし</span>
+            <button id="btnMobileCastleLore" class="btn-castle-lore is-hidden" title="城の解説を見る" aria-label="城の解説">🏯</button>
+          </div>
+        </div>
+        <div class="province-detail" id="provDetailBox">
+          <p style="color:var(--text-muted); text-align:center; padding: 10px 0; font-size: 12pt;">
+            地図上の領国をクリックしてください
+          </p>
+        </div>
+      </div>
+
+      <!-- 厳選4大コマンドパネル (直感的で迷わない少数精鋭) -->
+      <div class="panel-box cmd-panel">
+        <div class="panel-title">
+          <span>軍令発令所</span>
+          <span style="font-size: 12pt; color:var(--gold-bright);" id="actionCountLabel">令状消費: 各1</span>
+        </div>
+
+        <div class="commands-grid">
+          <!-- 1. 最重要：出陣侵攻 -->
+          <button class="cmd-btn" id="cmdAttack" disabled="" style="border-color:#c0392b; background:linear-gradient(135deg, rgba(192,57,43,0.35), rgba(0,0,0,0.5));">
+            <div class="cmd-btn-main">
+              <span class="cmd-title"><span class="cmd-icon">🔥</span>出陣侵攻<span class="cmd-sub-bracket"> (隣接敵国へ進撃)</span></span>
+              <span class="cost cmd-cost" style="color:#ffd700; font-weight:bold;">出陣兵糧消費</span>
+            </div>
+            <div class="cmd-sub-desc" style="color:#ddd;">
+              出陣兵力に応じた兵糧消費 ｜ 敵城へ決戦進撃！
+            </div>
+          </button>
+
+          <!-- 2. 内政振興 -->
+          <button class="cmd-btn" id="cmdDomestic" disabled="" style="border-color:#27ae60;">
+            <div class="cmd-btn-main">
+              <span class="cmd-title" style="color:#a9dfbf;"><span class="cmd-icon">🌾</span>内政振興<span class="cmd-sub-bracket"> (新田開墾・商業)</span></span>
+              <span class="cost cmd-cost" style="color:#ccc;">金50 (糧なし)</span>
+            </div>
+            <div class="cmd-sub-desc" style="color:#ccc;">
+              石高+20〜28, 商業+20〜28 (当主内政力依存)
+            </div>
+          </button>
+
+          <!-- 3. 軍備増強 -->
+          <button class="cmd-btn" id="cmdMilitary" disabled="" style="border-color:#2980b9;">
+            <div class="cmd-btn-main">
+              <span class="cmd-title" style="color:#aed6f1;"><span class="cmd-icon">⚔️</span>軍備増強<span class="cmd-sub-bracket"> (徴兵・士気・城普請)</span></span>
+              <span class="cost cmd-cost" style="color:#ccc;">金40 (糧なし)</span>
+            </div>
+            <div class="cmd-sub-desc" style="color:#ccc;">
+              兵力+300〜500, 士気+, 城防+8 (当主武勇依存)
+            </div>
+          </button>
+
+          <!-- 4. 敵国調略 -->
+          <button class="cmd-btn" id="cmdStratagem" disabled="" style="border-color:#8e44ad;">
+            <div class="cmd-btn-main">
+              <span class="cmd-title" style="color:#d7bde2;"><span class="cmd-icon">🗡️</span>敵国調略<span class="cmd-sub-bracket"> (流言・放火・工作)</span></span>
+              <span class="cost cmd-cost" style="color:#ccc;">金40 (糧なし)</span>
+            </div>
+            <div class="cmd-sub-desc" style="color:#ccc;">
+              敵士気-15〜22, 城防-12〜18 (当主知略依存)
+            </div>
+          </button>
+
+          <!-- 5. 人材登用 (浪人招聘) -->
+          <button class="cmd-btn" id="cmdRecruit" disabled="" style="border-color:var(--gold-bright); background:linear-gradient(135deg, rgba(212,175,55,0.18), rgba(0,0,0,0.5));">
+            <div class="cmd-btn-main">
+              <span class="cmd-title" style="color:var(--gold-bright);"><span class="cmd-icon">🤝</span>人材登用<span class="cmd-sub-bracket"> (浪人招聘・仕官)</span></span>
+              <span class="cost cmd-cost" style="color:#ffd700; font-weight:bold;">金40 (令状1)</span>
+            </div>
+            <div class="cmd-sub-desc" style="color:#ccc;">
+              各地の浪人を捜索・招聘し配下武将に加える
+            </div>
+          </button>
+
+          <!-- 補助：兵力再配置 -->
+          <button class="cmd-btn" id="cmdTransfer" disabled="" style="border-color:#555;">
+            <div class="cmd-btn-main">
+              <span class="cmd-title"><span class="cmd-icon">🚚</span>兵力移動<span class="cmd-sub-bracket"> (前線再配置)</span></span>
+              <span class="cost cmd-cost" style="color:#aaa;">自領国間再配</span>
+            </div>
+            <div class="cmd-sub-desc" style="color:#aaa;">
+              安全な後方から前線へ兵力を即時移送
+            </div>
+          </button>
+        </div>
+
+        <!-- 季節進行＆オート進行コントロール（PCでは縦並び、スマホでは洗練された下部フローティングドックに統合） -->
+        <div class="bottom-action-dock" id="bottomActionDock">
+          <button class="turn-btn" id="nextTurnBtn">
+            <span class="turn-btn-icon">⚔️</span>
+            <span class="turn-btn-text">季節を進める</span>
+            <span class="turn-btn-sub">(軍令権回復・次期へ)</span>
+          </button>
+
+          <!-- オートプレーモード設定パネル -->
+          <div class="autoplay-panel" id="autoPlayPanel" title="仕官の申し出は自動承諾。歴史イベントは発生時に一時停止し、選択後に再開します">
+            <div class="autoplay-header">
+              <div class="autoplay-title">
+                <span class="autoplay-indicator" id="autoPlayIndicator"></span>
+                <span class="autoplay-label" id="autoPlayLabel">⏩ 季節オート進行</span>
+                <span class="autoplay-info-icon" style="font-size:9pt; color:#c8b896; cursor:help;" title="仕官の申し出は自動承諾。歴史イベントは発生時に一時停止し、選択後に再開します">ℹ️</span>
+              </div>
+              <button type="button" class="autoplay-toggle-btn" id="autoPlayToggleBtn">
+                <span id="autoPlayBtnIcon">▶</span>
+                <span id="autoPlayBtnText">開始</span>
+              </button>
+            </div>
+            <div class="autoplay-speed-row">
+              <span class="autoplay-speed-title">進行速度:</span>
+              <input type="range" class="autoplay-slider" id="autoPlaySpeedSlider" min="0.1" max="3.0" step="0.1" value="0.5">
+              <span class="autoplay-speed-val" id="autoPlaySpeedVal">0.5秒</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- モーダル群 (すべて12ptで読みやすく平易に設計) -->
+<!-- ============================================== -->
+
+<!-- 1. ゲーム開始・シナリオ＆大名家選択モーダル (全42大歴史シナリオ) -->
+<!-- マウスオーバー（ホバー）時の発光エフェクト -->
+<style>
+  .scenario-btn {
+    transition: all 0.2s ease; /* ふわっと光るアニメーション */
+  }
+  .scenario-btn:hover {
+    border-color: #ffd700 !important;
+    background: rgba(212, 175, 55, 0.15) !important;
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  }
+  .diff-option-btn {
+    transition: all 0.2s ease;
+  }
+  .diff-option-btn:hover {
+    border-color: #ffd700 !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+</style>
+
+<!-- 1. ゲーム開始・シナリオ＆大名家選択モーダル (全54大歴史シナリオ・年代順網羅) -->
+<div class="modal-overlay" id="startModal">
+  <div class="modal-card" style="width: 96vw; max-width: 1760px; max-height: 94vh; padding: 16px 24px; box-sizing: border-box; position: relative;">
+    <div class="start-header-actions">
+    <!-- 初期選択画面 右上：記録読込（オープニングの左隣）（前回の戦況から再開・記録枠・ファイル読込を一つのダイアログに統合） -->
+    　　<!-- 武将名鑑・大名名鑑（記録読込の左隣） -->
+    <button type="button" id="openOfficerMeikanBtn" class="load-record-top-btn meikan-top-btn" title="登場武将を名前・大名家・年代・国で検索">
+      <span class="opening-btn-icon">📜</span>
+      <span class="opening-btn-text">武将名鑑</span>
+    </button>
+    <button type="button" id="openClanMeikanBtn" class="load-record-top-btn meikan-top-btn" title="大名家の詳細とシナリオ別支配域の変遷">
+      <span class="opening-btn-icon">🏯</span>
+      <span class="opening-btn-text">大名名鑑</span>
+    </button>
+    <button type="button" id="openLoadDialogBtn" class="load-record-top-btn" title="前回の戦況から再開／記録枠・ファイルから読込">
+      <span class="opening-btn-icon">📂</span>
+      <span class="opening-btn-text">記録読込</span>
+    </button>
+    <!-- 初期選択画面 右上：オープニング絵巻鑑賞ボタン (武将風雲録風) -->
+    <button type="button" id="startOpeningMovieBtn" class="opening-movie-top-btn" title="戦国天下統一伝 オープニングを鑑賞（信長の野望 武将風雲録風）">
+      <span class="opening-btn-icon">🎬</span>
+      <span class="opening-btn-text">オープニング</span>
+    </button>
+    <a href="index.html" class="load-record-top-btn meikan-top-btn" style="text-decoration:none; display:inline-flex; align-items:center;" title="日本史 勢力図・人物一覧（トップページ）へ戻る">
+  <span class="opening-btn-icon">🗾</span>
+  <span class="opening-btn-text">日本通史へ戻る</span>
+</a></div>
+    <div class="modal-title start-game-title" style="font-size: 16pt; font-weight: bold; text-align: center; color: var(--gold-bright); margin-bottom: 12px;">❖ 戦国天下統一伝 ❖</div>
+
+    <div class="scenario-intro-desc" style="text-align:center; font-size: 12pt; color:var(--text-muted); margin-bottom:8px;">
+      時代と覇業を率いる大名家を選択してください。選択したシナリオに応じて領国支配図・兵力・情勢・選択可能大名が劇的に変化します。
+    </div>
+
+    <!-- 歴史シナリオ選択セレクター (全60大動乱・年代順完全網羅) -->
+    <div style="margin-bottom: 6px;">
+      <div style="font-size: 12pt; font-weight:bold; color:var(--gold-bright); margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+        <span>📜 歴史シナリオ選択<span class="scenario-select-sub"> (全60大動乱・神武東征から西南戦争まで)</span></span>
+      </div>
+
+      <!-- 時代別クイック切替タブ -->
+      <div class="scenario-era-tabs" id="scenarioEraTabs">
+        <button class="era-tab-btn active" data-era="all">❖ すべて (全動乱+仮想)</button>
+        <button class="era-tab-btn" data-era="ancient">古代・平安 (前663〜1159)</button>
+        <button class="era-tab-btn" data-era="medieval">中世武士 (1180〜1391)</button>
+        <button class="era-tab-btn" data-era="sengoku_early">戦国黎明 (1400〜1546)</button>
+        <button class="era-tab-btn" data-era="sengoku_climax">戦国乱世 (1555〜1577)</button>
+        <button class="era-tab-btn" data-era="unification">天下統一 (1582〜1614)</button>
+        <button class="era-tab-btn" data-era="edo_bakumatsu">泰平・幕末 (1637〜1877)</button>
+        <button class="era-tab-btn" data-era="virtual">🎲 仮想乱世</button>
+      </div>
+
+      <!-- 全59シナリオ年代順スクロールグリッド -->
+      <div class="scenario-selector-container">
+        <div class="scenario-selector-group" id="scenarioSelectorGroup">
+        <button class="scenario-btn" data-scen-id="-663" data-era="ancient">
+          <span class="scen-badge">前663年</span>
+          <strong class="scen-title">神武東征</strong>
+          <span class="scen-sub">神武天皇と長髄彦</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="97" data-era="ancient">
+          <span class="scen-badge">97年</span>
+          <strong class="scen-title">ヤマトタケル西征</strong>
+          <span class="scen-sub">熊襲・出雲討伐</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="240" data-era="ancient">
+          <span class="scen-badge">240年</span>
+          <strong class="scen-title">邪馬台国九州説</strong>
+          <span class="scen-sub">卑弥呼vs卑弥弓呼</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="240_yamato" data-era="ancient">
+          <span class="scen-badge">240年</span>
+          <strong class="scen-title">邪馬台国大和説</strong>
+          <span class="scen-sub">卑弥呼とヤマト王権</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="645" data-era="ancient">
+          <span class="scen-badge">645年</span>
+          <strong class="scen-title">乙巳の変・大化の改新</strong>
+          <span class="scen-sub">中大兄皇子と蘇我入鹿</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="672" data-era="ancient">
+          <span class="scen-badge">672年</span>
+          <strong class="scen-title">壬申の乱</strong>
+          <span class="scen-sub">大海人皇子と大友皇子</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="801" data-era="ancient">
+          <span class="scen-badge">801年</span>
+          <strong class="scen-title">東北征討</strong>
+          <span class="scen-sub">田村麻呂vsアテルイ</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="939" data-era="ancient">
+          <span class="scen-badge">939年</span>
+          <strong class="scen-title">承平・天慶の乱</strong>
+          <span class="scen-sub">将門・純友</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1019" data-era="ancient">
+          <span class="scen-badge">1019年</span>
+          <strong class="scen-title">刀伊の入寇</strong>
+          <span class="scen-sub">藤原隆家・大宰府</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1028" data-era="ancient">
+          <span class="scen-badge">1028年</span>
+          <strong class="scen-title">平忠常の乱</strong>
+          <span class="scen-sub">房総の乱</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1056" data-era="ancient">
+          <span class="scen-badge">1056年</span>
+          <strong class="scen-title">前九年の役</strong>
+          <span class="scen-sub">黄海激突・奥羽</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1087" data-era="ancient">
+          <span class="scen-badge">1087年</span>
+          <strong class="scen-title">後三年の役</strong>
+          <span class="scen-sub">義家・金沢柵</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1156" data-era="ancient">
+          <span class="scen-badge">1156年</span>
+          <strong class="scen-title">保元の乱</strong>
+          <span class="scen-sub">清盛と義朝</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1159" data-era="ancient">
+          <span class="scen-badge">1159年</span>
+          <strong class="scen-title">平治の乱</strong>
+          <span class="scen-sub">清盛と義朝</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1180" data-era="medieval">
+          <span class="scen-badge">1180年</span>
+          <strong class="scen-title">治承・寿永の乱</strong>
+          <span class="scen-sub">頼朝の挙兵</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1183" data-era="medieval">
+          <span class="scen-badge">1183年</span>
+          <strong class="scen-title">義仲入京</strong>
+          <span class="scen-sub">木曾義仲</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1184" data-era="medieval">
+          <span class="scen-badge">1184年</span>
+          <strong class="scen-title">一の谷の戦い</strong>
+          <span class="scen-sub">源義経</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1185" data-era="medieval">
+          <span class="scen-badge">1185年</span>
+          <strong class="scen-title">壇ノ浦の戦い</strong>
+          <span class="scen-sub">平家滅亡</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1189" data-era="medieval">
+          <span class="scen-badge">1189年</span>
+          <strong class="scen-title">義経追討</strong>
+          <span class="scen-sub">奥州合戦</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1221" data-era="medieval">
+          <span class="scen-badge">1221年</span>
+          <strong class="scen-title">承久の乱</strong>
+          <span class="scen-sub">後鳥羽上皇</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1274" data-era="medieval">
+          <span class="scen-badge">1274年</span>
+          <strong class="scen-title">文永の役（元寇）</strong>
+          <span class="scen-sub">時宗と蒙古</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1331" data-era="medieval">
+          <span class="scen-badge">1331年</span>
+          <strong class="scen-title">元弘の乱</strong>
+          <span class="scen-sub">千早城の戦</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1333" data-era="medieval">
+          <span class="scen-badge">1333年</span>
+          <strong class="scen-title">建武の新政</strong>
+          <span class="scen-sub">幕府滅亡</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1336" data-era="medieval">
+          <span class="scen-badge">1336年</span>
+          <strong class="scen-title">湊川の戦い</strong>
+          <span class="scen-sub">建武の内乱</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1350" data-era="medieval">
+          <span class="scen-badge">1350年</span>
+          <strong class="scen-title">観応の擾乱</strong>
+          <span class="scen-sub">尊氏vs直義</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1359" data-era="medieval">
+          <span class="scen-badge">1359年</span>
+          <strong class="scen-title">筑後川の戦い</strong>
+          <span class="scen-sub">九州の戦い</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1391" data-era="medieval">
+          <span class="scen-badge">1391年</span>
+          <strong class="scen-title">明徳の乱</strong>
+          <span class="scen-sub">義満vs山名</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1400" data-era="sengoku_early">
+          <span class="scen-badge">1400年</span>
+          <strong class="scen-title">伊達政宗の乱</strong>
+          <span class="scen-sub">伊達政宗の乱</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1438" data-era="sengoku_early">
+          <span class="scen-badge">1438年</span>
+          <strong class="scen-title">永享の乱</strong>
+          <span class="scen-sub">万人恐怖</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1457" data-era="sengoku_early">
+          <span class="scen-badge">1457年</span>
+          <strong class="scen-title">堀越公方成立</strong>
+          <span class="scen-sub">享徳の乱</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1467" data-era="sengoku_early">
+          <span class="scen-badge">1467年</span>
+          <strong class="scen-title">応仁の乱</strong>
+          <span class="scen-sub">下剋上開幕</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1493" data-era="sengoku_early">
+          <span class="scen-badge">1493年</span>
+          <strong class="scen-title">明応の政変</strong>
+          <span class="scen-sub">早雲伊豆討入</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1495" data-era="sengoku_early">
+          <span class="scen-badge">1495年</span>
+          <strong class="scen-title">北条早雲の野望</strong>
+          <span class="scen-sub">北条早雲</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1531" data-era="sengoku_early">
+          <span class="scen-badge">1531年</span>
+          <strong class="scen-title">大物崩れの戦い</strong>
+          <span class="scen-sub">細川晴元と高国</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1538" data-era="sengoku_early">
+          <span class="scen-badge">1538年</span>
+          <strong class="scen-title">国府台合戦</strong>
+          <span class="scen-sub">小弓公方vs北条</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1546" data-era="sengoku_early">
+          <span class="scen-badge">1546年</span>
+          <strong class="scen-title">河越夜戦</strong>
+          <span class="scen-sub">氏康乾坤一擲</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1555" data-era="sengoku_climax">
+          <span class="scen-badge">1555年</span>
+          <strong class="scen-title">厳島の戦い</strong>
+          <span class="scen-sub">毛利元就の奇襲</span>
+        </button>
+        <button class="scenario-btn selected" data-scen-id="1560" data-era="sengoku_climax">
+          <span class="scen-badge">1560年</span>
+          <strong class="scen-title">桶狭間の戦い</strong>
+          <span class="scen-sub">風雲児信長</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1570" data-era="sengoku_climax">
+          <span class="scen-badge">1570年</span>
+          <strong class="scen-title">信長包囲網</strong>
+          <span class="scen-sub">元亀の死闘</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1573" data-era="sengoku_climax">
+          <span class="scen-badge">1573年</span>
+          <strong class="scen-title">三方ヶ原の戦い</strong>
+          <span class="scen-sub">武田信玄の西上</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1576" data-era="sengoku_climax">
+          <span class="scen-badge">1576年</span>
+          <strong class="scen-title">木津川口の戦い</strong>
+          <span class="scen-sub">毛利水軍vs織田</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1577" data-era="sengoku_climax">
+          <span class="scen-badge">1577年</span>
+          <strong class="scen-title">手取川の戦い</strong>
+          <span class="scen-sub">謙信vs織田勝家</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1582" data-era="unification">
+          <span class="scen-badge">1582年</span>
+          <strong class="scen-title">本能寺の変前夜</strong>
+          <span class="scen-sub">覇王の最期</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1584" data-era="unification">
+          <span class="scen-badge">1584年</span>
+          <strong class="scen-title">小牧長久手の戦い</strong>
+          <span class="scen-sub">秀吉vs家康</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1587" data-era="unification">
+          <span class="scen-badge">1587年</span>
+          <strong class="scen-title">秀吉の九州征伐</strong>
+          <span class="scen-sub">島津vs豊臣</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1590" data-era="unification">
+          <span class="scen-badge">1590年</span>
+          <strong class="scen-title">小田原征伐</strong>
+          <span class="scen-sub">天下統一</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1592" data-era="unification">
+          <span class="scen-badge">1592年</span>
+          <strong class="scen-title">文禄の役</strong>
+          <span class="scen-sub">名護屋集結</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1600" data-era="unification">
+          <span class="scen-badge">1600年</span>
+          <strong class="scen-title">関ヶ原の戦い</strong>
+          <span class="scen-sub">天下分け目</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1614" data-era="unification">
+          <span class="scen-badge">1614年</span>
+          <strong class="scen-title">大坂の陣</strong>
+          <span class="scen-sub">真田丸咆哮</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1637" data-era="edo_bakumatsu">
+          <span class="scen-badge">1637年</span>
+          <strong class="scen-title">島原の乱</strong>
+          <span class="scen-sub">天草四郎</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1651" data-era="edo_bakumatsu">
+          <span class="scen-badge">1651年</span>
+          <strong class="scen-title">慶安の変</strong>
+          <span class="scen-sub">由比正雪</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1702" data-era="edo_bakumatsu">
+          <span class="scen-badge">1702年</span>
+          <strong class="scen-title">赤穂浪士討ち入り</strong>
+          <span class="scen-sub">大石内蔵助</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1721" data-era="edo_bakumatsu">
+          <span class="scen-badge">1721年</span>
+          <strong class="scen-title">享保の改革</strong>
+          <span class="scen-sub">徳川吉宗</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1789" data-era="edo_bakumatsu">
+          <span class="scen-badge">1789年</span>
+          <strong class="scen-title">寛政の改革</strong>
+          <span class="scen-sub">松平定信</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1837" data-era="edo_bakumatsu">
+          <span class="scen-badge">1837年</span>
+          <strong class="scen-title">大塩平八郎の乱</strong>
+          <span class="scen-sub">大坂蜂起</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1853" data-era="edo_bakumatsu">
+          <span class="scen-badge">1853年</span>
+          <strong class="scen-title">ペリー来航</strong>
+          <span class="scen-sub">黒船浦賀</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1860" data-era="edo_bakumatsu">
+          <span class="scen-badge">1860年</span>
+          <strong class="scen-title">桜田門外の変</strong>
+          <span class="scen-sub">井伊直弼</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1866" data-era="edo_bakumatsu">
+          <span class="scen-badge">1866年</span>
+          <strong class="scen-title">薩長同盟</strong>
+          <span class="scen-sub">龍馬奔走</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1868" data-era="edo_bakumatsu">
+          <span class="scen-badge">1868年</span>
+          <strong class="scen-title">戊辰戦争</strong>
+          <span class="scen-sub">維新胎動</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="1877" data-era="edo_bakumatsu">
+          <span class="scen-badge">1877年</span>
+          <strong class="scen-title">西南戦争</strong>
+          <span class="scen-sub">西郷挙兵</span>
+        </button>
+        <button class="scenario-btn" data-scen-id="allstar_feudal" data-era="virtual" style="border-color:#d4af37; background:linear-gradient(135deg, rgba(70,50,20,0.7), rgba(40,25,10,0.8));">
+          <span class="scen-badge" style="background:linear-gradient(45deg,#d4af37,#e67e22); color:#fff;">仮想</span>
+          <strong class="scen-title" style="color:#ffd700;">全領国オールスター群雄割拠</strong>
+          <span class="scen-sub" style="color:#ffeaa7;">全国77国・一国一大名</span>
+        </button>
+        </div>
+      </div>
+    
+
+    <!-- シナリオ詳細解説ボックス -->
+      <div class="scenario-desc-box" id="scenarioDescBox" style="background:rgba(20,14,10,0.95); border:1px solid var(--border-gold); border-radius:4px; padding:10px 16px; margin-top:6px; margin-bottom: 6px; font-size: 12pt; line-height:1.35;">
+        <!-- JSで動的生成 -->
+      </div>
+    </div>
+
+    <!-- 難易度選択 (上下圧縮・1行配置) -->
+    <div class="diff-selector-wrapper" style="background:rgba(0,0,0,0.4); border:1px solid #553e2a; border-radius:4px; padding:4px 12px; margin: 6px 0 6px 0; display:flex; align-items:center; gap:12px;">
+      <span class="diff-selector-label" style="font-size: 12pt; font-weight:bold; color:var(--gold-bright); flex-shrink:0;">⚙️ 難易度:</span>
+      <div class="diff-selector-group" style="flex:1; display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;">
+        <button class="diff-option-btn" data-diff="easy" style="padding:2px 8px; font-size:12pt;" title="【初級：天下泰平】金800/米1200、自軍内政収入+25%、敵AI徴兵速度0.8倍(穏健)、包囲網発生率極小">
+          <span class="diff-btn-name">【初級】</span><span class="diff-btn-sub">天下泰平 <span style="color:#aaa; font-size:12pt;">(金800/米1200)</span></span>
+        </button>
+        <button class="diff-option-btn selected" data-diff="normal" style="padding:2px 8px; font-size:12pt;" title="【中級：群雄割拠】金500/米800、標準バランス、敵AI徴兵・進攻速度1.0倍、12カ国制覇で包囲網発生">
+          <span class="diff-btn-name">【中級】</span><span class="diff-btn-sub">群雄割拠 <span style="color:#aaa; font-size:12pt;">(金500/米800)</span></span>
+        </button>
+        <button class="diff-option-btn" data-diff="hard" style="padding:2px 8px; font-size:12pt;" title="【上級：風雲再起】金350/米500、敵AI徴兵速度1.3倍、好戦度+20%、10カ国制覇で包囲網早期結成">
+          <span class="diff-btn-name">【上級】</span><span class="diff-btn-sub">風雲再起 <span style="color:#aaa; font-size:12pt;">(金350/米500)</span></span>
+        </button>
+        <button class="diff-option-btn" data-diff="hell" style="padding:2px 8px; font-size:12pt;" title="【修羅/超級：戦国地獄】金250/米300、敵AI徴兵速度1.6倍、敵軍攻撃力+20%、全大名が敵対、包囲網頻発">
+          <span class="diff-btn-name">【修羅】</span><span class="diff-btn-sub">戦国地獄 <span style="color:#ff9999; font-size:12pt;">(包囲網)</span></span>
+        </button>
+      </div>
+    </div>
+    <!-- 大名選択グリッド -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:6px 0 4px 0; flex-wrap:wrap; gap:8px;">
+      <div style="font-size: 12pt; font-weight:bold; color:var(--gold-bright);">
+        🏯 選択可能大名一覧<span class="daimyo-list-sub"> (各大名をクリックすると歴史情勢・戦略解説図が表示され出陣できます)</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div id="selectedDaimyoBadge" style="font-size: 12pt; color:#ffd700; background:rgba(0,0,0,0.6); padding:4px 12px; border-radius:3px; border:1px solid #d4af37;">
+          大名をクリックして出陣へ
+        </div>
+      </div>
+    </div>
+    <div class="daimyo-grid" id="daimyoGrid"></div>
+  </div>
+</div>
+
+<!-- 2. 領国一括委任モーダル (軍事型、内政型、バランス型、兵站輸送型、直轄) -->
+<div class="modal-overlay hidden" id="governModal">
+  <div class="modal-card govern-modal-card" style="max-width: 820px;">
+    <div class="modal-title" style="color:var(--gold-bright); border-bottom-color:var(--gold);">
+      📋 領国一括委任（軍団統治・方針設定）
+    </div>
+    <div class="modal-desc-govern" style="font-size: 12pt; color:#ddd; margin-bottom:12px; line-height:1.6;">
+      支配下の領国に統治方針を設定します。委任された国は季節進行時に方針に従って自動で発展・兵站輸送を行い、プレイヤーの手間を大幅に軽減します。
+    </div>
+
+    <!-- 一括設定プリセットボタン -->
+    <div class="govern-preset-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; margin-bottom:14px;">
+      <button class="diff-option-btn govern-preset-btn" id="btnPresetDomestic" style="border-color:#27ae60; color:#a9dfbf; padding:8px;">
+        <span class="btn-preset-full">🌾 後方を全て内政委任<br><span class="btn-preset-sub" style="font-size: 12pt; color:#ccc;">商業・石高を自動強化</span></span>
+        <span class="btn-preset-short">🌾 後方を内政委任</span>
+      </button>
+      <button class="diff-option-btn govern-preset-btn" id="btnPresetLogistics" style="border-color:#3498db; color:#aed6f1; padding:8px;">
+        <span class="btn-preset-full">🚚 後方を全て兵站輸送<br><span class="btn-preset-sub" style="font-size: 12pt; color:#ccc;">前線城へ兵力を自動集結</span></span>
+        <span class="btn-preset-short">🚚 後方を兵站輸送</span>
+      </button>
+      <button class="diff-option-btn govern-preset-btn" id="btnPresetMilitary" style="border-color:#e74c3c; color:#ffaaaa; padding:8px;">
+        <span class="btn-preset-full">⚔️ 前線を全て軍事委任<br><span class="btn-preset-sub" style="font-size: 12pt; color:#ccc;">兵員徴募・防備を自動強化</span></span>
+        <span class="btn-preset-short">⚔️ 前線を軍事委任</span>
+      </button>
+      <button class="diff-option-btn govern-preset-btn" id="btnPresetDirect" style="border-color:var(--gold); color:var(--gold-bright); padding:8px;">
+        <span class="btn-preset-full">👑 全領国を直轄に戻す<br><span class="btn-preset-sub" style="font-size: 12pt; color:#ccc;">全て自分で手動指揮</span></span>
+        <span class="btn-preset-short">👑 全領国を直轄</span>
+      </button>
+    </div>
+
+    <!-- [42位] 前線/後方 位置変化時の自動統治方針切替ルール設定 -->
+    <div class="govern-autorule-bar" style="background:rgba(20,15,10,0.85); border:1px solid #7a5a3a; border-radius:5px; padding:8px 12px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:12pt; font-weight:bold; color:var(--gold-bright);">🔄 「前線→後方」変化時の自動切替:</span>
+        <span style="font-size:11pt; color:#ccc;">領土拡大で後方安全地帯となった国の軍事方針を自動転換</span>
+      </div>
+      <div>
+        <select id="selectAutoFrontierPolicy" style="background:#1a110a; color:#ffd700; border:1px solid var(--gold); padding:4px 10px; border-radius:4px; font-size:11.5pt; font-weight:bold; cursor:pointer;">
+          <option value="logistics" selected="">🚚 兵站輸送型へ自動切替 (推奨・前線へ自動集結)</option>
+          <option value="domestic">🌾 内政型へ自動切替 (商業・石高を自動強化)</option>
+          <option value="none">維持 (自動切替を行わない)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 領国個別・選択一括切替バー -->
+    <div class="govern-batch-bar" style="background:rgba(0,0,0,0.4); border:1px solid #553e2a; border-radius:5px; padding:10px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div class="govern-batch-left" style="display:flex; align-items:center; gap:8px;">
+        <label><input type="checkbox" id="selectAllProvsCheckbox" style="accent-color:var(--gold);"> 全選択</label>
+        <span class="govern-batch-label" style="font-size: 12pt; color:var(--text-muted);">選択中の国に一括適用:</span>
+      </div>
+      <div class="govern-batch-btns" style="display:flex; gap:6px;">
+        <button class="diff-option-btn" id="applyDirectBatch" style="padding:4px 10px;">👑 直轄</button>
+        <button class="diff-option-btn" id="applyMilitaryBatch" style="padding:4px 10px; border-color:#e74c3c; color:#ffaaaa;">⚔️ 軍事</button>
+        <button class="diff-option-btn" id="applyDomesticBatch" style="padding:4px 10px; border-color:#27ae60; color:#a9dfbf;">🌾 内政</button>
+        <button class="diff-option-btn" id="applyBalancedBatch" style="padding:4px 10px; border-color:#f39c12; color:#f9e79f;">⚖️ 均衡</button>
+        <button class="diff-option-btn" id="applyLogisticsBatch" style="padding:4px 10px; border-color:#3498db; color:#aed6f1;">🚚 兵站</button>
+      </div>
+    </div>
+
+    <!-- 自家領国一覧テーブル -->
+    <div class="govern-table-scroll" style="max-height: 320px; overflow-y: auto; border:1px solid #443322; border-radius:4px; background:rgba(15,10,8,0.7);">
+      <table class="govern-prov-table" style="width:100%; border-collapse:collapse; font-size: 12pt; text-align:left;">
+        <thead>
+          <tr style="background:#2b1c14; color:var(--gold-bright); border-bottom:1px solid #553e2a;">
+            <th style="padding:8px 10px; width:40px;">選</th>
+            <th style="padding:8px 10px;">領国 (本拠城)</th>
+            <th style="padding:8px 10px;">位置</th>
+            <th style="padding:8px 10px;">駐留兵力</th>
+            <th style="padding:8px 10px;">石高/商業</th>
+            <th style="padding:8px 10px;">現在の統治方針</th>
+          </tr>
+        </thead>
+        <tbody id="governProvTableBody">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="govern-footer-bar" style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px;">
+      <button class="turn-btn" id="closeGovernModalBtn" style="margin:0; width:auto; padding:6px 24px; font-size:12pt;">
+        統治方針を決定して戻る
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 3. 出陣侵攻モーダル (隣接国へのみ出陣可能・武将選択は省略) -->
+<div class="modal-overlay hidden" id="deployModal">
+  <div class="modal-card" style="max-width: 640px;">
+    <div class="modal-title" style="color:#ff6666; border-bottom-color:#aa3333;">
+      🔥 出陣侵攻 (隣接する敵領国への進撃)
+    </div>
+    <div style="font-size:12pt; line-height: 1.7; margin-bottom: 12px;">
+      出陣元領国: <strong id="deploySrcName" style="color:var(--gold-bright);">土佐 (岡豊城)</strong> (駐留兵: <span id="deployMaxTroops">5,000</span>)<br>
+      出陣先敵国: 
+      <select id="deployDstSelect" style="background:#201710; color:#fff; border:1px solid #775533; padding:5px 10px; border-radius:4px; font-family:inherit; font-size:12pt;">
+      </select>
+      <div style="font-size: 12pt; color:var(--text-muted); margin-top:2px;">※街道・航路で直接隣接している敵領にのみ攻め込めます。</div>
+      
+      <div style="margin-top:10px; background:rgba(0,0,0,0.4); padding:8px 12px; border-radius:4px; border:1px solid #4a3828;">
+        <label for="deployTroopRange">出陣兵力: <strong id="deployTroopCount" style="color:var(--gold-bright); font-size:13.5pt;">3,000</strong> 人</label>
+        <input type="range" id="deployTroopRange" style="width:100%; margin-top:4px; accent-color:var(--gold);" min="500" step="100">
+        <div style="display:flex; justify-content:space-between; font-size: 12pt; color:var(--text-muted); margin-top:3px;">
+          <span>城の残留防衛兵: <strong id="deployRemainTroops" style="color:#fff;">2,000</strong> 人</span>
+          <span>必要兵糧: <strong id="deployRiceCost" style="color:#ffd700;">150</strong> 石</span>
+        </div>
+      </div>
+
+      <!-- 出陣陣形選択 -->
+      <div style="margin-top:10px;">
+        <label style="font-weight:bold; color:var(--gold-bright);">出陣陣形編成：</label>
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:4px;" id="formationOptionGroup">
+          <button class="diff-option-btn selected" data-form="gyorin">魚鱗 (突撃突破)</button>
+          <button class="diff-option-btn" data-form="kakuyoku">鶴翼 (包囲殲滅)</button>
+          <button class="diff-option-btn" data-form="hoshi">鋒矢 (中央直撃)</button>
+          <button class="diff-option-btn" data-form="kuruma">車懸 (波状連撃)</button>
+          <button class="diff-option-btn" data-form="hoen">方円 (鉄壁防御)</button>
+          <button class="diff-option-btn" data-form="ganko">雁行 (鉄砲斉射)</button>
+        </div>
+        <div id="formationMatchupHint" style="margin-top:6px; font-size:11pt; color:#cde8ff; background:rgba(30,60,90,0.35); border:1px solid #3a6a9a; border-radius:4px; padding:5px 8px;">
+          三すくみ：突撃系 &gt; 包囲系 &gt; 防御系 &gt; 突撃系
+        </div>
+        <div id="formationIntelBox" style="margin-top:6px; font-size:11.5pt; color:#ffe9a8; background:rgba(80,50,10,0.4); border:1px solid #a67c2a; border-radius:4px; padding:6px 8px;">
+          軍師の読み：出陣先を選ぶと敵陣形の予測が表示されます
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer-btns" style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+      <button class="sound-btn" id="deployCancelBtn" style="background:#332218; padding:6px 16px;">軍令中止</button>
+      <button class="turn-btn" id="deployConfirmBtn" style="margin:0; width:auto; padding:6px 20px; font-size:12.5pt;">いざ出陣！</button>
+    </div>
+  </div>
+</div>
+
+<!-- 4. 野戦合戦モーダル (一騎討ちは廃止・5大野戦コマンド) -->
+<div class="modal-overlay hidden" id="battleModal">
+  <div class="modal-card" style="max-width: 760px;">
+    <div class="modal-title" style="color:#ff6666; border-bottom-color:#aa3333;" id="battleTitle">
+      ⚔️ 野戦決戦
+    </div>
+    <div class="battle-stage">
+      <div class="battle-army-card" id="playerArmyCard">
+        <div class="army-header">
+          <span style="color:var(--gold-bright);" id="playerArmyClan">我が軍</span>
+          <span style="font-size: 12pt; color:#aaa;" id="playerFormationLabel">陣形: 魚鱗</span>
+        </div>
+        <div style="font-size: 12pt; color:#ddd;" id="playerGeneralName">大将: 長宗我部元親</div>
+        <div class="army-troops-bar">
+          <div class="army-troops-fill" id="playerArmyBar" style="width:100%;"></div>
+          <span class="army-troops-text" id="playerArmyTroopsText">3,000 / 3,000</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size: 12pt; color:#bbb;">
+          <span>士気: <strong id="playerArmyMorale" style="color:#ffd700;">90</strong></span>
+          <span>戦術奥義: <strong id="playerArmyTactic" style="color:#8ed8ff;">一領具足の進撃</strong></span>
+        </div>
+      </div>
+
+      <div class="battle-army-card" id="enemyArmyCard">
+        <div class="army-header">
+          <span style="color:#ff8888;" id="enemyArmyClan">敵軍</span>
+          <span style="font-size: 12pt; color:#aaa;" id="enemyFormationLabel">陣形: 鶴翼</span>
+        </div>
+        <div style="font-size: 12pt; color:#ddd;" id="enemyGeneralName">大将: 敵軍総大将</div>
+        <div class="army-troops-bar">
+          <div class="army-troops-fill enemy" id="enemyArmyBar" style="width:100%;"></div>
+          <span class="army-troops-text" id="enemyArmyTroopsText">2,500 / 2,500</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size: 12pt; color:#bbb;">
+          <span>士気: <strong id="enemyArmyMorale" style="color:#ffd700;">85</strong></span>
+          <span>戦術奥義: <strong id="enemyArmyTactic" style="color:#ff8888;">敵陣突破</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 合戦行動コマンド (一騎討ち廃止・5コマンド) -->
+    <div id="battleFormationBonus" style="margin:6px 0 8px; font-size:11.5pt; color:#ffe9a8; background:rgba(60,30,10,0.45); border:1px solid #a67c2a; border-radius:4px; padding:5px 10px; text-align:center;">
+      陣形相性・地形補正
+    </div>
+    <div class="battle-actions" style="grid-template-columns: repeat(5, 1fr);">
+      <button class="battle-btn" id="bCmdAssault">
+        <span>🔨 突撃攻勢</span>
+        <span class="sub">大打撃/自損有</span>
+      </button>
+      <button class="battle-btn" id="bCmdShoot">
+        <span>🏹 弓砲射撃</span>
+        <span class="sub">遠距離安全射</span>
+      </button>
+      <button class="battle-btn" id="bCmdDefend">
+        <span>🛡️ 盾陣防御</span>
+        <span class="sub">被害半減反撃</span>
+      </button>
+      <button class="battle-btn" id="bCmdTactic" style="border-color:var(--gold); color:var(--gold-bright);">
+        <span>⚡ 陣形奥義</span>
+        <span class="sub">大名固有必殺</span>
+      </button>
+      <button class="battle-btn" id="bCmdRetreat" style="border-color:#7f8c8d; color:#bdc3c7;">
+        <span>🏃 全軍撤退</span>
+        <span class="sub">自領へ帰還</span>
+      </button>
+    </div>
+
+    <div class="battle-log" id="battleLog">
+      <div>合戦が開始されました。部隊に軍令を下してください。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. 攻城戦モーダル (完全強化・包囲軍残存兵・城内兵・城壁・士気を完全連動) -->
+<div class="modal-overlay hidden" id="siegeModal">
+  <div class="modal-card" style="max-width: 720px;">
+    <div class="modal-title" style="color:#f39c12; border-bottom-color:#d35400;">
+      🏯 攻城包囲戦（城郭攻略）
+    </div>
+    <div class="siege-stage">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-size:14pt; font-weight:bold; color:var(--gold-bright);" id="siegeCastleName">
+          小田原城 包囲戦
+        </span>
+        <span style="font-size: 12pt; color:#aed6f1;" id="siegePlayerTroopsBadge">
+          包囲我が軍: 3,000 人
+        </span>
+      </div>
+
+      <!-- [32位] 名城固有攻城戦ギミックバナー -->
+      <div id="siegeGimmickBanner" style="display:none; background:linear-gradient(90deg, rgba(80,25,20,0.85), rgba(40,15,10,0.9)); border:1px solid #d4af37; border-radius:4px; padding:6px 12px; margin-bottom:8px; font-size:11.5pt; color:#ffd700; align-items:center; gap:8px;">
+        <span id="siegeGimmickIcon" style="font-size:14pt;">🏯</span>
+        <div style="flex:1;">
+          <strong id="siegeGimmickTitle" style="color:#ffd700;">【名城ギミック】</strong>
+          <span id="siegeGimmickDesc" style="color:#f2e6d5; font-size:11pt; margin-left:6px;"></span>
+        </div>
+      </div>
+
+      <!-- 我が軍包囲兵力バー -->
+      <div style="background:rgba(0,0,0,0.5); padding:8px; border-radius:4px; margin-bottom:8px;">
+        <div style="font-size: 12pt; color:#ddd; margin-bottom:3px; display:flex; justify-content:space-between;">
+          <span>我が包囲軍残存兵力</span>
+          <strong id="siegePlayerTroopsText" style="color:#2ecc71;">3,000 / 3,000</strong>
+        </div>
+        <div class="fighter-bar-wrap">
+          <div class="fighter-bar-fill" id="siegePlayerBar" style="width:100%; background:linear-gradient(90deg, #27ae60, #2ecc71);"></div>
+        </div>
+      </div>
+
+      <!-- 敵城3大ステータス (城壁、城内兵、城内士気) -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; margin-bottom:8px;">
+        <div style="background:rgba(0,0,0,0.5); padding:8px; border-radius:4px;">
+          <div style="font-size: 12pt; color:#ddd; margin-bottom:3px;">城壁耐久度</div>
+          <div style="font-size:13pt; font-weight:bold; color:#f1c40f;" id="siegeWallText">100 / 100</div>
+          <div class="fighter-bar-wrap" style="margin-top:4px;">
+            <div class="fighter-bar-fill" id="siegeWallBar" style="width:100%; background:#f1c40f;"></div>
+          </div>
+        </div>
+        <div style="background:rgba(0,0,0,0.5); padding:8px; border-radius:4px;">
+          <div style="font-size: 12pt; color:#ddd; margin-bottom:3px;">城内籠城兵力</div>
+          <div style="font-size:13pt; font-weight:bold; color:#e74c3c;" id="siegeEnemyTroopsText">1,500 人</div>
+          <div class="fighter-bar-wrap" style="margin-top:4px;">
+            <div class="fighter-bar-fill enemy" id="siegeEnemyTroopsBar" style="width:100%; background:#e74c3c;"></div>
+          </div>
+        </div>
+        <div style="background:rgba(0,0,0,0.5); padding:8px; border-radius:4px;">
+          <div style="font-size: 12pt; color:#ddd; margin-bottom:3px;">城内兵糧・士気</div>
+          <div style="font-size:13pt; font-weight:bold; color:#e67e22;" id="siegeMoraleText">80</div>
+          <div class="fighter-bar-wrap" style="margin-top:4px;">
+            <div class="fighter-bar-fill" id="siegeMoraleBar" style="width:80%; background:#e67e22;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 攻城年代記ログ -->
+      <div class="battle-log" id="siegeLog" style="height:75px; margin-bottom:8px;">
+        <div>城を完全に包囲しました。攻城作戦を選択してください。</div>
+      </div>
+
+      <!-- 攻城作戦ボタン ＆ 撤退ボタン -->
+      <div class="siege-actions" style="display:grid; grid-template-columns: repeat(5, 1fr); gap:6px;">
+        <button class="battle-btn" id="siegeBtnAssault" style="border-color:#e74c3c;">
+          <span>🔨 強襲力攻め</span>
+          <span class="sub">城壁大破壊/自損小</span>
+        </button>
+        <button class="battle-btn" id="siegeBtnShoot" style="border-color:#e67e22;">
+          <span>🏹 矢砲斉射</span>
+          <span class="sub">城内兵削り/自損無</span>
+        </button>
+        <button class="battle-btn" id="siegeBtnSurround" style="border-color:#3498db;">
+          <span>🌾 兵糧遮断</span>
+          <span class="sub">城内士気大幅削り</span>
+        </button>
+        <button class="battle-btn" id="siegeBtnPersuade" style="border-color:var(--gold);">
+          <span>📜 開城勧告</span>
+          <span class="sub">無血開城・降伏促す</span>
+        </button>
+        <button class="battle-btn" id="siegeBtnRetreat" style="border-color:#7f8c8d; color:#bdc3c7;">
+          <span>🏃 包囲解除</span>
+          <span class="sub">攻城中断し帰還</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. 兵力移動モーダル (配置転換) -->
+<div class="modal-overlay hidden" id="transferModal">
+  <div class="modal-card" style="max-width: 480px;">
+    <div class="modal-title">兵力再配置 (配置転換)</div>
+    <div style="font-size:12pt; line-height: 1.7; margin-bottom: 12px;">
+      移動元: <strong id="transferSrcName" style="color:var(--gold-bright);">尾張</strong> (駐留兵: <span id="transferMaxTroops">0</span>)<br>
+      移動先: 
+      <select id="transferDstSelect" style="background:#201710; color:#fff; border:1px solid #775533; padding:5px 10px; border-radius:4px; font-family:inherit; font-size:12pt;">
+      </select>
+      <div style="margin-top:10px; background:rgba(0,0,0,0.4); padding:8px; border-radius:4px;">
+        <label for="transferTroopRange">移動兵力: <strong id="transferTroopCount" style="color:var(--gold-bright); font-size:13.5pt;">0</strong> 人</label>
+        <input type="range" id="transferTroopRange" style="width:100%; margin-top:4px; accent-color:var(--gold);" min="100" step="100">
+        <div style="font-size: 12pt; color:var(--text-muted); margin-top:4px;">
+          残留防衛兵: <span id="transferRemainTroops" style="color:#fff;">0</span> 人
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer-btns" style="display:flex; justify-content:flex-end; gap:10px;">
+      <button class="sound-btn" id="transferCancelBtn" style="background:#332218; padding:6px 16px;">中止</button>
+      <button class="turn-btn" id="transferConfirmBtn" style="margin:0; width:auto; padding:6px 20px; font-size:12.5pt;">移動発令</button>
+    </div>
+  </div>
+</div>
+
+<!-- 6.5. 征夷大将軍宣下モーダル (30か国・京洛領有) -->
+<div class="modal-overlay hidden" id="shogunModal" style="z-index: 9998;">
+  <div class="modal-card" style="max-width: 760px; text-align: center; border-color: #ffd700; box-shadow: 0 0 70px rgba(255,215,0,0.85); background: linear-gradient(180deg, #24160e 0%, #150d08 100%);">
+    <div class="modal-title" style="color: #ffd700; font-size: 22pt; border-bottom: 2px solid #ffd700; padding-bottom: 10px;">
+      👑 勅許・征夷大将軍宣下 👑
+    </div>
+    <div style="font-size: 16pt; font-weight: bold; color: #fff; margin: 16px 0 8px 0;" id="shogunDaimyoName">
+      当主 公
+    </div>
+    <div style="font-size: 12pt; color: #ffdd88; margin-bottom: 16px;" id="shogunThresholdDesc">
+      京洛・山城国を掌握し、全国過半を席捲せし武門の棟梁
+    </div>
+    <div style="background: rgba(0,0,0,0.55); border: 1px solid #775533; border-radius: 6px; padding: 18px 24px; margin-bottom: 20px; font-size: 12pt; line-height: 1.9; color: #f2e6d5; text-align: left;">
+      <p style="margin: 0; text-indent: 1em;" id="shogunModalText">
+        朝廷より勅使が下向し、天下の静謐を成し遂げし貴家に対し、正二位・征夷大将軍の官位宣下が下されました！<br>
+        ここに武門の頂点たる新幕府を開き、万民安穏の泰平の世を築くか、あるいは残る諸勢力をことごとく平定し、全土完全統一の覇道を邁進するか、御下問にございます。
+      </p>
+    </div>
+    <div style="display:flex; justify-content:center; gap:14px; margin-top:10px;">
+      <button class="turn-btn" id="shogunAcceptEndingBtn" style="margin: 0; max-width: 320px; font-size: 12pt; padding: 10px 22px; background: linear-gradient(180deg, #d4af37, #9a7b2c); color:#111; font-weight:bold;">
+        📜 宣下を受諾し幕府開府（将軍エンディング）
+      </button>
+      <button class="turn-btn" id="shogunContinueConquestBtn" style="margin: 0; max-width: 280px; font-size: 12pt; padding: 10px 22px;">
+        ⚔️ 覇道を貫き全土完全統一へ
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 6.4. 戦国天下統一伝 オープニング絵巻シアター (信長の野望 武将風雲録風 HTML Canvas) -->
+<div class="modal-overlay hidden" id="openingMovieModal" style="position:fixed; inset:0; width:100vw; height:100vh; background:#000000; z-index:999999; display:flex; flex-direction:column; overflow:hidden;">
+  <!-- オープニングメインキャンバス -->
+  <canvas id="openingMovieCanvas" style="position:absolute; inset:0; width:100%; height:100%; cursor:pointer;"></canvas>
+
+  <!-- 右上操作コントロールバー -->
+  <div class="opening-ctrl-bar" style="position:absolute; top:20px; right:28px; z-index:10; display:flex; gap:10px; align-items:center;">
+    <div id="openingTimeDisplay" style="color:var(--gold-bright, #ffd700); font-size:11pt; font-family:monospace; background:rgba(0,0,0,0.6); padding:4px 10px; border-radius:12px; border:1px solid rgba(212,175,55,0.4);">0:00 / 1:00</div>
+    <button type="button" id="openingMuteBtn" class="opening-ctrl-btn" title="音声切替">
+      <span class="ctrl-icon">🔊</span><span class="ctrl-text">音声</span>
+    </button>
+    <button type="button" id="openingPauseBtn" class="opening-ctrl-btn" title="一時停止/再開 (Spaceキー)">
+      <span class="ctrl-icon">⏸</span><span class="ctrl-text">停止</span>
+    </button>
+    <button type="button" id="openingSkipBtn" class="opening-ctrl-btn opening-skip-btn" title="オープニングを終了して選択画面へ (ESCキー)">
+      <span class="ctrl-icon">⏭</span><span class="ctrl-text">スキップ</span>
+    </button>
+  </div>
+
+  <!-- 下部プログレスバー -->
+  <div class="opening-progress-container" style="position:absolute; bottom:0; left:0; width:100%; height:4px; background:rgba(255,255,255,0.15); z-index:10;">
+    <div id="openingProgressBar" style="width:0%; height:100%; background:linear-gradient(90deg, #b71c1c, #d4af37, #ffd700); box-shadow:0 0 8px #ffd700; transition:width 0.1s linear;"></div>
+  </div>
+</div>
+
+<!-- 6.5. 感動の全画面シネマティック・エンドロールシアター -->
+<div class="modal-overlay hidden" id="endingRollModal" style="position:fixed; inset:0; width:100vw; height:100vh; background:#070403; z-index:99999; display:flex; flex-direction:column; overflow:hidden;">
+  <!-- 桜吹雪キャンバス -->
+  <canvas id="endingSakuraCanvas" style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:2;"></canvas>
+
+  <!-- 背景大名家紋透かし -->
+  <div id="endingKamonBackdrop" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0.12; pointer-events:none; z-index:1;"></div>
+
+  <!-- 操作コントロールバー (右上固定) -->
+  <div class="ending-ctrl-bar" style="position:absolute; top:20px; right:28px; z-index:10; display:flex; gap:10px; align-items:center;">
+    <button id="endingPauseBtn" style="background:rgba(20,12,8,0.85); color:#ffd700; border:1px solid #8c734b; border-radius:20px; padding:6px 16px; font-size:11.5pt; font-family:inherit; cursor:pointer; box-shadow:0 0 10px rgba(0,0,0,0.8); transition:all 0.2s;">
+      <span class="btn-label-full">⏸ 一時停止</span>
+      <span class="btn-label-short">⏸ 停止</span>
+    </button>
+    <button id="endingSpeedBtn" style="background:rgba(20,12,8,0.85); color:#ffd700; border:1px solid #8c734b; border-radius:20px; padding:6px 16px; font-size:11.5pt; font-family:inherit; cursor:pointer; box-shadow:0 0 10px rgba(0,0,0,0.8); transition:all 0.2s;">
+      <span class="btn-label-full">⏩ 速度: 1.0x</span>
+      <span class="btn-label-short">⏩ 1.0x</span>
+    </button>
+    <button id="endingSkipBtn" style="background:linear-gradient(180deg, #d4af37, #8c6d23); color:#111; border:1px solid #fff; border-radius:20px; padding:6px 18px; font-size:11.5pt; font-weight:bold; font-family:inherit; cursor:pointer; box-shadow:0 0 15px rgba(212,175,55,0.6); transition:all 0.2s; white-space:nowrap;">
+      <span class="btn-label-full">⏭ スキップして統一記録へ</span>
+      <span class="btn-label-short">⏭ 統一記録</span>
+    </button>
+  </div>
+
+  <!-- スクロールコンテナ -->
+  <div id="endingRollContainer" style="position:absolute; inset:0; overflow-y:scroll; scroll-behavior:auto; z-index:3; text-align:center; padding: 45vh 20px 45vh 20px; box-sizing:border-box;">
+    <div id="endingRollContent" style="max-width:860px; margin:0 auto; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,0.95); font-family:'Noto Serif JP', 'Yu Mincho', serif;">
+      <!-- JavaScriptにより各大名家・ルート固有のエンドロールが動的生成されます -->
+    </div>
+  </div>
+</div>
+
+<!-- 7. 天下統一偉業達成モーダル -->
+<div class="modal-overlay hidden" id="victoryModal" style="z-index: 9999;">
+  <div class="modal-card" style="max-width: 1420px; width: 92vw; max-height: 92vh; display: flex; flex-direction: column; text-align: center; border-color: #ffd700; box-shadow: 0 0 70px rgba(255,215,0,0.85); padding: 20px 32px; box-sizing: border-box;">
+    <div style="flex-shrink: 0; border-bottom: 2px solid #ffd700; padding-bottom: 8px; margin-bottom: 10px;">
+      <div class="modal-title" style="color: #ffd700; font-size: 22pt; margin-bottom: 4px;" id="victoryMainTitle">
+        ❖ 天下統一の偉業達成 ❖
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 4px;">
+        <span style="font-size: 13pt; color: #d4af37;" id="victorySubTitle">【朝廷勅命・天下静謐の武門棟梁】</span>
+        <span style="font-size: 18pt; font-weight: bold; color: #fff;" id="victoryDaimyoName">長宗我部元親</span>
+        <span style="font-size: 12.5pt; color: var(--gold-bright);" id="victoryStatsSummary">天文20年 春 〜 永禄10年 秋 (所要18年・48戦無敗)</span>
+      </div>
+    </div>
+    
+    <div style="flex: 1 1 auto; min-height: 0; background: rgba(0,0,0,0.65); border: 1px solid #665533; border-radius: 8px; padding: 16px 22px; margin-bottom: 12px; font-size: 12pt; line-height: 1.8; color: #f2e6d5; text-align: left; overflow-y: auto;" id="victoryChronicleText">
+    </div>
+
+
+    <!-- 非表示のクリア証書生成用Canvas -->
+    <canvas id="victoryCertCanvas" width="900" height="600" style="display:none;"></canvas>
+
+    <div class="victory-btn-group" style="flex-shrink: 0; display:flex; justify-content:center; flex-wrap:nowrap; gap:12px; margin-top: 2px;">
+      <button class="turn-btn" id="victoryCertificateBtn" style="margin: 0; font-size: 12pt; padding: 10px 22px; background:linear-gradient(180deg, #1e8449, #145a32); color:#fff; border-color:#2ecc71; font-weight:bold; box-shadow: 0 4px 15px rgba(46,204,113,0.3); white-space:nowrap;" title="毛筆・和風賞状スタイルの統一証書PNG画像をダウンロード">
+        <span class="btn-label-full">🖼️ 統一証書を画像保存 (PNG)</span>
+        <span class="btn-label-short">🖼️ 証書保存</span>
+      </button>
+      <button class="turn-btn" id="victoryShareBtn" style="margin: 0; font-size: 12pt; padding: 10px 22px; background:linear-gradient(180deg, #2c3e50, #1a252f); color:#5dade2; border-color:#3498db; font-weight:bold; box-shadow: 0 4px 15px rgba(52,152,219,0.3); white-space:nowrap;" title="X (旧Twitter) に天下統一の偉業をポスト">
+        <span class="btn-label-full">𝕏 天下統一をポスト</span>
+        <span class="btn-label-short">𝕏 ポスト</span>
+      </button>
+      <button class="turn-btn" id="victoryWatchRollBtn" style="margin: 0; min-width: 240px; font-size: 12pt; padding: 10px 24px; background:linear-gradient(180deg, #d4af37, #8c6d23); color:#111; font-weight:bold; box-shadow: 0 4px 15px rgba(212,175,55,0.4); white-space:nowrap;">
+        <span class="btn-label-full">📜 エンドロールをもう一度観る</span>
+        <span class="btn-label-short">📜 エンドロール</span>
+      </button>
+      <button class="turn-btn" id="victoryRestartBtn" style="margin: 0; min-width: 200px; font-size: 12pt; padding: 10px 24px; white-space:nowrap;">
+        <span class="btn-label-full">🔄 新たなる覇道へ</span>
+        <span class="btn-label-short">🔄 新たな覇道</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 8. シナリオ開始前・時代背景＆勢力紹介解説モーダル -->
+<div class="modal-overlay hidden" id="scenarioIntroModal">
+  <div class="modal-card" style="max-width: 860px; border-color: var(--gold-bright); box-shadow: 0 0 50px rgba(212,175,55,0.7);">
+    <div class="modal-title" id="introModalTitle" style="color:var(--gold-bright); font-size:16pt; text-align:center;">
+      ❖ 時代背景 ＆ 天下情勢解説 ❖
+    </div>
+    
+    <div style="background:rgba(0,0,0,0.5); border:1px solid var(--border-gold); border-radius:6px; padding:14px 18px; margin-bottom:12px; max-height:420px; overflow-y:auto; line-height:1.7;">
+      <!-- 時代背景 -->
+      <div style="margin-bottom:12px;">
+        <div style="font-weight:bold; font-size:12pt; color:#ffd700; border-bottom:1px solid #665533; padding-bottom:3px; margin-bottom:6px;">
+          📖 【時代背景・歴史の奔流】
+        </div>
+        <div id="introBackgroundText" style="font-size: 12pt; color:#f0e6d6; text-indent:1em;">
+        </div>
+      </div>
+
+      <!-- 主要勢力紹介 -->
+      <div style="margin-bottom:12px;">
+        <div style="font-weight:bold; font-size:12pt; color:#ffd700; border-bottom:1px solid #665533; padding-bottom:3px; margin-bottom:6px;">
+          ⚔️ 【主要勢力図・群雄の陣営】
+        </div>
+        <div id="introFactionsText" style="font-size: 12pt; color:#e0d0b0; white-space:pre-wrap; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:4px;">
+        </div>
+      </div>
+
+      <!-- 覇道の焦点 -->
+      <div style="margin-bottom:12px;">
+        <div style="font-weight:bold; font-size:12pt; color:#ffd700; border-bottom:1px solid #665533; padding-bottom:3px; margin-bottom:6px;">
+          🎯 【覇道の焦点・戦略の要衝】
+        </div>
+        <div id="introFocusText" style="font-size: 12pt; color:#ffdd88;">
+        </div>
+      </div>
+
+      <!-- 大名出陣宣誓 -->
+      <div style="background:rgba(50,25,15,0.8); border:1px dashed #ffd700; border-radius:5px; padding:10px 14px;">
+        <div id="introDaimyoOath" style="font-size: 12pt; color:#fff; font-weight:bold; text-align:center;">
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="turn-btn" id="introStartBtn" style="max-width:320px; margin:0 auto; padding:8px 24px; font-size:13pt; background:linear-gradient(180deg, #d4af37, #9a7b2c); color:#111; font-weight:bold;">
+        承知！ いざ天下統一へ出陣！
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 歴史イベント発生モーダル (ドラマチックな史実展開と領地変更) -->
+<div class="modal-overlay hidden" id="historicalEventModal">
+  <div class="modal-card">
+    <div class="event-banner-title" id="eventModalTitle">❖ 歴史イベント ❖</div>
+    <div class="event-year-season" id="eventModalSubtitle">1560年 夏</div>
+    <div class="event-desc-text" id="eventModalDesc">
+      イベント説明テキスト
+    </div>
+    <div class="event-change-notice" id="eventModalNotice">
+      領地変更の告知
+    </div>
+    <div class="event-auto-pause-note hidden">⏸ オート進行を一時停止しています。選ぶと再開します。</div>
+    <div class="event-choice-actions" style="display:flex; justify-content:center; gap:16px; margin-top:16px;">
+      <button class="turn-btn" id="eventModalAcceptBtn" style="flex:1; max-width:260px; padding:10px 16px; font-size:11.5pt; background:linear-gradient(180deg, #c0392b, #922b21); color:#fff; font-weight:bold; border:1px solid #ffd700; border-radius:4px; cursor:pointer;">
+        ⚔️ 史実通り効果を適用
+      </button>
+      <button class="turn-btn" id="eventModalRejectBtn" style="flex:1; max-width:260px; padding:10px 16px; font-size:11.5pt; background:linear-gradient(180deg, #2c3e50, #1a252f); color:#e0e0e0; font-weight:bold; border:1px solid #7f8c8d; border-radius:4px; cursor:pointer;">
+        🛡️ 史実に抗い現状維持 (効果なし)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- プレイヤー選択型の歴史分岐イベント -->
+<div class="modal-overlay hidden" id="historyEventModal">
+  <div class="modal-card">
+    <div class="event-banner-title" id="eventTitle">❖ 歴史分岐 ❖</div>
+    <div class="event-year-season" id="eventSeasonBadge">1560年 夏</div>
+    <div class="event-sub-title" id="eventSubTitle"></div>
+    <div class="event-desc-text" id="eventNarrative"></div>
+    <div class="event-auto-pause-note hidden">⏸ オート進行を一時停止しています。決断すると再開します。</div>
+    <div id="eventChoicesContainer"></div>
+  </div>
+</div>
+
+<!-- 8. 御家滅亡モーダル -->
+<div class="modal-overlay hidden" id="defeatModal">
+  <div class="modal-card" style="max-width: 580px; text-align: center; border-color: #c0392b; box-shadow: 0 0 70px rgba(192,57,43,0.85);">
+    <div class="modal-title" style="color: #ff6b6b; font-size: 20pt; border-bottom-color: #902020;">
+      無念・御家滅亡
+    </div>
+    <div style="font-size: 12.5pt; color: #ffcccc; margin: 14px 0;" id="defeatMessage">
+      全ての領国を失い、貴家の覇業は露と消え去りました。
+    </div>
+    <div style="font-size: 12pt; font-style: italic; color: #aaa; margin-bottom: 14px;" id="defeatQuoteText">
+    </div>
+    <div style="display:flex; justify-content:center; gap:12px; margin-top:16px; flex-wrap:wrap;">
+      <button class="turn-btn" id="defeatSpectateBtn" style="margin:0; font-size: 12pt; padding: 9px 20px; background:linear-gradient(180deg, #1f4068, #162447); border-color:#5dade2; color:#d4e6f1;">
+        👀 このまま観戦を続ける
+      </button>
+      <button class="turn-btn" id="defeatRestartBtn" style="margin:0; font-size: 12pt; padding: 9px 20px;">
+        不屈の志で再起する
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 大名詳細・歴史情勢＆戦略解説図ダイアログ -->
+<div class="daimyo-popup-overlay hidden" id="daimyoPopup">
+  <div class="daimyo-popup-card">
+    <button class="daimyo-popup-close-btn" id="daimyoPopupCloseBtn" title="閉じる">✕</button>
+
+    <!-- ヘッダー (家紋・大名名・シナリオ名・難易度・領国数) -->
+    <div class="daimyo-popup-header">
+      <svg id="popupKamonSvg" viewBox="0 0 32 32"><use id="popupKamonUse" href="#kamon-default"></use></svg>
+      <div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <h2 id="popupDaimyoName" style="margin:0;">--</h2>
+          <span class="clan-label" id="popupClanName" style="font-size:13pt; color:var(--gold-bright); font-weight:bold;">--</span>
+        </div>
+        <div id="popupScenarioContext" style="font-size:12pt; color:#e59866; margin-top:2px;">❖ 戦国天下統一伝 ❖</div>
+      </div>
+      <div style="margin-left:auto; text-align:right;">
+        <span id="popupDifficulty" style="font-size:12pt; border:1px solid #ff9999; padding:2px 10px; border-radius:3px; color:#ff9999; font-weight:bold;">--</span>
+        <div id="popupProvCount" style="font-size:12pt; color:var(--gold); margin-top:4px;">支配: --国</div>
+      </div>
+    </div>
+
+    <!-- 能力値 & 初期資源バー (5列均等) -->
+    <div class="daimyo-popup-stats" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; margin-bottom:12px;">
+      <div class="daimyo-popup-stat">
+        <span class="label">⚔️ 武勇</span>
+        <span class="val" id="popupMilitary" style="color:#ff8888;">--</span>
+      </div>
+      <div class="daimyo-popup-stat">
+        <span class="label">🌾 内政</span>
+        <span class="val" id="popupPolitics" style="color:#88ff88;">--</span>
+      </div>
+      <div class="daimyo-popup-stat">
+        <span class="label">🧠 調略</span>
+        <span class="val" id="popupStratagem" style="color:#8888ff;">--</span>
+      </div>
+      <div class="daimyo-popup-stat">
+        <span class="label">💰 初期資金</span>
+        <span class="val" id="popupGold" style="color:#ffd700; font-size:13pt;">-- 貫</span>
+      </div>
+      <div class="daimyo-popup-stat">
+        <span class="label">🌾 初期兵糧</span>
+        <span class="val" id="popupRice" style="color:#ffcc66; font-size:13pt;">-- 石</span>
+      </div>
+    </div>
+
+    <!-- 統治気質 & 奥義バナー -->
+    <div class="daimyo-popup-personality-tactic-row" style="display:flex; gap:10px; margin-bottom:12px; align-items:center;">
+      <div id="popupPersonality" style="flex-shrink:0;"></div>
+      <div class="daimyo-popup-tactic" id="popupTactic" style="margin:0; flex:1; padding:6px 12px;">
+        <strong>⚡ 奥義「天下布武」</strong> 全軍の士気を大幅に高め、一斉攻撃を行う！
+      </div>
+    </div>
+
+    <!-- メインコンテンツ 2段グリッド (左: 歴史的位置づけと情勢 / 右: 戦略解説図) -->
+    <div class="daimyo-popup-body-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-bottom:14px;">
+      <!-- 左列: 歴史的位置づけ & 周辺の出来事 -->
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="background:rgba(0,0,0,0.4); border:1px solid #553e2a; border-radius:6px; padding:10px 12px;">
+          <div style="font-size:12pt; font-weight:bold; color:var(--gold-bright); margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+            📜 <span>【シナリオにおける位置づけ】</span>
+          </div>
+          <div class="daimyo-popup-desc" id="popupDesc" style="margin:0; padding:0; background:none; border:none; line-height:1.6;">
+            <!-- 動的挿入 -->
+          </div>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.4); border:1px solid #553e2a; border-radius:6px; padding:10px 12px; flex:1;">
+          <div style="font-size:12pt; font-weight:bold; color:#ff9999; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+            ⚔️ <span>【周りの出来事・近隣勢力動向】</span>
+          </div>
+          <div id="popupSurroundingEvents" style="font-size:12pt; color:#ddd; line-height:1.6;">
+            <!-- 動的挿入 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 右列: 戦略解説図 (ビジュアルダイヤグラム & 初手攻略手引き) -->
+      <div style="background:rgba(14,10,7,0.7); border:1px solid var(--border-gold); border-radius:6px; padding:10px 12px; display:flex; flex-direction:column;">
+        <div style="font-size:12pt; font-weight:bold; color:var(--gold-bright); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+          <span>🗺️ 【戦略解説図・勢力相関図】</span>
+          <span style="font-size:12pt; color:#aaa;" id="popupHomeCastleName">尾張・清洲城</span>
+        </div>
+        <!-- 解説図 SVG コンテナ -->
+        <div id="popupStrategyDiagram" style="flex:1; min-height:180px; background:#120c08; border:1px solid #443020; border-radius:4px; position:relative; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+          <!-- SVGをJSで動的描画 -->
+        </div>
+        <!-- 攻略方針ガイダンス -->
+        <div id="popupStrategyAdvice" style="margin-top:8px; background:rgba(0,0,0,0.5); padding:6px 10px; border-radius:4px; border-left:3px solid #2ecc71; font-size:12pt; line-height:1.5; color:#a9dfbf;">
+          <!-- 動的挿入 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- アクションボタン群 (大名で出陣スタートボタン ＋ 別の大名を選び直すボタン) -->
+    <div class="daimyo-popup-footer-actions" style="display:flex; gap:12px; justify-content:center; align-items:center; padding-top:6px; border-top:1px solid rgba(212,175,55,0.3);">
+      <button class="daimyo-popup-cancel-btn" id="daimyoPopupCancelBtn" style="min-width:200px;">
+        ↩️ 別の大名を選び直す
+      </button>
+      <button class="daimyo-popup-start-btn" id="daimyoPopupStartBtn" style="flex:1; max-width:480px; margin:0; padding:12px 24px; font-size:13.5pt;">
+        ⚔️ この大名で天下統一へ出陣！
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 全戦況年代記モーダル (ヘッダー年代記クリックで展開) -->
+<div class="modal-overlay hidden" id="chronicleModal">
+  <div class="modal-card" style="max-width: 820px; max-height: 85vh; display: flex; flex-direction: column;">
+    <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); padding-bottom: 8px;">
+      <span style="display:flex; align-items:center; gap:8px;">
+        <i data-lucide="scroll" style="width:20px; height:20px; color:var(--gold-bright);"></i>
+        <span>戦況年代記・全軍事内政記録</span>
+      </span>
+      <button id="closeChronicleModalBtn" style="background:none; border:none; color:#aaa; font-size:18pt; cursor:pointer; line-height:1;">✕</button>
+    </div>
+    <div class="chronicle-modal-list" id="chronicleFullList" style="flex: 1; overflow-y: auto; padding: 14px 18px; font-size: 12pt; line-height: 1.8; background: rgba(0,0,0,0.5); border: 1px solid #4a3828; border-radius: 6px; margin: 14px 0; max-height: 60vh;">
+      <div class="log-entry important">戦国乱世の幕が開きました。当主を選択して覇道を開始してください。</div>
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+      <button class="turn-btn" id="closeChronicleModalBtn2" style="width: auto; padding: 8px 24px; font-size: 12pt; margin: 0;">
+        閉じる
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 戦国管弦楽 響宴録 モーダル (全24曲BGM・オーケストラ効果音鑑賞＆調律) -->
+<div class="modal-overlay hidden" id="musicJukeboxModal" style="z-index: 10000;">
+  <div class="modal-card" style="max-width: 960px; max-height: 90vh; display: flex; flex-direction: column; background: linear-gradient(180deg, #24160f 0%, #150d09 100%); border: 2px solid var(--gold); box-shadow: 0 10px 40px rgba(0,0,0,0.95), 0 0 30px rgba(212,175,55,0.3);">
+    <!-- モーダルヘッダー -->
+    <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); padding-bottom: 8px;">
+      <span style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:18pt;">🎻</span>
+        <span style="font-size:14pt; font-weight:bold; color:var(--gold-bright); letter-spacing:1px;">戦国管弦楽 響宴録 〜菅野よう子風 交響詩鑑賞＆音響調律〜</span>
+      </span>
+      <button id="closeJukeboxBtn" style="background:none; border:none; color:#aaa; font-size:18pt; cursor:pointer; line-height:1;" title="閉じる">✕</button>
+    </div>
+
+    <!-- モーダルコンテンツ (スクロール可) -->
+    <div style="flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 14px;">
+
+      <!-- 現在演奏中の曲 プレーヤーステーション -->
+      <div class="jukebox-player-card" style="background: rgba(0,0,0,0.6); border: 1px solid var(--gold); border-radius: 8px; padding: 14px 18px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <div style="font-size: 10pt; color: var(--gold); letter-spacing: 2px; font-weight: bold;">NOW PLAYING 演奏中</div>
+            <div id="jbTrackTitle" style="font-size: 16pt; font-weight: bold; color: #fff; text-shadow: 0 0 10px rgba(255,215,0,0.6); margin-top: 2px;">天下創世・群雄割拠</div>
+            <div id="jbTrackGenre" style="font-size: 11pt; color: #e5dac9; margin-top: 2px;">大序曲・フルオーケストラ行進曲</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <!-- イコライザーバーアニメーション -->
+            <div class="jb-eq-visualizer" id="jbEqVisualizer">
+              <span class="jb-eq-bar"></span>
+              <span class="jb-eq-bar"></span>
+              <span class="jb-eq-bar"></span>
+              <span class="jb-eq-bar"></span>
+              <span class="jb-eq-bar"></span>
+            </div>
+            <!-- コントロールボタン -->
+            <button class="jb-btn" id="jbPrevBtn" title="前の曲">⏮ 前曲</button>
+            <button class="jb-btn primary" id="jbPlayPauseBtn" title="再生・一時停止">⏸ 停止</button>
+            <button class="jb-btn" id="jbNextBtn" title="次の曲">⏭ 次曲</button>
+          </div>
+        </div>
+
+        <div id="jbTrackDesc" style="font-size: 11pt; color: #ded6c8; line-height: 1.6; background: rgba(255,255,255,0.04); padding: 8px 12px; border-radius: 5px; border-left: 3px solid var(--gold);">
+          菅野よう子サウンドの真骨頂。勇壮な金管ファンファーレと流麗な和琴、ティンパニが轟く乱世開幕の大序曲。
+        </div>
+
+        <!-- 音量・設定コントロールバー -->
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding-top: 6px; border-top: 1px solid rgba(212,175,55,0.25);">
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 11pt; color: #f5eedc;">
+              <span>主音量:</span>
+              <input type="range" id="jbMasterVol" min="0" max="1" step="0.05" value="0.75" style="width: 80px;">
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 11pt; color: #f5eedc;">
+              <span>BGM:</span>
+              <input type="range" id="jbBgmVol" min="0" max="1" step="0.05" value="0.60" style="width: 80px;">
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 11pt; color: var(--gold-bright); cursor: pointer;" title="効果音（SE）だけを入り切り。BGM はそのまま">
+              <input type="checkbox" id="jbSeEnabledCheck" checked="" style="cursor: pointer; width: 16px; height: 16px;">
+              <span id="jbSeEnabledLabel">効果音 ON</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 11pt; color: #f5eedc;">
+              <span>効果音:</span>
+              <input type="range" id="jbSeVol" min="0" max="1" step="0.05" value="0.85" style="width: 80px;">
+            </label>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 11pt; color: var(--gold-bright); cursor: pointer;">
+              <input type="checkbox" id="jbDaimyoModeCheck" checked="" style="cursor: pointer; width: 16px; height: 16px;">
+              <span>大名家専用BGM 優先再生</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 楽曲選曲リスト (4大カテゴリ・全24曲) -->
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="font-size: 13pt; font-weight: bold; color: var(--gold-bright); border-bottom: 1px solid var(--border-gold); padding-bottom: 4px; display:flex; justify-content:space-between; align-items:center;">
+          <span>🎼 全24曲 和洋折衷フルオーケストラ楽曲録</span>
+          <span style="font-size: 10pt; color: #aaa;">クリックで即座に試聴・ゲーム中BGM設定</span>
+        </div>
+        <div id="jbTrackListContainer" style="display: flex; flex-direction: column; gap: 12px; max-height: 38vh; overflow-y: auto; padding-right: 4px;">
+          <!-- カテゴリごとにJSで生成 -->
+        </div>
+      </div>
+
+      <!-- 珠玉のオーケストラ効果音 (SE) 試聴ボード -->
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+        <div style="font-size: 13pt; font-weight: bold; color: var(--gold-bright); border-bottom: 1px solid var(--border-gold); padding-bottom: 4px;">
+          🥁 珠玉のオーケストラ＆戦国効果音 (SE) 試聴
+        </div>
+        <div class="jb-se-grid" id="jbSeGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px;">
+          <!-- SEボタン群 -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- モーダルフッター -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(212,175,55,0.3); padding-top: 10px; margin-top: 6px;">
+      <div style="font-size: 10pt; color: #999;">
+        ※ Web Audio API シンセサイザーによるリアルタイム合成交響楽です。外部音声ファイルの読み込み待機なく即座に鳴り響きます。
+      </div>
+      <button class="turn-btn" id="closeJukeboxBtn2" style="width: auto; padding: 6px 20px; font-size: 11pt; margin: 0;">
+        閉じる
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 9. 城郭解説モーダル（スマホ用・ピクトグラムボタン連動） -->
+<div class="modal-overlay hidden" id="castleLoreModal" style="z-index: 10005;">
+  <div class="modal-card castle-lore-modal-card">
+    <div class="modal-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--gold); padding-bottom: 8px; margin-bottom: 12px;">
+      <span style="color: var(--gold-bright); font-size: 13pt; font-weight: bold; display: flex; align-items: center; gap: 6px;">
+        <span style="font-size: 14pt;">🏯</span>
+        <span id="castleLoreModalTitle">城郭解説</span>
+      </span>
+      <button id="closeCastleLoreModalBtn" style="background:none; border:none; color:#aaa; font-size:18pt; cursor:pointer; line-height:1; padding:0 4px;" title="閉じる">✕</button>
+    </div>
+    <div style="background: rgba(0,0,0,0.55); border: 1px solid #553e2a; border-radius: 6px; padding: 12px 14px; margin-bottom: 14px;">
+      <div id="castleLoreModalSub" style="font-size: 11pt; color: #ffd700; margin-bottom: 8px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
+        <span id="castleLoreModalPlace">尾張国（清洲城）</span>
+        <span id="castleLoreModalOwner" style="font-size: 10pt; color: #ddd; font-weight: normal;">領主: 織田家</span>
+      </div>
+      <div id="castleLoreModalContent" style="font-size: 11.5pt; color: #f0e6d6; line-height: 1.65; letter-spacing: 0.3px; white-space: pre-wrap;">
+      </div>
+      <div id="castleLoreModalStats" style="display: flex; flex-wrap: wrap; gap: 10px 14px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #553e2a; font-size: 9.5pt; color: #bbb;">
+      </div>
+    </div>
+    <div style="display: flex; justify-content: center;">
+      <button class="turn-btn" id="closeCastleLoreModalBtn2" style="width: auto; min-width: 140px; padding: 7px 24px; font-size: 11pt; margin: 0; background: linear-gradient(180deg, #442a1b 0%, #25160e 100%); border: 1px solid var(--gold); color: var(--gold-bright); border-radius: 4px; cursor: pointer;">
+        閉じる
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 10. 戦況記録・再開（複数スロット ＆ JSONエクスポート/インポート）モーダル -->
+<div class="modal-overlay hidden" id="saveLoadModal" style="z-index: 10006;">
+  <div class="modal-card saveload-card" style="width: 95vw; max-width: 860px; max-height: 92vh; padding: 18px 22px; box-sizing: border-box; background: linear-gradient(180deg, #25160e 0%, #150d08 100%); border: 2px solid var(--gold); box-shadow: 0 0 60px rgba(0,0,0,0.85); display: flex; flex-direction: column;">
+    <div class="modal-title" style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid var(--gold); padding-bottom: 8px; margin-bottom: 12px;">
+      <span style="color: var(--gold-bright); font-size: 14pt; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+        <span id="saveLoadModalIcon" style="font-size:16pt;">💾</span>
+        <span id="saveLoadModalTitle">天下戦況 記録・再開</span>
+      </span>
+      <button id="closeSaveLoadModalBtn" style="background:none; border:none; color:#aaa; font-size:18pt; cursor:pointer; line-height:1; padding:0 6px;" title="閉じる">✕</button>
+    </div>
+
+    <!-- モード切替タブ -->
+    <div style="display:flex; gap:8px; margin-bottom:12px; border-bottom:1px solid #553e2a; padding-bottom:8px;">
+      <button class="turn-btn" id="tabSaveModeBtn" style="margin:0; flex:1; padding:7px 8px; font-size:11pt; background:linear-gradient(180deg, #3d2c1d, #22160d); border-color:var(--gold); color:var(--gold-bright);">
+        💾 戦況を記録 (保存)
+      </button>
+      <button class="turn-btn" id="tabLoadModeBtn" style="margin:0; flex:1; padding:7px 8px; font-size:11pt; background:linear-gradient(180deg, #2a1f15, #150e09); border-color:#775533; color:#ccc;">
+        📂 戦況を再開 (読込)
+      </button>
+      <button class="turn-btn" id="tabExportImportBtn" style="margin:0; flex:1; padding:7px 8px; font-size:11pt; background:linear-gradient(180deg, #2a1f15, #150e09); border-color:#775533; color:#ccc;">
+        📦 JSON入出力・端末移行
+      </button>
+    </div>
+
+    <!-- スロットリスト表示エリア -->
+    <div id="saveLoadSlotsContainer" style="display:flex; flex-direction:column; gap:10px; max-height:56vh; overflow-y:auto; padding-right:4px;">
+      <!-- JavaScriptで動的生成 -->
+    </div>
+
+    <!-- JSON入出力タブ用エリア -->
+    <div id="saveLoadJsonContainer" class="hidden" style="display:flex; flex-direction:column; gap:12px; max-height:56vh; overflow-y:auto; padding:6px 2px;">
+      <div style="background:rgba(0,0,0,0.45); border:1px solid #775533; border-radius:6px; padding:12px 14px;">
+        <div style="font-size:12pt; font-weight:bold; color:var(--gold-bright); margin-bottom:6px;">
+          📥 現在の戦況を外部へ出力（エクスポート）
+        </div>
+        <div style="font-size:10.5pt; color:#ccc; margin-bottom:10px; line-height:1.5;">
+          現在の覇業データをJSONファイルまたはテキストとして保存します。別端末のPC・スマートフォン・別ブラウザへ戦況を引き継ぐことができます。
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="turn-btn" id="btnExportJsonFile" style="margin:0; width:auto; padding:6px 18px; font-size:11pt; background:linear-gradient(180deg, #27ae60, #1e8449); border-color:#2ecc71;">
+            📄 JSONファイルをダウンロード保存
+          </button>
+          <button class="turn-btn" id="btnExportJsonCopy" style="margin:0; width:auto; padding:6px 18px; font-size:11pt; background:linear-gradient(180deg, #3d2c1d, #22160d); border-color:var(--gold); color:var(--gold-bright);">
+            📋 JSON文字列をクリップボードにコピー
+          </button>
+        </div>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.45); border:1px solid #775533; border-radius:6px; padding:12px 14px;">
+        <div style="font-size:12pt; font-weight:bold; color:var(--gold-bright); margin-bottom:6px;">
+          📤 外部データから戦況を再開（インポート）
+        </div>
+        <div style="font-size:10.5pt; color:#ccc; margin-bottom:10px; line-height:1.5;">
+          保存したJSONファイルを選択、またはテキストを貼り付けて戦況を即座に再開・復元します。
+        </div>
+        <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+          <input type="file" id="importJsonFileInput" accept=".json,application/json,text/plain" style="display:none;">
+          <button class="turn-btn" id="btnTriggerFileImport" style="margin:0; width:auto; padding:6px 18px; font-size:11pt; background:linear-gradient(180deg, #2980b9, #1b4f72); border-color:#5dade2;">
+            📂 JSONファイルを選択して読込
+          </button>
+          <span style="font-size:10.5pt; color:#aaa;">（.json ファイル対応）</span>
+        </div>
+
+        <div style="border-top:1px dashed #553e2a; padding-top:8px;">
+          <label style="font-size:11pt; color:#e0d8c3; display:block; margin-bottom:4px;">または JSONテキストを貼り付けて復元:</label>
+          <textarea id="importJsonTextArea" rows="3" style="width:100%; box-sizing:border-box; background:#120b07; border:1px solid #775533; color:#f5eedc; font-family:monospace; font-size:9.5pt; padding:6px; border-radius:3px; resize:vertical;" placeholder="{&quot;version&quot;:4,&quot;year&quot;:1560,...}"></textarea>
+          <button class="turn-btn" id="btnImportFromText" style="margin-top:6px; width:auto; padding:5px 16px; font-size:10.5pt; background:linear-gradient(180deg, #d35400, #a04000); border-color:#e67e22;">
+            🚀 貼り付けたデータから再開
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- フッター -->
+    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(212,175,55,0.3); padding-top:10px; margin-top:12px;">
+      <div style="font-size:9.5pt; color:#aaa;" id="saveLoadModalFooterNote">
+        ※ 手動記録枠はブラウザに永続保存されます。全動乱シナリオを複数枠で同時進行可能です。
+      </div>
+      <button class="turn-btn" id="closeSaveLoadModalBtn2" style="width:auto; padding:5px 22px; font-size:11pt; margin:0; background:linear-gradient(180deg, #442a1b, #25160e); border-color:#775533; color:#ddd;">
+        閉じる
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 途中参戦用 大名選択モーダル -->
+<div class="modal-overlay hidden" id="spectatorDaimyoModal">
+  <div class="modal-card" style="width: 94vw; max-width: 1400px; max-height: 90vh; padding: 18px 24px; box-sizing: border-box; background:linear-gradient(180deg, #1e130c, #100a06); border:2px solid var(--gold); border-radius:8px;">
+    <div class="modal-title" style="color:var(--gold-bright); border-bottom: 2px solid var(--gold); display:flex; justify-content:space-between; align-items:center; padding-bottom:8px; margin-bottom:12px;">
+      <span style="font-size:14pt; font-weight:bold; display:flex; align-items:center; gap:8px;">
+        <span>⚔️</span>
+        <span>参戦する大名家の選択（天下統一の覇業を継承）</span>
+      </span>
+      <button type="button" id="closeSpectatorDaimyoModalBtn" style="background:none; border:none; color:#aaa; font-size:18pt; cursor:pointer; line-height:1;" title="閉じる">✕</button>
+    </div>
+    <div style="font-size:11.5pt; color:#ddd; margin-bottom:12px; line-height:1.5;">
+      現在割拠している大名家の中から、当主として率いる勢力を選択してください。即座に通常操作へ切り替わり、自ら采配を振るって天下統一を目指すことができます。
+    </div>
+    <div id="spectatorDaimyoGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:10px; max-height:60vh; overflow-y:auto; padding:6px 2px;">
+      <!-- JavaScriptで動的生成 -->
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid #553e2a; padding-top:10px;">
+      <span style="font-size:10pt; color:#aaa;">※ 参戦後もいつでもヘッダーの「見守り」ボタンから再び観戦モードに戻せます。</span>
+      <button class="turn-btn" id="closeSpectatorDaimyoModalBtn2" style="margin:0; width:auto; padding:6px 22px; font-size:11.5pt; background:linear-gradient(180deg, #34495e, #1c2833); border-color:#85929e; color:#eee;">
+        観戦を続ける（閉じる）
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- モジュール化されたJavaScript群 (順序保証ロード) -->
+  <!-- 1. 全149大名家・全シナリオ・全77領国データベース -->
+  <script src="assets/kamons.js?v=20261025_kamon2"></script>
+  
+  <!-- 2. 菅野よう子風 洗練和風交響BGMエンジン (全15曲) -->
+  <script src="js/bgm.js?v=20261025_sfx53"></script>
+
+  <!-- 3. 戦国天下統一伝 ゲームエンジン本体 -->
+  <script type="module" src="js/app.js?v=20261025_d74"></script>
+  <script type="module" src="js/ui/Encyclopedia.js?v=20261025_d74"></script>
+  <script src="js/ui/StartScreenLayout.js?v=20261025_ui48"></script>
+  <script src="js/ui/TitleBgm.js?v=20261025_sfx49"></script>
+
+
+
+
+
+
+</body></html>
