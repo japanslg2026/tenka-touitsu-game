@@ -3507,7 +3507,7 @@
 
         SCALE_LABEL_INDICES = [];
         // 時代フィルタ適用時などでシナリオ数が14件以下の場合は全シナリオの西暦メモリを表示、それ以上は12分割で等間隔表示
-        if (total <= 14) {
+        if (State.eraFilter !== 'all' || total <= 20) {
           for (var j = 0; j < total; j++) {
             SCALE_LABEL_INDICES.push(j);
           }
