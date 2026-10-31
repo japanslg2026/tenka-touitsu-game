@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja" prefix="og: http://ogp.me/ns#">
 <head>
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0LDSPXQ2M6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-0LDSPXQ2M6');
+</script>
+
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -286,49 +299,60 @@
 
     /* 領国ポリゴンスタイルとハイライト／グレーアウト演出 */
     .prov-path {
-      stroke: rgba(20, 14, 8, 0.78);
-      stroke-width: 0.8px;
+      stroke: none;
+      stroke-width: 0.5px;
       stroke-linejoin: round;
       stroke-linecap: round;
       vector-effect: non-scaling-stroke;
       fill-opacity: 0.88;
-      transition: fill 0.2s ease, fill-opacity 0.2s ease, filter 0.2s ease, stroke 0.18s ease, stroke-width 0.18s ease;
+      paint-order: fill stroke;
+      transition: fill 0.2s ease, fill-opacity 0.2s ease, filter 0.2s ease;
       cursor: pointer;
     }
 
     .prov-path:hover {
       fill-opacity: 1;
-      stroke: #fff3c4;
-      stroke-width: 1.6px;
-      filter: brightness(1.15);
+      filter: brightness(1.18);
     }
 
     #atlasMapSvg.has-clan-highlight .prov-path.dimmed {
       fill: #262320 !important;
       fill-opacity: 0.42;
-      stroke: rgba(95, 86, 75, 0.42);
-      stroke-width: 0.5px;
+      stroke: none;
       filter: grayscale(0.92) brightness(0.62);
     }
 
     #atlasMapSvg.has-clan-highlight .prov-path.dimmed:hover {
       fill-opacity: 0.72;
       filter: grayscale(0.4) brightness(0.9);
-      stroke: rgba(255, 235, 180, 0.75);
     }
 
     #atlasMapSvg.has-clan-highlight .prov-path.clan-highlighted {
-      fill-opacity: 0.96;
-      stroke: #ffd700;
-      stroke-width: 1.45px;
-      filter: brightness(1.1) drop-shadow(0 0 3px rgba(255, 215, 0, 0.45));
+      fill-opacity: 0.98;
+      filter: brightness(1.08);
+      stroke: none;
     }
 
     #atlasMapSvg .prov-path.prov-selected {
       fill-opacity: 1 !important;
       stroke: #ffffff !important;
-      stroke-width: 2.5px !important;
-      filter: brightness(1.22) drop-shadow(0 0 6px rgba(255, 240, 150, 0.95)) !important;
+      stroke-width: 1.3px !important;
+      stroke-linejoin: round !important;
+      stroke-linecap: round !important;
+      paint-order: fill stroke !important;
+      filter: brightness(1.22) drop-shadow(0 0 2.5px rgba(255, 255, 255, 0.8)) !important;
+    }
+
+    #mapBordersGroup {
+      pointer-events: none;
+    }
+
+    #mapBordersGroup .map-border-line,
+    #mapBordersGroup .map-coastline,
+    #mapBordersGroup .map-coast-line {
+      vector-effect: non-scaling-stroke;
+      stroke-linejoin: round;
+      stroke-linecap: round;
     }
 
     .kamon-badge-group {
@@ -348,13 +372,13 @@
 
     .prov-label-text {
       pointer-events: none;
-      font-size: 9.5px;
+      font-size: 7.8px;
       fill: #f5eedc;
       font-weight: bold;
       text-anchor: middle;
       paint-order: stroke;
       stroke: rgba(12, 8, 4, 0.92);
-      stroke-width: 2.4px;
+      stroke-width: 1.8px;
       stroke-linecap: round;
       stroke-linejoin: round;
       opacity: 0.92;
@@ -370,18 +394,31 @@
       opacity: 0.25;
     }
 
-    /* ==================== 左上オーバーレイ（シナリオ概要は2行拡大＆余白時は自動縮小） ==================== */
+    /* ==================== 左上オーバーレイ（シナリオ概要・水平操作ボタン・大名概要） ==================== */
     .map-left-overlay-stack {
       position: absolute;
       top: 10px;
       left: 12px;
-      width: 1075px;
-      max-width: calc(100% - 72px);
+      right: 12px;
+      max-width: calc(100% - 24px);
       display: flex;
       flex-direction: column;
       gap: 6px;
       z-index: 25;
       pointer-events: none;
+    }
+
+    .map-scen-row {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 8px;
+      pointer-events: none;
+      width: 100%;
+    }
+
+    .map-scen-row > * {
+      pointer-events: auto;
     }
 
     .overlay-box-auto {
@@ -400,8 +437,16 @@
     }
 
     #mapScenBox {
+      flex: 0 1 1044px;
+      max-width: min(1044px, calc(100% - 190px));
+      width: 100%;
       height: auto;
       max-height: 176px;
+    }
+
+    #mapDaimyoBox {
+      max-width: min(1044px, calc(100% - 190px));
+      width: 100%;
     }
 
     .overlay-box-header {
@@ -497,14 +542,35 @@
       border-color: var(--border-subtle);
     }
 
-    .map-controls {
+    .map-viewport-wrap {
       position: absolute;
-      top: 10px;
-      right: 12px;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .map-viewport-wrap > * {
+      pointer-events: auto;
+    }
+    .map-floating-bar {
+      position: static;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      align-items: center;
       gap: 6px;
       z-index: 25;
+      pointer-events: auto;
+      flex-shrink: 0;
+    }
+    .mobile-clear-highlight-btn {
+      display: none !important;
+    }
+    .map-controls {
+      position: static;
+      display: flex;
+      flex-direction: row;
+      gap: 6px;
+      align-items: center;
     }
 
     .map-ctrl-btn {
@@ -1798,8 +1864,250 @@
       to { transform: rotate(360deg); }
     }
 
+    /* ==================== 領国一覧・武将一覧モーダル用共通スタイル（PC基本） ==================== */
+    .modal-subbar {
+      padding: 10px 18px;
+      background: rgba(0, 0, 0, 0.4);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .modal-subbar-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+    .modal-search-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .modal-search-label {
+      font-size: 11pt;
+      color: var(--gold-pale);
+      white-space: nowrap;
+    }
+    .modal-search-input {
+      background: #140d08;
+      color: #fff;
+      border: 1px solid var(--border-gold);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 11pt;
+      width: 240px;
+    }
+    .modal-search-input:focus {
+      outline: none;
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+    }
+    .modal-cards-container {
+      display: none;
+    }
+    .modal-table-body {
+      padding: 0 18px 18px;
+    }
+    .modal-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .modal-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12pt;
+    }
+
+    /* ==================== 領国・武将カード形式用スタイル（PC基本） ==================== */
+    .modal-cards-container {
+      display: none; /* PCではテーブル優先 */
+    }
+    .modal-sort-bar-wrap {
+      display: none !important; /* パソコンの画面ではテーブル見出し(th)で並べ替えを行うため不要 */
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 2px 0 4px;
+    }
+    .modal-sort-bar-wrap::-webkit-scrollbar {
+      display: none;
+    }
+    .modal-sort-chips {
+      display: none !important; /* パソコンの画面では非表示 */
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+    .modal-subbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sort-chip-btn {
+      background: #23180f;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-sub);
+      padding: 4px 10px;
+      border-radius: 14px;
+      font-size: 10pt;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .sort-chip-btn:hover {
+      border-color: var(--gold);
+      color: var(--text-main);
+    }
+    .sort-chip-btn.active {
+      background: linear-gradient(180deg, #6e4e1e 0%, #3d2a0f 100%);
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+      font-weight: bold;
+      box-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
+    }
+    .sort-chip-arrow {
+      font-size: 9pt;
+      color: var(--gold-bright);
+    }
+    .prov-card, .off-card {
+      background: linear-gradient(135deg, #241910 0%, #160e08 100%);
+      border: 1px solid var(--border-gold);
+      border-radius: 8px;
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.6);
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    }
+    .prov-card:active, .off-card:active {
+      transform: scale(0.985);
+      border-color: var(--gold-bright);
+      background: #312216;
+    }
+    .card-head-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      padding-bottom: 4px;
+    }
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .card-title-main {
+      font-size: 12.5pt;
+      font-weight: bold;
+      color: #fff;
+    }
+    .card-title-sub {
+      font-size: 9.5pt;
+      color: var(--gold-pale);
+    }
+    .card-badge-region, .card-badge-clan {
+      font-size: 8.5pt;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 2px 8px;
+      color: var(--text-sub);
+    }
+    .card-info-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 9.5pt;
+      color: var(--text-sub);
+    }
+    .card-info-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .card-lbl {
+      color: var(--text-muted);
+      font-size: 8.5pt;
+    }
+    .card-val {
+      color: #fff;
+    }
+    .card-owner-name {
+      font-weight: bold;
+      color: #fff8dc;
+    }
+    .card-mini-stats {
+      font-size: 8.5pt;
+      color: var(--gold-pale);
+    }
+    .card-stats-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .card-stat-pill {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 5px;
+      padding: 4px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9pt;
+    }
+    .card-stat-pill.highlight-gold {
+      border-color: var(--border-gold);
+      background: rgba(70, 48, 20, 0.45);
+    }
+    .stat-tag {
+      flex: 1;
+      padding: 3px 4px;
+      border-radius: 4px;
+      font-size: 8.5pt;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .stat-tag.mil { background: rgba(142, 40, 32, 0.4); border: 1px solid #c0392b; color: #ffb3b3; }
+    .stat-tag.int { background: rgba(41, 128, 185, 0.4); border: 1px solid #2980b9; color: #bfe2ff; }
+    .stat-tag.pol { background: rgba(39, 174, 96, 0.4); border: 1px solid #27ae60; color: #c4f7df; }
+    .stat-tag.skl { background: rgba(212, 175, 55, 0.25); border: 1px solid var(--border-gold); color: #fce8a6; }
+
     /* ==================== タブレット・スマートフォン向けレスポンシブデザイン ==================== */
+
+    /* ==================== PC・スマホ レスポンシブ切り替えユーティリティ（PC表示完全保持） ==================== */
+    .nav-text-sp, .tl-text-sp, .tab-txt-sp, .modal-search-label-sp, .sort-chip-txt-sp, .mk-tab-sp, .modal-head-title-sp, .bio-close-txt-sp, .about-close-txt-sp, .era-txt-sp, .nav-btn-sp-only {
+      display: none !important;
+    }
+    .brand-title-sub, .nav-text-pc, .tl-text-pc, .tab-txt-pc, .modal-search-label-pc, .sort-chip-txt-pc, .mk-tab-pc, .modal-head-title-pc, .bio-close-txt-pc, .about-close-txt-pc, .era-txt-pc, .nav-btn-pc-only {
+      display: inline-flex;
+    }
+    #officerBioModal {
+      z-index: 3000 !important; /* 武将一覧モーダル(z-index:1200)の前側に確実に表示 */
+    }
+    .modal-cards-container {
+      display: none !important;
+    }
+
     @media (max-width: 1100px) {
+      /* 日本列島を地図ボックス（SVG）の上下中央に配置 */
+      #mapArchipelagoGroup {
+        transform: translate(0px, -11px) rotate(1deg);
+        transform-origin: 500px 340px;
+      }
       html, body {
         overflow-y: auto;
         height: auto;
@@ -1817,8 +2125,12 @@
         height: auto;
       }
       .map-stage {
-        height: 58vh;
-        min-height: 380px;
+        height: auto;
+        min-height: auto;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        position: relative;
       }
       .map-left-overlay-stack {
         position: relative;
@@ -1829,6 +2141,14 @@
         padding: 8px 10px 4px;
         background: #140e09;
         border-bottom: 1px solid var(--border-gold);
+        flex-shrink: 0;
+      }
+      #atlasMapSvg {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 965 / 520;
+        display: block;
+        position: relative;
       }
       #mapScenBox, .overlay-box-auto {
         max-height: none;
@@ -1841,6 +2161,27 @@
       }
       .officer-cards-list {
         max-height: 420px;
+      }
+      /* === スマホ画面：地図の下の領国と城郭の解説、この国の武将一覧の文字サイズは11ポイント === */
+      #castleSection,
+      #officersSection,
+      .side-section-castle,
+      .side-section-officers,
+      .right-sidebar {
+        font-size: 11pt !important;
+      }
+      #castleSection *,
+      #officersSection *,
+      .side-section-castle *,
+      .side-section-officers *,
+      .right-sidebar * {
+        font-size: 11pt !important;
+        line-height: 1.45 !important;
+      }
+      #castleSection .section-title,
+      #officersSection .section-title {
+        font-size: 11pt !important;
+        font-weight: bold !important;
       }
       .mk-main {
         grid-template-columns: 1fr;
@@ -1858,81 +2199,1049 @@
     }
 
     @media (max-width: 768px) {
-      .mk-in-detail .mk-back {
-        display: inline-flex;
+      /* スマホ画面全体の文字サイズ下限を11pt以上に保証 */
+      body, table, input, select, textarea, button {
+        font-size: 11pt;
       }
-      .mk-body.mk-detail-open .mk-listwrap,
-      .mk-body.mk-detail-open .mk-filters,
-      .mk-body.mk-detail-open .mk-eras {
-        display: none;
-      }
-    }
 
-    @media (max-width: 680px) {
+      /* === スマホ専用レスポンシブ切り替え === */
+      .brand-title-sub { display: none !important; }
+      .nav-text-pc { display: none !important; }
+      .nav-btn-pc-only { display: none !important; }
+      .nav-btn-sp-only { display: inline-flex !important; }
+      .nav-text-sp {
+        display: none !important; /* スマホ画面はピクトグラムのみで領国などの文字は非表示 */
+      }
+      .tl-text-pc { display: none !important; }
+      .tl-text-sp { display: inline !important; }
+      .tab-txt-pc { display: none !important; }
+      .tab-txt-sp { display: inline !important; }
+      .modal-search-label-pc { display: none !important; }
+      .modal-search-label-sp { display: inline !important; font-size: 11pt !important; }
+      .sort-chip-txt-pc { display: none !important; }
+      .sort-chip-txt-sp { display: none !important; } /* スマホ上部ソートはピクトグラムのみで見切れ完全根絶 */
+      .mk-tab-pc { display: none !important; }
+      .mk-tab-sp { display: inline !important; }
+      .modal-head-title-pc { display: none !important; }
+      .modal-head-title-sp { display: inline !important; }
+      .bio-close-txt-pc { display: none !important; }
+      .bio-close-txt-sp { display: inline !important; font-weight: bold !important; }
+      .about-close-txt-pc { display: none !important; }
+      .about-close-txt-sp { display: inline !important; font-weight: bold !important; }
+      .era-txt-pc { display: none !important; }
+      .era-txt-sp { display: inline !important; }
+
+      /* === ヘッダーナビゲーションの1行均等配置（見切れ完全根絶） === */
       .top-header {
-        padding: 8px 10px;
-        gap: 8px;
+        padding: 4px 4px 3px !important;
+        gap: 3px !important;
+      }
+      .brand-box {
+        width: 100% !important;
+        justify-content: center !important;
+        gap: 4px !important;
+      }
+      .brand-emblem {
+        font-size: 13pt !important;
       }
       .brand-title {
-        font-size: 13pt;
+        font-size: 11pt !important;
+        letter-spacing: -0.02em !important;
+        white-space: nowrap !important;
+        text-align: center !important;
       }
       .header-scenario-indicator {
-        width: 100%;
-        justify-content: center;
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 2px 6px !important;
+        font-size: 11pt !important;
+        gap: 4px !important;
       }
       .top-nav {
-        width: 100%;
-        justify-content: center;
-        gap: 6px;
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 2.5px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
       }
-      .nav-btn {
-        padding: 5px 9px;
+      .top-nav .nav-btn {
+        flex: 1 1 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: inline-flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        border-radius: 4px !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+      }
+      .top-nav .nav-btn .nav-icon {
+        font-size: 15pt !important;
+        line-height: 1 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      /* スマホ画面：PC専用のゲーム本編名鑑ボタンは非表示 */
+      #openClanMeikanBtn,
+      #openOfficerMeikanBtn,
+      .nav-btn-pc-only,
+      .top-nav .nav-btn.nav-btn-pc-only {
+        display: none !important;
+      }
+      /* スマホ画面：index.html用の名鑑ボタン（📜）は表示 */
+      #openCombinedMeikanBtn,
+      .nav-btn-sp-only,
+      .top-nav .nav-btn.nav-btn-sp-only {
+        display: inline-flex !important;
+      }
+
+      /* === 勢力図（地図）スマホ最優先大迫力表示 === */
+      .pc-clear-highlight-btn {
+        display: none !important;
       }
       .map-stage {
-        height: 50vh;
-        min-height: 320px;
+        height: auto !important;
+        min-height: auto !important;
+        position: relative !important;
       }
+      .map-left-overlay-stack {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 3px 6px 2px !important;
+        background: #140e09 !important;
+        border-bottom: 1px solid var(--border-gold) !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2px !important;
+        box-sizing: border-box !important;
+      }
+      .map-scen-row {
+        display: contents !important;
+      }
+      /* === スマホ用シナリオ説明ボックス：左右幅フィット・文章量に応じた可変上下幅 === */
+      #mapScenBox {
+        order: 1 !important;
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 5px 8px !important;
+        background: rgba(20, 14, 9, 0.95) !important;
+        border: 1px solid var(--border-gold) !important;
+        border-left: 3.5px solid var(--gold) !important;
+        border-radius: 4px !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        cursor: default !important;
+      }
+      #mapScenBox .overlay-box-header {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: baseline !important;
+        gap: 6px !important;
+        flex-wrap: wrap !important;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.35) !important;
+        padding-bottom: 2px !important;
+        margin-bottom: 3px !important;
+        overflow: visible !important;
+      }
+      #mapScenBox .overlay-box-title {
+        font-size: 11pt !important;
+        font-weight: bold !important;
+        color: var(--gold-bright) !important;
+        white-space: normal !important;
+        flex-shrink: 0 !important;
+      }
+      #mapScenBox .overlay-box-sub {
+        font-size: 11pt !important;
+        color: var(--text-sub) !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+      }
+      #mapScenBox .overlay-box-body {
+        font-size: 11pt !important;
+        line-height: 1.4 !important;
+        height: auto !important;
+        max-height: none !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        margin-top: 2px !important;
+        color: #d8c8b4 !important;
+      }
+      /* === スマホ用大名説明ボックス：左右幅フィット・文章量に応じた可変上下幅 === */
+      #mapDaimyoBox {
+        order: 2 !important;
+        flex: 0 0 auto !important;
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 5px 8px !important;
+        background: rgba(20, 14, 9, 0.95) !important;
+        border: 1px solid var(--border-gold) !important;
+        border-left: 3.5px solid var(--gold) !important;
+        border-radius: 4px !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        font-size: 11pt !important;
+      }
+      #mapDaimyoBox.sp-unselected {
+        display: block !important;
+      }
+      #mapDaimyoBox #daimyoDetailContent,
+      #mapDaimyoBox #daimyoDetailContent div {
+        font-size: 11pt !important;
+        line-height: 1.35 !important;
+        height: auto !important;
+      }
+      #mapDaimyoBox .daimyo-top-row {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 4px !important;
+        flex-wrap: wrap !important;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.35) !important;
+        padding-bottom: 2px !important;
+        margin-bottom: 3px !important;
+      }
+      #mapDaimyoBox .daimyo-identity-group {
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        flex-wrap: wrap !important;
+      }
+      #mapDaimyoBox .daimyo-identity-group strong {
+        font-size: 11pt !important;
+      }
+      #mapDaimyoBox .daimyo-identity-group span,
+      #mapDaimyoBox .daimyo-identity-group b {
+        font-size: 11pt !important;
+      }
+      #mapDaimyoBox .daimyo-metrics-group {
+        display: flex !important;
+        align-items: center !important;
+        gap: 3px !important;
+        flex-wrap: wrap !important;
+      }
+      #mapDaimyoBox .metric-chip {
+        padding: 1px 4px !important;
+        font-size: 11pt !important;
+        border-radius: 3px !important;
+      }
+
+      .map-viewport-wrap {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 220px !important;
+        max-height: 52vh !important;
+        aspect-ratio: 980 / 535 !important;
+        overflow: hidden !important;
+        background: radial-gradient(ellipse at center, #18232c 0%, #0d1318 70%, #070a0d 100%) !important;
+        pointer-events: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      #atlasMapSvg {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        display: block !important;
+        object-fit: contain !important;
+      }
+      .map-floating-bar {
+        order: 3 !important;
+        position: static !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        margin-top: 2px !important;
+        margin-bottom: 1px !important;
+        z-index: 35 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+      .map-controls {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 2px !important;
+        background: rgba(18, 12, 7, 0.9) !important;
+        padding: 1px 2px !important;
+        border-radius: 4px !important;
+        border: 1px solid var(--border-gold) !important;
+        flex-shrink: 0 !important;
+      }
+      .map-ctrl-btn {
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        font-size: 11pt !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .mobile-clear-highlight-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 28px !important;
+        padding: 0 8px !important;
+        font-size: 11pt !important;
+        border-radius: 4px !important;
+        background: rgba(36, 22, 14, 0.94) !important;
+        border: 1.5px solid var(--border-gold) !important;
+        color: var(--text-main) !important;
+        white-space: nowrap !important;
+        cursor: pointer !important;
+        flex-shrink: 0 !important;
+      }
+      .mobile-clear-highlight-btn.is-cleared {
+        display: inline-flex !important;
+        opacity: 0.55 !important;
+        color: var(--text-sub) !important;
+        border-color: var(--border-subtle) !important;
+      }
+
+      /* === タイムライン操作バー === */
       .timeline-dock {
-        padding: 8px 10px 12px;
+        padding: 4px 6px 8px !important;
+        gap: 4px !important;
       }
       .era-tabs-bar {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        width: 100%;
-        padding-bottom: 4px;
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        gap: 2px !important;
+        padding: 1px 0 !important;
       }
+      .era-tabs-bar::-webkit-scrollbar { display: none !important; }
       .era-chip-btn {
-        white-space: nowrap;
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        padding: 2px 6px !important;
+        font-size: 11pt !important;
+        border-radius: 10px !important;
       }
       .timeline-controls {
-        width: 100%;
-        justify-content: space-between;
+        width: 100% !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        gap: 4px !important;
       }
-      .slider-scale-bar .scale-tick-label:nth-of-type(even):not(:last-child) {
-        display: none;
+      .tl-btn {
+        flex: 1 !important;
+        padding: 3px 6px !important;
+        font-size: 11pt !important;
+        text-align: center !important;
       }
-      .bio-bars-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .stat-pills-grid-2 {
-        grid-template-columns: 1fr;
-      }
+
+      /* === 領国一覧・武将一覧モーダル（スマホカード表示完全最適化） === */
       .modal-window {
-        width: 98vw;
-        max-height: 92vh;
+        width: 95vw !important;
+        max-width: 95vw !important;
+        height: 92vh !important;
+        height: 92dvh !important;
+        max-height: 92dvh !important;
+        margin: auto !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
       }
-      .modal-body {
-        padding: 12px;
+      .modal-head {
+        flex: 0 0 auto !important;
+        padding: 6px 8px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        box-sizing: border-box !important;
+        gap: 6px !important;
+        width: 100% !important;
       }
-    }
-  </style>
+      .modal-head-title {
+        font-size: 11pt !important;
+        line-height: 1.25 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+      }
+      .modal-close-btn {
+        flex: 0 0 28px !important;
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        max-width: 28px !important;
+        padding: 0 !important;
+        font-size: 13pt !important;
+        line-height: 28px !important;
+        text-align: center !important;
+        border-radius: 4px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+      }
+      .modal-subbar {
+        flex: 0 0 auto !important;
+        padding: 5px 8px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        background: #19100a !important;
+        border-bottom: 1px solid var(--border-gold) !important;
+      }
+      .modal-subbar-tabs {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+      }
+      .modal-subbar-tabs::-webkit-scrollbar { display: none !important; }
+      .modal-subbar-tabs .nav-btn {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: auto !important;
+        max-width: none !important;
+        font-size: 11pt !important;
+        padding: 4px 10px !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        white-space: nowrap !important;
+        border-radius: 4px !important;
+      }
+      .modal-subbar-controls {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+      }
+      .modal-search-box {
+        width: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+      }
+      .modal-search-input {
+        flex: 1 1 auto !important;
+        font-size: 11pt !important;
+        padding: 3px 6px !important;
+      }
+      .modal-sort-bar-wrap {
+        display: block !important; /* スマホ画面ではカードを並べ替えるためソートチップを表示 */
+        width: 100% !important;
+        overflow: hidden !important;
+        padding: 2px 0 3px !important;
+        box-sizing: border-box !important;
+      }
+      .modal-sort-chips {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 2px !important;
+        width: 100% !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+      }
+      .modal-sort-chips::-webkit-scrollbar { display: none !important; }
+      .sort-chip-btn {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        padding: 4px 1px !important;
+        font-size: 11pt !important;
+        border-radius: 4px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+      }
+      .sort-chip-ic {
+        font-size: 11pt !important;
+        line-height: 1 !important;
+        display: inline-block !important;
+      }
+      .sort-chip-arrow {
+        font-size: 11pt !important;
+        margin-left: 1px !important;
+        line-height: 1 !important;
+      }
+      .modal-table-body {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 6px 8px !important;
+        box-sizing: border-box !important;
+      }
+      /* スマホでは表を完全に非表示にして、カードコンテナを表示 */
+      .modal-table-scroll {
+        display: none !important;
+      }
+      .modal-cards-container {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+        padding: 2px 0 16px !important;
+        box-sizing: border-box !important;
+      }
+      .prov-card, .off-card {
+        padding: 7px 9px !important;
+        gap: 4px !important;
+        border-radius: 6px !important;
+        background: linear-gradient(135deg, #241910 0%, #160e08 100%) !important;
+        border: 1px solid var(--border-gold) !important;
+      }
+      .card-title-main {
+        font-size: 11pt !important;
+        font-weight: bold !important;
+        color: #fff !important;
+      }
+      .card-badge-region, .card-badge-clan {
+        font-size: 11pt !important;
+        padding: 1px 5px !important;
+      }
+      .card-stats-row {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 4px !important;
+      }
+      .card-stat-pill {
+        padding: 2px 5px !important;
+        font-size: 11pt !important;
+        white-space: nowrap !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 3px !important;
+      }
+      .stat-tag {
+        font-size: 11pt !important;
+        padding: 1px 4px !important;
+        white-space: nowrap !important;
+      }
+
+      /* === 大名名鑑・武将名鑑モーダル（mk-overlay）のヘッダー・タブ最適化（見切れ完全根絶） === */
+      .mk-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
+        z-index: 100000 !important;
+      }
+      .mk-card {
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        max-width: 100vw !important;
+        max-height: 100dvh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+      }
+      .mk-head {
+        flex: 0 0 auto !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 0 6px !important;
+        gap: 3px !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+        overflow: hidden !important;
+      }
+      .mk-title {
+        font-size: 11pt !important;
+        white-space: nowrap !important;
+        flex: 0 0 auto !important;
+        gap: 2px !important;
+      }
+      .mk-title small {
+        display: none !important;
+      }
+      .mk-tabs {
+        margin-left: auto !important;
+        gap: 3px !important;
+        flex: 0 0 auto !important;
+        display: flex !important;
+        align-items: center !important;
+      }
+      .mk-tab {
+        padding: 2px 5px !important;
+        font-size: 11pt !important;
+        white-space: nowrap !important;
+        min-height: 24px !important;
+        border-radius: 4px !important;
+      }
+      .mk-close {
+        flex: 0 0 26px !important;
+        width: 26px !important;
+        height: 26px !important;
+        min-width: 26px !important;
+        min-height: 26px !important;
+        font-size: 11pt !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 4px !important;
+      }
+      .mk-back {
+        padding: 2px 6px !important;
+        font-size: 11pt !important;
+        min-height: 24px !important;
+        flex-shrink: 0 !important;
+      }
+
+}
+</style>
+<style id="mobile-meikan-perfect-style">
+@media (max-width: 768px) {
+  /* 名鑑（大名名鑑・武将名鑑）フィルターの完全最適化：余白ゼロ・重なり解消・2列整列 */
+  .mk-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    z-index: 100000 !important;
+  }
+  .mk-overlay .mk-card {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-width: 100vw !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+  .mk-overlay .mk-head {
+    flex: 0 0 auto !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 8px !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+  }
+  .mk-overlay .mk-title {
+    font-size: 11pt !important;
+    white-space: nowrap !important;
+    gap: 4px !important;
+  }
+  .mk-overlay .mk-title small {
+    display: none !important;
+  }
+  .mk-overlay .mk-tabs {
+    margin-left: auto !important;
+    gap: 4px !important;
+  }
+  .mk-overlay .mk-tab {
+    padding: 3px 8px !important;
+    font-size: 11pt !important;
+    white-space: nowrap !important;
+    min-height: 28px !important;
+  }
+  .mk-overlay .mk-close {
+    width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    font-size: 11pt !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  .mk-overlay .mk-back {
+    padding: 3px 10px !important;
+    font-size: 11pt !important;
+    min-height: 28px !important;
+  }
+  .mk-overlay .mk-body {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: calc(100% - 42px) !important;
+    overflow-y: hidden !important;
+    padding: 6px 8px !important;
+    gap: 4px !important;
+    box-sizing: border-box !important;
+  }
+  .mk-overlay .mk-filters,
+  .mk-filters {
+    display: flex !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 0 2px 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    flex: 0 0 auto !important;
+    z-index: 1 !important;
+  }
+  .mk-overlay .mk-filters .mk-f,
+  .mk-filters .mk-f {
+    flex: 1 1 calc(50% - 4px) !important;
+    width: calc(50% - 4px) !important;
+    max-width: calc(50% - 4px) !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    font-size: 11pt !important;
+    margin: 0 !important;
+    gap: 1px !important;
+  }
+  .mk-overlay .mk-filters .mk-f > span,
+  .mk-filters .mk-f > span {
+    font-size: 11pt !important;
+    display: block !important;
+    line-height: 1.1 !important;
+    margin-bottom: 1px !important;
+    color: var(--gold-pale, #d4af37) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .mk-overlay .mk-filters .mk-f-search,
+  .mk-filters .mk-f-search {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .mk-overlay .mk-filters .mk-f-sort,
+  .mk-filters .mk-f-sort {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    margin-top: 1px !important;
+  }
+  .mk-overlay .mk-filters input[type="search"],
+  .mk-overlay .mk-filters select,
+  .mk-filters input[type="search"],
+  .mk-filters select {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 11pt !important;
+    padding: 2px 6px !important;
+    height: 28px !important;
+    background: #180f0a !important;
+    border: 1px solid var(--border-gold, #8c6a28) !important;
+    color: var(--text-main, #f0e6d6) !important;
+    border-radius: 4px !important;
+  }
+  .mk-overlay .mk-filters .mk-f-chk,
+  .mk-filters .mk-f-chk {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 2px 0 !important;
+    min-height: 22px !important;
+    font-size: 11pt !important;
+    cursor: pointer !important;
+  }
+  .mk-overlay .mk-filters .mk-f-chk input[type="checkbox"],
+  .mk-filters .mk-f-chk input[type="checkbox"] {
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+    cursor: pointer !important;
+    accent-color: var(--gold-bright, #ffd700) !important;
+  }
+  .mk-overlay .mk-filters .mk-f-chk span,
+  .mk-filters .mk-f-chk span {
+    font-size: 11pt !important;
+    color: var(--text-main, #e8dcc4) !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+  }
+  .mk-overlay .mk-filters .mk-sortbar,
+  .mk-filters .mk-sortbar {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 3px !important;
+    padding: 1px 0 !important;
+    scrollbar-width: none !important;
+  }
+  .mk-overlay .mk-filters .mk-sortbar::-webkit-scrollbar,
+  .mk-filters .mk-sortbar::-webkit-scrollbar {
+    display: none !important;
+  }
+  .mk-overlay .mk-filters .mk-sb,
+  .mk-filters .mk-sb {
+    flex: 0 0 auto !important;
+    min-width: 38px !important;
+    height: 26px !important;
+    padding: 0 6px !important;
+    font-size: 11pt !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    background: #261a10 !important;
+    border: 1px solid var(--border-subtle, #5a4228) !important;
+    color: var(--text-main, #e8dcc4) !important;
+    border-radius: 4px !important;
+  }
+  .mk-overlay .mk-filters .mk-sb.on,
+  .mk-filters .mk-sb.on {
+    background: #5c401c !important;
+    border-color: var(--gold-bright, #ffd700) !important;
+    color: var(--gold-bright, #ffd700) !important;
+    font-weight: bold !important;
+  }
+  .mk-overlay .mk-filters .mk-sb-ic,
+  .mk-filters .mk-sb-ic {
+    display: inline !important;
+    font-size: 11pt !important;
+  }
+  .mk-overlay .mk-filters .mk-sb-l,
+  .mk-filters .mk-sb-l {
+    display: inline !important;
+    font-size: 11pt !important;
+    margin-left: 2px !important;
+  }
+  .mk-overlay .mk-filters .mk-reset,
+  .mk-filters .mk-reset {
+    display: none !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    padding: 2px 10px !important;
+    height: 24px !important;
+    font-size: 11pt !important;
+    box-sizing: border-box !important;
+    margin: 2px 0 0 auto !important;
+    border-radius: 4px !important;
+    border: 1px solid var(--border-gold, #8c6a28) !important;
+    background: #2a1a10 !important;
+    color: var(--text-sub, #c8b9ab) !important;
+    cursor: pointer !important;
+  }
+  /* 時代チップバー：1行横スクロール、端を綺麗に */
+  .mk-overlay .mk-eras,
+  .mk-eras {
+    display: flex !important;
+    position: relative !important;
+    overflow-x: visible !important;
+    scrollbar-width: none !important;
+    flex-wrap: wrap !important;
+    padding: 2px 2px 3px !important;
+    margin: 1px 0 2px 0 !important;
+    gap: 4px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    flex: 0 0 auto !important;
+  }
+  .mk-overlay .mk-eras::-webkit-scrollbar,
+  .mk-eras::-webkit-scrollbar {
+    display: none !important;
+  }
+  .mk-overlay .mk-chip,
+  .mk-chip {
+    white-space: nowrap !important;
+    font-size: 10pt !important;
+    padding: 2px 6px !important;
+    height: 24px !important;
+    line-height: 20px !important;
+    border-radius: 12px !important;
+    flex: 0 0 auto !important;
+    background: #22170e !important;
+    border: 1px solid var(--border-subtle, #5a4228) !important;
+    color: var(--text-sub, #c8b9ab) !important;
+    cursor: pointer !important;
+  }
+  .mk-overlay .mk-chip.on,
+  .mk-chip.on {
+    background: #6a491e !important;
+    border-color: var(--gold-bright, #ffd700) !important;
+    color: var(--gold-bright, #ffd700) !important;
+    font-weight: bold !important;
+  }
+  .mk-overlay .mk-main,
+  .mk-main {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+  }
+  .mk-overlay .mk-listwrap,
+  .mk-listwrap {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* === 名鑑（大名名鑑・武将名鑑）スマホ画面：一覧と説明画面（詳細）の完全分離切り替え === */
+  .mk-overlay .mk-back,
+  .mk-back {
+    display: none !important;
+  }
+  .mk-overlay .mk-detail,
+  .mk-detail {
+    display: none !important;
+  }
+  .mk-overlay.mk-in-detail .mk-back,
+  .mk-detail-open .mk-back,
+  .mk-body.mk-detail-open ~ .mk-head .mk-back {
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  .mk-overlay.mk-in-detail .mk-filters,
+  .mk-detail-open .mk-filters,
+  .mk-overlay.mk-in-detail .mk-eras,
+  .mk-detail-open .mk-eras {
+    display: none !important;
+  }
+  .mk-overlay.mk-in-detail .mk-listwrap,
+  .mk-detail-open .mk-listwrap {
+    display: none !important;
+  }
+  .mk-overlay.mk-in-detail .mk-detail,
+  .mk-detail-open .mk-detail {
+    display: block !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 8px 10px 24px !important;
+    box-sizing: border-box !important;
+  }
+  .mk-overlay.mk-in-detail .mk-main,
+  .mk-detail-open .mk-main {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  .mk-overlay.mk-in-detail .mk-dgrid,
+  .mk-detail-open .mk-dgrid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  .mk-overlay.mk-in-detail .mk-dhead,
+  .mk-detail-open .mk-dhead {
+    padding: 8px 10px !important;
+    gap: 10px !important;
+  }
+  .mk-overlay.mk-in-detail .mk-dkamon,
+  .mk-detail-open .mk-dkamon {
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+  }
+  .mk-overlay.mk-in-detail .mk-dname,
+  .mk-detail-open .mk-dname {
+    font-size: 13pt !important;
+    min-width: 0 !important;
+  }
+
+  /* === スマホ画面：武将列伝・人物詳細の閉じるボタンは「閉」の一文字のみ === */
+  #officerBioModal .modal-close-btn {
+    min-width: 32px !important;
+    height: 32px !important;
+    padding: 0 6px !important;
+    font-size: 11pt !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+</style>
 </head>
 <body>
   <!-- 検索エンジンクローラーおよびJavaScript無効環境向けフォールバック解説 -->
   <noscript>
     <article style="padding:24px; color:#f5eedc; background:#150e08;">
       <h1>日本史 勢力図・人物一覧 ～日本通史総覧～</h1>
-      <p>本サイトは、古代（紀元前663年・神武東征、邪馬台国、飛鳥・奈良時代）から平安時代、源平合戦（治承・寿永の乱）、鎌倉時代、南北朝時代、室町・応仁の乱、戦国時代、安土桃山時代、江戸時代、幕末・明治維新（1877年・西南戦争）までの全60時代シナリオにおける日本全土の勢力図と、8,000名以上の歴史人物列伝、全国城郭の歴史解説を収録した日本通史総覧データベースです。</p>
+      <p>本サイトは、古代（紀元前663年・神武東征、邪馬台国、飛鳥・奈良時代）から平安時代、源平合戦（治承・寿永の乱）、鎌倉時代、南北朝時代、室町・応仁の乱、戦国時代、安土桃山時代、江戸時代、幕末・明治維新（1877年・西南戦争）までの全60時代シナリオにおける日本全土の勢力図と、8,000名以上の歴史人物列伝、全国城郭の歴史解説を収録した日本通史総覧データベースです。各領国の石高は、慶長郷帳（1604～1610年）をもとに推計した値です。</p>
     </article>
   </noscript>
 
@@ -1953,7 +3262,7 @@
     <header class="top-header" role="banner">
       <div class="brand-box">
         <div class="brand-emblem" aria-hidden="true">🗾</div>
-        <h1 class="brand-title">日本史 勢力図・人物一覧 ～日本通史総覧～</h1>
+        <h1 class="brand-title"><span class="brand-title-main">日本史 勢力図・人物一覧</span><span class="brand-title-sub"> ～日本通史総覧～</span></h1>
       </div>
 
       <div class="header-scenario-indicator" id="headerScenarioBadge" aria-live="polite">
@@ -1963,12 +3272,17 @@
       </div>
 
       <nav class="top-nav" aria-label="主要メニュー">
-        <a href="japan_slg.html" class="nav-btn game-go" id="btnGoToGame" title="ゲーム本編（japan_slg.html）へ移動">⚔️ ゲームへ</a>
-        <button type="button" class="nav-btn" id="provinceListModalBtn" title="現在のシナリオの領国一覧を表示">🗾 領国一覧</button>
-        <button type="button" class="nav-btn" id="officerListModalBtn" title="現在のシナリオの武将一覧を表示">👥 武将一覧</button>
-        <button type="button" class="nav-btn primary" id="openClanMeikanBtn" title="ゲーム本編の大名名鑑を開く">🏯 大名名鑑</button>
-        <button type="button" class="nav-btn primary" id="openOfficerMeikanBtn" title="ゲーム本編の武将名鑑を開く">📜 武将名鑑</button>
-        <button type="button" class="nav-btn" id="btnOpenAbout" title="このサイトの概要と使い方を表示">ℹ️ サイトの概要</button>
+        <button type="button" class="nav-btn" id="provinceListModalBtn" title="現在のシナリオの領国一覧を表示"><span class="nav-icon" aria-hidden="true">🗾</span><span class="nav-text nav-text-pc">領国一覧</span><span class="nav-text nav-text-sp">領国</span></button>
+        <button type="button" class="nav-btn" id="officerListModalBtn" title="現在のシナリオの武将一覧を表示"><span class="nav-icon" aria-hidden="true">👥</span><span class="nav-text nav-text-pc">武将一覧</span><span class="nav-text nav-text-sp">武将</span></button>
+        <!-- PC用：大名名鑑・武将名鑑を個別表示 -->
+        <button type="button" class="nav-btn primary nav-btn-pc-only" id="openClanMeikanBtn" title="ゲーム本編の大名名鑑を開く"><span class="nav-icon" aria-hidden="true">🏯</span><span class="nav-text nav-text-pc">大名名鑑</span></button>
+        <button type="button" class="nav-btn primary nav-btn-pc-only" id="openOfficerMeikanBtn" title="ゲーム本編の武将名鑑を開く"><span class="nav-icon" aria-hidden="true">📜</span><span class="nav-text nav-text-pc">武将名鑑</span></button>
+
+                <!-- スマホ用：index.html用の名鑑ボタン（大名・武将名鑑モーダルを開く） -->
+        <button type="button" class="nav-btn primary nav-btn-sp-only" id="openCombinedMeikanBtn" title="名鑑（武将・大名）を開く"><span class="nav-icon" aria-hidden="true">📜</span><span class="nav-text nav-text-sp">名鑑</span></button>
+        <button type="button" class="nav-btn" id="btnOpenAbout" title="このサイトの概要と使い方を表示"><span class="nav-icon" aria-hidden="true">ℹ️</span><span class="nav-text nav-text-pc">サイトの概要</span><span class="nav-text nav-text-sp">概要</span></button>
+        <a href="form.html" class="nav-btn" id="btnContactForm" title="修正依頼・お問い合わせフォームを開く"><span class="nav-icon" aria-hidden="true">📩</span><span class="nav-text nav-text-pc">問い合わせ</span><span class="nav-text nav-text-sp">問合せ</span></a>
+        <a href="japan_slg.html" class="nav-btn game-go" id="btnGoToGame" title="ゲーム本編（japan_slg.html）へ移動"><span class="nav-icon" aria-hidden="true">⚔️</span><span class="nav-text nav-text-pc">ゲームへ</span><span class="nav-text nav-text-sp">ゲーム</span></a>
       </nav>
     </header>
 
@@ -1977,50 +3291,58 @@
       <!-- 中央：巨大日本地図 ＋ 左上ボックス群 ＋ 下部タイムスライダー -->
       <section class="center-column" aria-label="日本史勢力図マップと時代スライダー">
         <div class="map-stage" id="mapStage">
-          <!-- 左上オーバーレイ（シナリオ概要は2行拡大＆余白時は自動で縮む） -->
+          <!-- 左上オーバーレイ（シナリオ概要・水平操作ボタン・大名概要） -->
           <div class="map-left-overlay-stack">
-            <!-- 1段目：シナリオ解説 -->
-            <div class="overlay-box-auto" id="mapScenBox">
-              <div class="overlay-box-header">
-                <span class="overlay-box-title" id="overlayScenTitle">【1560年】桶狭間の戦い</span>
-                <span class="overlay-box-sub" id="overlayScenSub">尾張の風雲児と東海の巨星</span>
+            <!-- 1段目：シナリオ解説 ＋ 右隣上端に水平配置の操作ボタン群（＋、−、⟲、国） -->
+            <div class="map-scen-row">
+              <div class="overlay-box-auto" id="mapScenBox">
+                <div class="overlay-box-header">
+                  <span class="overlay-box-title" id="overlayScenTitle">【1560年】桶狭間の戦い</span>
+                  <span class="overlay-box-sub" id="overlayScenSub">尾張の風雲児と東海の巨星</span>
+                </div>
+                <div class="overlay-box-body" id="overlayScenDesc"></div>
               </div>
-              <div class="overlay-box-body" id="overlayScenDesc"></div>
+
+              <!-- 地図操作ボタン群（＋、−、⟲、国 ＆ スマホ用ハイライト解除）: 水平配置＆上端揃え -->
+              <div class="map-floating-bar" id="mapFloatingBar">
+                <div class="map-controls">
+                  <button type="button" class="map-ctrl-btn" id="btnToggleLabels" title="国名ラベルの表示／非表示切替（初期：非表示）">国</button>
+                  <button type="button" class="map-ctrl-btn" id="btnZoomIn" title="拡大 (ズームイン)">＋</button>
+                  <button type="button" class="map-ctrl-btn" id="btnZoomOut" title="縮小 (ズームアウト)">－</button>
+                  <button type="button" class="map-ctrl-btn" id="btnZoomReset" title="全体表示にリセット">⟲</button>
+                </div>
+                <button type="button" class="clear-highlight-under-btn is-cleared mobile-clear-highlight-btn" id="btnClearHighlightMobile">ハイライト解除</button>
+              </div>
             </div>
 
             <!-- 2段目：支配大名の概要 -->
-            <div class="overlay-box-auto" id="mapDaimyoBox">
+            <div class="overlay-box-auto sp-unselected" id="mapDaimyoBox">
               <div id="daimyoDetailContent">
                 <div style="color:var(--text-sub); font-size:12pt;">地図上の国をクリックすると、その国を支配する大名家の概要が表示されます。</div>
               </div>
             </div>
 
-            <!-- 3段目（大名概要ボックス直下・左端）：「ハイライト解除」文字のみのボックス -->
-            <button type="button" class="clear-highlight-under-btn is-cleared" id="btnClearHighlight">ハイライト解除</button>
+            <!-- 3段目（PC用・大名概要ボックス直下・左端）：「ハイライト解除」文字のみのボックス -->
+            <button type="button" class="clear-highlight-under-btn is-cleared pc-clear-highlight-btn" id="btnClearHighlight">ハイライト解除</button>
           </div>
 
-          <!-- 右上：地図ズーム・国名表示切替ボタン（国名は初期非表示） -->
-          <div class="map-controls">
-            <button type="button" class="map-ctrl-btn" id="btnZoomIn" title="拡大 (ズームイン)">＋</button>
-            <button type="button" class="map-ctrl-btn" id="btnZoomOut" title="縮小 (ズームアウト)">－</button>
-            <button type="button" class="map-ctrl-btn" id="btnZoomReset" title="全体表示にリセット">⟲</button>
-            <button type="button" class="map-ctrl-btn" id="btnToggleLabels" title="国名ラベルの表示／非表示切替（初期：非表示）">国</button>
-          </div>
+          <!-- 地図描画ラッパー（スマホでは解説ボックス下の黒背景地図画面、PCでは全面透過） -->
+          <div class="map-viewport-wrap" id="mapViewportWrap">
+            <!-- ホバーツールチップ -->
+            <div class="map-tooltip" id="mapTooltip"></div>
 
-          <!-- ホバーツールチップ -->
-          <div class="map-tooltip" id="mapTooltip"></div>
-
-          <!-- SVG日本地図本体（琉球が見切れない範囲で日本列島を下に移動：translate(0, 62)） -->
-          <svg id="atlasMapSvg" class="hide-labels" viewBox="0 0 1000 660" preserveAspectRatio="xMidYMid meet" aria-label="日本史勢力図">
-            <g id="mapPanZoomLayer">
-              <g id="mapArchipelagoGroup" transform="translate(0, 62) rotate(1, 500, 340)">
-                <g id="mapRoadsGroup"></g>
-                <g id="mapProvincesGroup"></g>
-                <g id="mapMarkersGroup"></g>
-                <g id="mapLabelsGroup"></g>
+            <!-- SVG日本地図本体（背景ボックスいっぱいに初期表示：viewBox="15 70 965 520"） -->
+            <svg id="atlasMapSvg" class="hide-labels" viewBox="10 75 980 535" preserveAspectRatio="xMidYMid meet" aria-label="日本史勢力図">
+              <g id="mapPanZoomLayer">
+                <g id="mapArchipelagoGroup" transform="rotate(1, 500, 340)">
+                  <g id="mapRoadsGroup"></g>
+                  <g id="mapProvincesGroup"></g>
+                  <g id="mapMarkersGroup"></g>
+                  <g id="mapLabelsGroup"></g>
+                </g>
               </g>
-            </g>
-          </svg>
+            </svg>
+          </div>
         </div>
 
         <!-- 下部：タイムスライダー ＋ 時代フィルタ連動の等間隔西暦メモリ -->
@@ -2028,25 +3350,24 @@
           <div class="timeline-top-row">
             <div class="era-tabs-bar" id="eraFilterBar" role="tablist" aria-label="時代フィルタ（再クリックで全時代へ解除）">
               <button type="button" class="era-chip-btn active" data-era="all">全時代</button>
-              <button type="button" class="era-chip-btn" data-era="ancient">古代・飛鳥</button>
+              <button type="button" class="era-chip-btn" data-era="ancient"><span class="era-txt-pc">古代・飛鳥</span><span class="era-txt-sp">古代</span></button>
               <button type="button" class="era-chip-btn" data-era="heian">平安</button>
               <button type="button" class="era-chip-btn" data-era="gempei">源平</button>
               <button type="button" class="era-chip-btn" data-era="kamakura">鎌倉</button>
-              <button type="button" class="era-chip-btn" data-era="nanboku">南北朝</button>
               <button type="button" class="era-chip-btn" data-era="muromachi">室町</button>
-              <button type="button" class="era-chip-btn" data-era="sengoku">戦国・安土桃山</button>
+              <button type="button" class="era-chip-btn" data-era="sengoku"><span class="era-txt-pc">戦国・安土桃山</span><span class="era-txt-sp">戦国</span></button>
               <button type="button" class="era-chip-btn" data-era="edo">江戸</button>
-              <button type="button" class="era-chip-btn" data-era="bakumatsu">幕末・明治</button>
+              <button type="button" class="era-chip-btn" data-era="bakumatsu"><span class="era-txt-pc">幕末・明治</span><span class="era-txt-sp">近代</span></button>
             </div>
             <div class="timeline-controls">
-              <button type="button" class="tl-btn" id="btnPrevScen">◀ 前の時代</button>
-              <button type="button" class="tl-btn" id="btnPlayTimeline">▶ 時代自動再生</button>
-              <button type="button" class="tl-btn" id="btnNextScen">次の時代 ▶</button>
+              <button type="button" class="tl-btn" id="btnPrevScen"><span class="tl-text-pc">◀ 前の時代</span><span class="tl-text-sp">◀ 前</span></button>
+              <button type="button" class="tl-btn" id="btnPlayTimeline"><span class="tl-text-pc">▶ 時代自動再生</span><span class="tl-text-sp">▶ 再生</span></button>
+              <button type="button" class="tl-btn" id="btnNextScen"><span class="tl-text-pc">次の時代 ▶</span><span class="tl-text-sp">次 ▶</span></button>
             </div>
           </div>
 
           <div class="slider-track-container">
-            <input type="range" class="scenario-slider" id="scenarioRangeSlider" min="0" max="59" value="0" step="1" aria-label="時代シナリオ選択スライダー">
+            <input type="range" class="scenario-slider" id="scenarioRangeSlider" min="0" max="61" value="0" step="1" aria-label="時代シナリオ選択スライダー">
             <!-- スライダーのつまみ位置に対応する等間隔西暦目盛りバー -->
             <div class="slider-scale-bar" id="sliderScaleBar"></div>
           </div>
@@ -2088,7 +3409,7 @@
     <div class="modal-window narrow" role="dialog" aria-modal="true" aria-labelledby="bioModalHeadTitle">
       <div class="modal-head">
         <div class="modal-head-title" id="bioModalHeadTitle">📜 武将列伝・人物詳細</div>
-        <button type="button" class="modal-close-btn" data-close="officerBioModal">✕ 閉じる</button>
+        <button type="button" class="modal-close-btn" data-close="officerBioModal" title="閉じる"><span class="bio-close-txt-pc">✕ 閉じる</span><span class="bio-close-txt-sp">閉</span></button>
       </div>
       <div class="modal-body" id="officerBioBody"></div>
     </div>
@@ -2099,11 +3420,12 @@
     <div class="modal-window narrow" role="dialog" aria-modal="true" aria-labelledby="aboutModalHeadTitle">
       <div class="modal-head">
         <div class="modal-head-title" id="aboutModalHeadTitle">ℹ️ 「日本史 勢力図・人物一覧 ～日本通史総覧～」について</div>
-        <button type="button" class="modal-close-btn" data-close="aboutModal">✕ 閉じる</button>
+        <button type="button" class="modal-close-btn" data-close="aboutModal" title="閉じる"><span class="about-close-txt-pc">✕ 閉じる</span><span class="about-close-txt-sp">×</span></button>
       </div>
       <div class="modal-body" id="aboutModalBody" style="line-height: 1.75; font-size: 12pt;"></div>
     </div>
   </div>
+  <script src="js/data/map_borders.js?v=20261031_border"></script>
 
   <script>
     (function () {
@@ -2137,9 +3459,8 @@
         { key: 'heian',     label: '平安',           fullLabel: '平安',           from: 794,   to: 1179 },
         { key: 'gempei',    label: '源平',           fullLabel: '源平',           from: 1180,  to: 1191 },
         { key: 'kamakura',  label: '鎌倉',           fullLabel: '鎌倉',           from: 1192,  to: 1332 },
-        { key: 'nanboku',   label: '南北朝',         fullLabel: '南北朝',         from: 1333,  to: 1391 },
-        { key: 'muromachi', label: '室町',           fullLabel: '室町',           from: 1392,  to: 1466 },
-        { key: 'sengoku',   label: '戦国・安土桃山', fullLabel: '戦国・安土桃山', from: 1467,  to: 1602 },
+        { key: 'muromachi', label: '室町',           fullLabel: '室町',           from: 1333,  to: 1456 },
+        { key: 'sengoku',   label: '戦国・安土桃山', fullLabel: '戦国・安土桃山', from: 1457,  to: 1602 },
         { key: 'edo',       label: '江戸',           fullLabel: '江戸',           from: 1603,  to: 1852 },
         { key: 'bakumatsu', label: '幕末・明治',     fullLabel: '幕末・明治',     from: 1853,  to: 9999 },
         { key: 'gendai',    label: '現代',           fullLabel: '現代',           from: 99999, to: 99999, officerOnly: true }
@@ -2158,6 +3479,132 @@
           if (ERAS[i].key === key) return ERAS[i].label;
         }
         return '不詳';
+      }
+
+
+      // ==================== 地方および領国・城の北から順並び替え用定義 ====================
+      var REGION_NORTH_ORDER = {
+        '北海道': 1,
+        '東北': 2,
+        '関東': 3,
+        '中部': 4,
+        '近畿': 5,
+        '中国': 6,
+        '四国': 7,
+        '九州': 8
+      };
+
+      var PROV_NORTH_LAT = {
+        'ezo': 41.43,
+        'higashi_tsugaru': 40.72,
+        'nishi_tsugaru': 40.61,
+        'mutsu': 40.38,
+        'ugo': 39.75,
+        'kakunodate': 39.59,
+        'rikuchu': 39.56,
+        'yokote': 39.31,
+        'shonai': 38.72,
+        'kasai': 38.69,
+        'osaki': 38.58,
+        'uzen': 38.25,
+        'rikuzen': 38.25,
+        'sado': 38.00,
+        'yonezawa_date': 37.91,
+        'soma': 37.80,
+        'iwashiro': 37.49,
+        'tamura': 37.44,
+        'echigo': 37.15,
+        'shirakawa': 37.13,
+        'iwaki': 37.04,
+        'noto': 37.03,
+        'etchu': 36.69,
+        'nasu': 36.65,
+        'north_shinano': 36.56,
+        'kaga': 36.56,
+        'shimotsuke': 36.55,
+        'hitachi': 36.54,
+        'kozuke': 36.41,
+        'south_shinano': 36.24,
+        'koga': 36.19,
+        'oki': 36.13,
+        'hida': 36.13,
+        'tsuchiura': 36.08,
+        'echizen': 35.99,
+        'shimousa': 35.72,
+        'musashi': 35.68,
+        'kai': 35.67,
+        'tango': 35.54,
+        'inaba': 35.50,
+        'wakasa': 35.49,
+        'tajima': 35.46,
+        'north_omi': 35.46,
+        'mino': 35.43,
+        'hoki': 35.43,
+        'izumo': 35.36,
+        'kazusa': 35.28,
+        'sagami': 35.25,
+        'owari': 35.22,
+        'south_omi': 35.15,
+        'tamba': 35.07,
+        'mimasaka': 35.06,
+        'izu': 35.05,
+        'yamashiro': 35.01,
+        'awa_boshu': 34.99,
+        'suruga': 34.98,
+        'mikawa': 34.96,
+        'iwami': 34.90,
+        'harima': 34.84,
+        'iga': 34.77,
+        'ise': 34.72,
+        'totomi': 34.71,
+        'settsu': 34.69,
+        'yamato': 34.69,
+        'bicchu': 34.69,
+        'aki_koriyama': 34.67,
+        'bizen': 34.66,
+        'kawachi': 34.56,
+        'bingo': 34.49,
+        'aki': 34.48,
+        'shima': 34.48,
+        'izumi': 34.46,
+        'nagato': 34.42,
+        'sanuki': 34.35,
+        'awaji': 34.34,
+        'saika_wakayama': 34.23,
+        'tsushima': 34.20,
+        'suo': 34.18,
+        'kii_kichu': 34.08,
+        'awa_shikoku': 34.07,
+        'buzen': 33.88,
+        'iyo': 33.85,
+        'kinan_kumano': 33.72,
+        'chikuzen': 33.68,
+        'tosa_kochi': 33.58,
+        'hirado': 33.37,
+        'chikugo': 33.32,
+        'hizen': 33.25,
+        'bungo': 33.24,
+        'tosa_nakamura': 32.99,
+        'omura': 32.90,
+        'higo_kumamoto': 32.80,
+        'shimabara': 32.79,
+        'nobeoka': 32.58,
+        'higo_hitoyoshi': 32.21,
+        'osumi': 31.74,
+        'hyuga': 31.63,
+        'satsuma': 31.60,
+        'ryukyu': 26.22
+      };
+
+      function getProvNorthLat(pid) {
+        if (!pid) return 0;
+        if (PROV_NORTH_LAT[pid] != null) return PROV_NORTH_LAT[pid];
+        if (typeof State !== 'undefined' && State.provById) {
+          var p = State.provById.get(pid);
+          if (p && PROV_NORTH_LAT[p.id] != null) return PROV_NORTH_LAT[p.id];
+          if (p && p.cy != null) return 50 - (p.cy / 50);
+        }
+        return 0;
       }
 
       var PROV_JP_MAP = {
@@ -2219,9 +3666,12 @@
 
         computedProvs: new Map(),
         computedClans: new Map(),
+        borderElements: [],
+        coastElements: [],
         activeOfficers: [],
         officerAppearMap: new Map()
       };
+      window.State = State;
 
       // ==================== 官公庁セキュアブラウザ対応データローダー（eval / new Function 完全不使用） ====================
       function loadExternalScript(paths) {
@@ -2405,10 +3855,23 @@
           initTimelineUI();
           initTopMenuModals();
 
-          // 初回読み込み時：1560年シナリオを表示し、何も選択せずハイライト解除状態で開始
-          var defaultIdx = State.filteredScenarios.findIndex(function (s) { return String(s.id) === '1560'; });
+          // 初回読み込み時：URLパラメータ指定があれば優先、なければ1560年シナリオを表示
+          var urlParams = new URLSearchParams(window.location.search);
+          var initialScenId = urlParams.get('scenario');
+          var defaultIdx = -1;
+          if (initialScenId) {
+            defaultIdx = State.filteredScenarios.findIndex(function (s) { return String(s.id) === String(initialScenId); });
+          }
+          if (defaultIdx < 0) {
+            defaultIdx = State.filteredScenarios.findIndex(function (s) { return String(s.id) === '1560'; });
+          }
           State.currentFilteredIdx = defaultIdx >= 0 ? defaultIdx : Math.floor(State.filteredScenarios.length / 2);
           selectScenarioByFilteredIndex(State.currentFilteredIdx);
+
+          var initialProvId = urlParams.get('prov') || urlParams.get('province');
+          if (initialProvId) {
+            setTimeout(function () { selectProvinceOnMap(initialProvId); }, 100);
+          }
 
           document.getElementById('loadingScreen').classList.add('hidden');
         } catch (err) {
@@ -2518,7 +3981,7 @@
 
           var castleLore = scenCastleLores[pid] || baseProv.castleLore || '';
           var koku = Number(baseProv.kokudaka) || 50000;
-          var baseTroops = scenTroops[pid] || Math.max(500, Math.round((koku / 1000) * 8 + 400));
+          var baseTroops = scenTroops[pid] || (Math.floor(koku * 0.025 / 100) * 100 + 1000);
           var troops = Math.round(baseTroops * (Number(scen.troopScale) || 1));
 
           State.computedProvs.set(pid, {
@@ -2829,9 +4292,68 @@
         var markGroup = document.getElementById('mapMarkersGroup');
         var labelGroup = document.getElementById('mapLabelsGroup');
 
+        var bordersGroup = document.getElementById('mapBordersGroup');
+        if (!bordersGroup && provGroup && provGroup.parentNode) {
+          bordersGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          bordersGroup.setAttribute('id', 'mapBordersGroup');
+          bordersGroup.style.pointerEvents = 'none';
+          provGroup.parentNode.insertBefore(bordersGroup, markGroup || labelGroup || null);
+        }
+
         provGroup.innerHTML = '';
         markGroup.innerHTML = '';
         labelGroup.innerHTML = '';
+        if (bordersGroup) bordersGroup.innerHTML = '';
+        State.borderElements = [];
+        State.coastElements = [];
+
+        var borderData = window.MAP_BORDERS_DATA || null;
+        if (bordersGroup && borderData) {
+          if (Array.isArray(borderData.coastlines)) {
+            borderData.coastlines.forEach(function (c) {
+              var cp = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+              cp.setAttribute('id', 'atlas-coast-' + c.p);
+              cp.setAttribute('class', 'map-coast-line');
+              cp.setAttribute('data-p', c.p);
+              cp.setAttribute('d', c.d);
+              cp.setAttribute('fill', 'none');
+              cp.setAttribute('stroke', 'rgba(20, 14, 8, 0.78)');
+              cp.setAttribute('stroke-width', '0.85');
+              cp.setAttribute('stroke-linecap', 'round');
+              cp.setAttribute('stroke-linejoin', 'round');
+              bordersGroup.appendChild(cp);
+              State.coastElements.push({ el: cp, p: c.p });
+            });
+          } else if (borderData.coastline) {
+            var coastPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            coastPath.setAttribute('id', 'atlasCoastline');
+            coastPath.setAttribute('class', 'map-coastline');
+            coastPath.setAttribute('d', borderData.coastline);
+            coastPath.setAttribute('fill', 'none');
+            coastPath.setAttribute('stroke', 'rgba(20, 14, 8, 0.78)');
+            coastPath.setAttribute('stroke-width', '0.85');
+            coastPath.setAttribute('stroke-linecap', 'round');
+            coastPath.setAttribute('stroke-linejoin', 'round');
+            bordersGroup.appendChild(coastPath);
+          }
+          if (Array.isArray(borderData.borders)) {
+            borderData.borders.forEach(function (b) {
+              var bp = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+              bp.setAttribute('id', 'atlas-border-' + b.p1 + '-' + b.p2);
+              bp.setAttribute('class', 'map-border-line');
+              bp.setAttribute('data-p1', b.p1);
+              bp.setAttribute('data-p2', b.p2);
+              bp.setAttribute('d', b.d);
+              bp.setAttribute('fill', 'none');
+              bp.setAttribute('stroke', 'rgba(20, 14, 8, 0.75)');
+              bp.setAttribute('stroke-width', '0.8');
+              bp.setAttribute('stroke-linecap', 'round');
+              bp.setAttribute('stroke-linejoin', 'round');
+              bordersGroup.appendChild(bp);
+              State.borderElements.push({ el: bp, p1: b.p1, p2: b.p2 });
+            });
+          }
+        }
 
         for (var i = 0; i < State.provinces.length; i++) {
           var p = State.provinces[i];
@@ -2843,7 +4365,8 @@
           provGroup.appendChild(path);
 
           if (p.cx !== undefined && p.cy !== undefined) {
-            var badgeSize = 20;
+            var isMobile = window.innerWidth <= 1100;
+            var badgeSize = isMobile ? 20 : 16; /* PC画面では家紋を少しだけ小さく表示 */
             var kx = p.kamonX !== undefined ? p.kamonX : p.cx;
             var ky = p.kamonY !== undefined ? p.kamonY : p.cy;
 
@@ -2865,7 +4388,7 @@
             txt.setAttribute('id', 'prov-label-' + p.id);
             txt.setAttribute('class', 'prov-label-text');
             txt.setAttribute('x', kx);
-            txt.setAttribute('y', ky + badgeSize / 2 + 8);
+            txt.setAttribute('y', ky + badgeSize / 2 + 7);
             txt.textContent = p.name;
             labelGroup.appendChild(txt);
           }
@@ -3038,15 +4561,95 @@
         document.getElementById('btnZoomReset').onclick = function () {
           mapScale = 1.0; mapPanX = 0; mapPanY = 0;
           applyTransform();
+          fitArchipelagoToStage();
+          updateKamonBadgeSizes();
         };
         document.getElementById('btnToggleLabels').onclick = function (e) {
           State.showLabels = !State.showLabels;
           e.currentTarget.classList.toggle('active', State.showLabels);
           svg.classList.toggle('hide-labels', !State.showLabels);
         };
-        document.getElementById('btnClearHighlight').onclick = function () {
-          resetAllSelectionAndHighlight();
-        };
+        document.querySelectorAll('.clear-highlight-under-btn').forEach(function (btn) {
+          btn.onclick = function () {
+            resetAllSelectionAndHighlight();
+          };
+        });
+
+        fitArchipelagoToStage();
+        updateKamonBadgeSizes();
+        window.addEventListener('resize', function () {
+          fitArchipelagoToStage();
+          updateKamonBadgeSizes();
+        });
+      }
+
+      function updateKamonBadgeSizes() {
+        var isMobile = window.innerWidth <= 1100;
+        var badgeSize = isMobile ? 20 : 16;
+        if (!State.provinces) return;
+        for (var i = 0; i < State.provinces.length; i++) {
+          var p = State.provinces[i];
+          if (p.cx !== undefined && p.cy !== undefined) {
+            var kx = p.kamonX !== undefined ? p.kamonX : p.cx;
+            var ky = p.kamonY !== undefined ? p.kamonY : p.cy;
+            var use = document.getElementById('kamon-use-' + p.id);
+            if (use) {
+              use.setAttribute('x', kx - badgeSize / 2);
+              use.setAttribute('y', ky - badgeSize / 2);
+              use.setAttribute('width', badgeSize);
+              use.setAttribute('height', badgeSize);
+            }
+            var txt = document.getElementById('prov-label-' + p.id);
+            if (txt) {
+              txt.setAttribute('y', ky + badgeSize / 2 + 7);
+            }
+          }
+        }
+      }
+
+      function fitArchipelagoToStage() {
+        var svg = document.getElementById('atlasMapSvg');
+        var stage = document.getElementById('mapStage');
+        var archi = document.getElementById('mapArchipelagoGroup');
+        if (!svg) return;
+        var isMobile = window.innerWidth <= 1100;
+        if (archi) {
+          archi.setAttribute('transform', 'rotate(1, 500, 340)');
+        }
+        if (isMobile) {
+          svg.setAttribute('viewBox', '10 75 980 535');
+          return;
+        }
+        if (!stage) return;
+        var rect = stage.getBoundingClientRect();
+        var w = rect.width;
+        var h = rect.height;
+        if (w <= 0 || h <= 0) {
+          svg.setAttribute('viewBox', '15 70 965 520');
+          return;
+        }
+        var targetW = 965;
+        var targetH = 520;
+        var stageRatio = w / h;
+        var islandRatio = targetW / targetH;
+
+        var vbX, vbY, vbW, vbH;
+        if (stageRatio >= islandRatio) {
+          vbH = targetH;
+          vbW = targetH * stageRatio;
+          vbX = 500 - vbW / 2;
+          vbY = 70;
+        } else {
+          vbW = targetW;
+          vbH = targetW / stageRatio;
+          vbX = 15;
+          vbY = 340 - vbH / 2;
+        }
+        svg.setAttribute('viewBox', vbX.toFixed(1) + ' ' + vbY.toFixed(1) + ' ' + vbW.toFixed(1) + ' ' + vbH.toFixed(1));
+      }
+
+      function updateMapArchipelagoPosition() {
+        fitArchipelagoToStage();
       }
 
       function resetAllSelectionAndHighlight() {
@@ -3086,6 +4689,12 @@
           path.classList.toggle('dimmed', isDimmed);
           path.classList.toggle('prov-selected', isSelected);
 
+          if (!isSelected) {
+            path.style.stroke = 'none';
+          } else {
+            path.style.stroke = '';
+          }
+
           // 本国のみに家紋を表示
           if (kamonG && kamonUse) {
             var symId = getClanKamonSymbolId(ownerId);
@@ -3120,10 +4729,143 @@
           }
         }
 
-        var clearBtn = document.getElementById('btnClearHighlight');
-        if (clearBtn) {
-          clearBtn.classList.toggle('is-cleared', !hlClan && !selPid);
+        var bordersGroup = document.getElementById('mapBordersGroup');
+
+        // 境界線の更新（選んだ国の境界線は領国全体の輪郭よりも最優先表示）
+        if (State.borderElements && State.borderElements.length > 0) {
+          State.borderElements.forEach(function (item) {
+            var p1Entry = State.computedProvs.get(item.p1);
+            var p2Entry = State.computedProvs.get(item.p2);
+            var o1 = p1Entry ? p1Entry.ownerId : null;
+            var o2 = p2Entry ? p2Entry.ownerId : null;
+
+            var isSelBorder = !!selPid && (item.p1 === selPid || item.p2 === selPid);
+            var isHlBorder = !!hlClan && (o1 === hlClan || o2 === hlClan);
+            var isInternalClan = o1 && o2 && o1 === o2;
+
+            if (isSelBorder) {
+              // 【最優先】選んだ国の境界線：同勢力内であろうと他家との境であろうと必ず表示し、白の太枠でくっきりと強調
+              item.el.style.display = '';
+              item.el.style.stroke = '#ffffff';
+              item.el.style.strokeWidth = '2.4px';
+              item.el.style.opacity = '1';
+              item.el.style.filter = 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.9))';
+            } else if (isInternalClan) {
+              // 選ばれていない同一大名領国内の境界線：非表示にして完全一体化
+              item.el.style.display = 'none';
+            } else if (isHlBorder) {
+              // 領国全体の輪郭（他家との外周境界線）：ゴールド枠線で勢力圏全体をくっきりと縁取る
+              item.el.style.display = '';
+              item.el.style.stroke = '#ffd700';
+              item.el.style.strokeWidth = '1.8px';
+              item.el.style.opacity = '1';
+              item.el.style.filter = 'drop-shadow(0 0 2px rgba(255, 215, 0, 0.6))';
+            } else if (hlClan) {
+              item.el.style.display = '';
+              item.el.style.stroke = 'rgba(70, 62, 52, 0.45)';
+              item.el.style.strokeWidth = '0.5px';
+              item.el.style.opacity = '0.5';
+              item.el.style.filter = 'none';
+            } else {
+              item.el.style.display = '';
+              item.el.style.stroke = 'rgba(20, 14, 8, 0.75)';
+              item.el.style.strokeWidth = '0.8px';
+              item.el.style.opacity = '1';
+              item.el.style.filter = 'none';
+            }
+          });
         }
+
+        // 海岸線の更新（選んだ国の海岸線は領国全体の輪郭よりも最優先表示）
+        if (State.coastElements && State.coastElements.length > 0) {
+          State.coastElements.forEach(function (cItem) {
+            var prov = State.computedProvs.get(cItem.p);
+            var o = prov ? prov.ownerId : null;
+
+            var isSelCoast = !!selPid && cItem.p === selPid;
+            var isHlCoast = !!hlClan && o === hlClan;
+
+            if (isSelCoast) {
+              // 【最優先】選んだ国の海岸線：白の太枠でくっきりと強調
+              cItem.el.style.display = '';
+              cItem.el.style.stroke = '#ffffff';
+              cItem.el.style.strokeWidth = '2.4px';
+              cItem.el.style.opacity = '1';
+              cItem.el.style.filter = 'drop-shadow(0 0 3px rgba(255, 255, 255, 0.9))';
+            } else if (isHlCoast) {
+              // 領国全体の海岸線：ゴールド枠線で勢力圏全体をくっきりと縁取る
+              cItem.el.style.display = '';
+              cItem.el.style.stroke = '#ffd700';
+              cItem.el.style.strokeWidth = '1.8px';
+              cItem.el.style.opacity = '1';
+              cItem.el.style.filter = 'drop-shadow(0 0 2px rgba(255, 215, 0, 0.6))';
+            } else if (hlClan) {
+              cItem.el.style.display = '';
+              cItem.el.style.stroke = 'rgba(70, 62, 52, 0.45)';
+              cItem.el.style.strokeWidth = '0.55px';
+              cItem.el.style.opacity = '0.5';
+              cItem.el.style.filter = 'none';
+            } else {
+              cItem.el.style.display = '';
+              cItem.el.style.stroke = 'rgba(20, 14, 8, 0.78)';
+              cItem.el.style.strokeWidth = '0.85px';
+              cItem.el.style.opacity = '1';
+              cItem.el.style.filter = 'none';
+            }
+          });
+        }
+
+        // SVG描画レイヤー順の制御：
+        // 領国全体の輪郭線を配置した上で、選んだ国（selPid）の境界線・海岸線を最前面（最後尾）へ移動して最優先表示
+        if (bordersGroup && (hlClan || selPid)) {
+          if (hlClan) {
+            // 領国全体の境界線を手前に
+            if (State.borderElements) {
+              State.borderElements.forEach(function (item) {
+                var p1Entry = State.computedProvs.get(item.p1);
+                var p2Entry = State.computedProvs.get(item.p2);
+                var o1 = p1Entry ? p1Entry.ownerId : null;
+                var o2 = p2Entry ? p2Entry.ownerId : null;
+                var isSel = !!selPid && (item.p1 === selPid || item.p2 === selPid);
+                if (!isSel && (o1 === hlClan || o2 === hlClan)) {
+                  bordersGroup.appendChild(item.el);
+                }
+              });
+            }
+            // 領国全体の海岸線を手前に
+            if (State.coastElements) {
+              State.coastElements.forEach(function (cItem) {
+                var prov = State.computedProvs.get(cItem.p);
+                var o = prov ? prov.ownerId : null;
+                if (cItem.p !== selPid && o === hlClan) {
+                  bordersGroup.appendChild(cItem.el);
+                }
+              });
+            }
+          }
+          if (selPid) {
+            // 最前面：選んだ国の境界線
+            if (State.borderElements) {
+              State.borderElements.forEach(function (item) {
+                if (item.p1 === selPid || item.p2 === selPid) {
+                  bordersGroup.appendChild(item.el);
+                }
+              });
+            }
+            // 最前面：選んだ国の海岸線
+            if (State.coastElements) {
+              State.coastElements.forEach(function (cItem) {
+                if (cItem.p === selPid) {
+                  bordersGroup.appendChild(cItem.el);
+                }
+              });
+            }
+          }
+        }
+
+        document.querySelectorAll('.clear-highlight-under-btn').forEach(function (btn) {
+          btn.classList.toggle('is-cleared', !hlClan && !selPid);
+        });
       }
 
       // ==================== 国選択＆左上大名ボックス・右側パネル描画 ====================
@@ -3140,6 +4882,8 @@
       }
 
       function renderUnselectedPanels() {
+        var dBox = document.getElementById('mapDaimyoBox');
+        if (dBox) dBox.classList.add('sp-unselected');
         document.getElementById('daimyoDetailContent').innerHTML =
           '<div style="color:var(--text-sub); font-size:12pt;">地図上の国をクリックすると、その国を支配する大名家の概要が表示されます。</div>';
         document.getElementById('castleRegionBadge').textContent = '未選択';
@@ -3161,6 +4905,8 @@
         var cEntry = ownerId ? State.computedClans.get(ownerId) : null;
 
         // ---------- 1. 左上2段目：支配大名の概要 ----------
+        var dBox = document.getElementById('mapDaimyoBox');
+        if (dBox) dBox.classList.remove('sp-unselected');
         var daimyoBox = document.getElementById('daimyoDetailContent');
         if (!ownerId || !cEntry) {
           daimyoBox.innerHTML =
@@ -3298,7 +5044,7 @@
 
       // ==================== 武将列伝・人物詳細モーダル ====================
       function openOfficerBioModal(officerId) {
-        var o = State.officerById.get(officerId);
+        var o = (typeof officerId === 'object' && officerId) ? officerId : State.officerById.get(officerId);
         if (!o) return;
         var year = Number(State.currentScenario ? State.currentScenario.year : 1560);
 
@@ -3370,7 +5116,6 @@
 
           '<div class="tactic-box">' +
             '<div class="tactic-name">✦ 特技・二つ名：【' + esc(o.skill || '忠勇の士') + '】</div>' +
-            (o.comment ? '<div style="font-size:12pt; color:var(--text-sub); margin-top:2px;">「' + esc(o.comment) + '」</div>' : '') +
           '</div>' +
 
           '<div style="margin-bottom:16px;">' +
@@ -3444,6 +5189,11 @@
             applyEraFilterAndRebuildSlider(nextEra, { keepCurrentScen: nextEra === 'all' });
           };
         });
+
+        // 画面幅変化（スマホ縦横回転やリサイズ）時に目盛り表示を動的再最適化
+        window.addEventListener('resize', debounce(function () {
+          renderSliderScaleBar();
+        }, 150));
       }
 
       function applyEraFilterAndRebuildSlider(eraKey, opts) {
@@ -3511,34 +5261,95 @@
           return;
         }
 
-        var html = '';
-        for (var i = 0; i < total; i++) {
-          var pct = total > 1 ? (i / (total - 1)) * 100 : 50;
-          html += '<div class="scale-tick-mark" style="left:' + pct.toFixed(3) + '%;"></div>';
-        }
+        var isMobile = (window.innerWidth || document.documentElement.clientWidth || 1024) <= 768;
 
+        var html = '';
         SCALE_LABEL_INDICES = [];
-        // 時代フィルタ適用時などでシナリオ数が14件以下の場合は全シナリオの西暦メモリを表示、それ以上は12分割で等間隔表示
-        if (State.eraFilter !== 'all' || total <= 20) {
-          for (var j = 0; j < total; j++) {
-            SCALE_LABEL_INDICES.push(j);
+
+        if (isMobile) {
+          // スマートフォン向け：画面幅に対して視覚的に完全等間隔で配置
+          var labelCount = total <= 4 ? total : (total <= 8 ? 4 : 5);
+          if (labelCount < 2) labelCount = Math.max(1, total);
+
+          // 目盛り線（全シナリオ分配置）
+          for (var i = 0; i < total; i++) {
+            var p = total > 1 ? (i / (total - 1)) * 100 : 50;
+            html += '<div class="scale-tick-mark" style="left:' + p.toFixed(3) + '%;"></div>';
+          }
+
+          var usedIndices = [];
+          for (var k = 0; k < labelCount; k++) {
+            var fIdx = labelCount > 1 ? Math.round(k * (total - 1) / (labelCount - 1)) : 0;
+            usedIndices.push(fIdx);
+            SCALE_LABEL_INDICES.push(fIdx);
+
+            var sc = State.filteredScenarios[fIdx];
+            var leftPct = labelCount > 1 ? (k / (labelCount - 1)) * 100 : 50;
+            var yrText = fmtYear(sc ? sc.year : 0);
+
+            // 画面端（0%および100%）での文字見切れ防止アライメント
+            var alignStyle = '';
+            if (k === 0) {
+              alignStyle = 'transform: translateX(0); left: 0%;';
+            } else if (k === labelCount - 1) {
+              alignStyle = 'transform: translateX(-100%); left: 100%;';
+            } else {
+              alignStyle = 'transform: translateX(-50%); left:' + leftPct.toFixed(2) + '%;';
+            }
+
+            html += '<div class="scale-tick-label" data-fscen-idx="' + fIdx + '" style="' + alignStyle + '" title="' + yrText + '年 ' + esc(sc ? sc.title : '') + '">' + esc(yrText) + '</div>';
           }
         } else {
-          var segments = 12;
-          for (var s = 0; s <= segments; s++) {
-            var idx = Math.round(s * (total - 1) / segments);
-            if (SCALE_LABEL_INDICES.indexOf(idx) === -1) {
-              SCALE_LABEL_INDICES.push(idx);
+          // PC向け：従来のロジックを完全維持（PC表示は変えない）
+          for (var i = 0; i < total; i++) {
+            var pct = total > 1 ? (i / (total - 1)) * 100 : 50;
+            html += '<div class="scale-tick-mark" style="left:' + pct.toFixed(3) + '%;"></div>';
+          }
+
+          if (State.eraFilter !== 'all' || total <= 20) {
+            for (var j = 0; j < total; j++) {
+              SCALE_LABEL_INDICES.push(j);
+            }
+          } else {
+            var segments = 12;
+            for (var s = 0; s <= segments; s++) {
+              var idx = Math.round(s * (total - 1) / segments);
+              if (SCALE_LABEL_INDICES.indexOf(idx) === -1) {
+                SCALE_LABEL_INDICES.push(idx);
+              }
             }
           }
-        }
 
-        for (var k = 0; k < SCALE_LABEL_INDICES.length; k++) {
-          var fIdx = SCALE_LABEL_INDICES[k];
-          var sc = State.filteredScenarios[fIdx];
-          var leftPct = total > 1 ? (fIdx / (total - 1)) * 100 : 50;
-          var yrText = fmtYear(sc.year);
-          html += '<div class="scale-tick-label" data-fscen-idx="' + fIdx + '" style="left:' + leftPct.toFixed(3) + '%;" title="' + yrText + '年 ' + esc(sc.title) + '">' + esc(yrText) + '</div>';
+          // 同一年代の重複を解消（古代の240年重複など）
+          var seenYears = new Set();
+          var uniqueIndices = [];
+          for (var u = 0; u < SCALE_LABEL_INDICES.length; u++) {
+            var fI = SCALE_LABEL_INDICES[u];
+            var yVal = State.filteredScenarios[fI] ? State.filteredScenarios[fI].year : null;
+            if (u === 0 || u === SCALE_LABEL_INDICES.length - 1 || !seenYears.has(yVal)) {
+              uniqueIndices.push(fI);
+              seenYears.add(yVal);
+            }
+          }
+          SCALE_LABEL_INDICES = uniqueIndices;
+
+          for (var k = 0; k < SCALE_LABEL_INDICES.length; k++) {
+            var fIdx = SCALE_LABEL_INDICES[k];
+            var sc = State.filteredScenarios[fIdx];
+            var leftPct = total > 1 ? (fIdx / (total - 1)) * 100 : 50;
+            var yrText = fmtYear(sc.year);
+
+            var alignStyle = '';
+            if (leftPct <= 4) {
+              alignStyle = 'transform: translateX(0); left: 0%;';
+            } else if (leftPct >= 96) {
+              alignStyle = 'transform: translateX(-100%); left: 100%;';
+            } else {
+              alignStyle = 'transform: translateX(-50%); left:' + leftPct.toFixed(3) + '%;';
+            }
+
+            html += '<div class="scale-tick-label" data-fscen-idx="' + fIdx + '" style="' + alignStyle + '" title="' + yrText + '年 ' + esc(sc.title) + '">' + esc(yrText) + '</div>';
+          }
         }
 
         bar.innerHTML = html;
@@ -3609,18 +5420,21 @@
 
       function startTimelinePlay() {
         var btn = document.getElementById('btnPlayTimeline');
-        btn.classList.add('playing');
-        btn.textContent = '■ 停止';
+        if (btn) {
+          btn.classList.add('playing');
+          btn.innerHTML = '<span class="tl-text-pc">■ 自動再生停止</span><span class="tl-text-sp">■ 停止</span>';
+        }
         if (State.currentFilteredIdx >= State.filteredScenarios.length - 1) {
           selectScenarioByFilteredIndex(0);
         }
+        clearInterval(State.playTimer);
         State.playTimer = setInterval(function () {
-          if (State.currentFilteredIdx >= State.filteredScenarios.length - 1) {
+          if (State.currentFilteredIdx < State.filteredScenarios.length - 1) {
+            selectScenarioByFilteredIndex(State.currentFilteredIdx + 1);
+          } else {
             stopTimelinePlay();
-            return;
           }
-          selectScenarioByFilteredIndex(State.currentFilteredIdx + 1);
-        }, 1800);
+        }, 1200);
       }
 
       function stopTimelinePlay() {
@@ -3631,7 +5445,7 @@
         var btn = document.getElementById('btnPlayTimeline');
         if (btn) {
           btn.classList.remove('playing');
-          btn.textContent = '▶ 時代自動再生';
+          btn.innerHTML = '<span class="tl-text-pc">▶ 時代自動再生</span><span class="tl-text-sp">▶ 再生</span>';
         }
       }
 
@@ -3655,11 +5469,114 @@
         var sortOrder = 'desc';
         var searchQuery = '';
         var year = Number(State.currentScenario ? State.currentScenario.year : 1560);
+        var allProvs = Array.from(State.computedProvs.values());
+        var myProvs = activeClanId ? allProvs.filter(function (p) { return p.ownerId === activeClanId; }) : [];
+        var selectedClanName = activeClanId ? getClanFamilyName(activeClanId, year) : '';
 
-        function render() {
-          var allProvs = Array.from(State.computedProvs.values());
-          var myProvs = activeClanId ? allProvs.filter(function (p) { return p.ownerId === activeClanId; }) : [];
-          var source = (currentTab === 'my' && activeClanId) ? myProvs : allProvs;
+        modal.innerHTML =
+          '<div class="modal-window">' +
+            '<div class="modal-head">' +
+              '<div class="modal-head-title">' +
+                '<span class="modal-head-title-pc">❖ 領国録・城主と石高（' + fmtYear(year) + '年 ' + esc(State.currentScenario.title) + '）❖</span>' +
+                '<span class="modal-head-title-sp">🗾 領国一覧（' + fmtYear(year) + '年）</span>' +
+              '</div>' +
+              '<button type="button" class="modal-close-btn" id="closeProvListBtn">✕</button>' +
+            '</div>' +
+            '<div class="modal-subbar">' +
+              '<div class="modal-subbar-tabs">' +
+                (activeClanId ? '<button type="button" class="nav-btn ' + (currentTab === 'my' ? 'game-go' : '') + '" id="tabProvMy"><span class="tab-txt-pc">' + esc(selectedClanName) + 'の領国 (' + myProvs.length + '国)</span><span class="tab-txt-sp">🏯 自国 (' + myProvs.length + ')</span></button>' : '') +
+                '<button type="button" class="nav-btn ' + (currentTab === 'all' ? 'game-go' : '') + '" id="tabProvAll"><span class="tab-txt-pc">天下の領国 (' + allProvs.length + '国)</span><span class="tab-txt-sp">🗾 全国 (' + allProvs.length + ')</span></button>' +
+              '</div>' +
+              '<div class="modal-subbar-controls">' +
+                '<div class="modal-search-box">' +
+                  '<span class="modal-search-label modal-search-label-pc">検索:</span><span class="modal-search-label modal-search-label-sp">🔍</span>' +
+                  '<input type="search" id="provListSearchInput" value="" placeholder="国名・城名・領主..." class="modal-search-input" autocomplete="off">' +
+                '</div>' +
+                '<div class="modal-sort-bar-wrap">' +
+                  '<div class="modal-sort-chips" id="provSortChips"></div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="modal-body modal-table-body">' +
+              '<div class="modal-table-scroll">' +
+                '<table class="modal-data-table">' +
+                  '<thead><tr style="position:sticky; top:0; background:#261a12; border-bottom:2px solid var(--border-gold);">' +
+                    '<th data-sort="name" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">国名 <span data-sort-ic="name">↕</span></th>' +
+                    '<th data-sort="castle" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">居城 <span data-sort-ic="castle">↕</span></th>' +
+                    '<th data-sort="region" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">地方 <span data-sort-ic="region">↕</span></th>' +
+                    '<th data-sort="owner" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">支配大名 <span data-sort-ic="owner">↕</span></th>' +
+                    '<th data-sort="governor" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">城主・当主 <span data-sort-ic="governor">↕</span></th>' +
+                    '<th data-sort="military" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">武勇 <span data-sort-ic="military">↕</span></th>' +
+                    '<th data-sort="politics" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">内政 <span data-sort-ic="politics">↕</span></th>' +
+                    '<th data-sort="stratagem" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">知略 <span data-sort-ic="stratagem">↕</span></th>' +
+                    '<th data-sort="troops" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">駐留兵力 <span data-sort-ic="troops">↕</span></th>' +
+                    '<th data-sort="kokudaka" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">表高 <span data-sort-ic="kokudaka">▼</span></th>' +
+                  '</tr></thead>' +
+                  '<tbody id="provListTableBody"></tbody>' +
+                '</table>' +
+              '</div>' +
+              '<div class="modal-cards-container" id="provCardsContainer"></div>' +
+            '</div>' +
+          '</div>';
+
+        var tbodyEl = document.getElementById('provListTableBody');
+        var tabMy = document.getElementById('tabProvMy');
+        var tabAll = document.getElementById('tabProvAll');
+
+        var PROV_SORT_ITEMS = [
+          { k: 'castle', label: '居城', sp: '居城', ic: '🏯' },
+          { k: 'kokudaka', label: '石高', sp: '石高', ic: '🌾' },
+          { k: 'troops', label: '兵力', sp: '兵力', ic: '👥' },
+          { k: 'military', label: '武勇', sp: '武', ic: '武' },
+          { k: 'politics', label: '内政', sp: '政', ic: '政' },
+          { k: 'stratagem', label: '知略', sp: '知', ic: '知' }
+        ];
+
+        function updateSortIcons() {
+          modal.querySelectorAll('[data-sort-ic]').forEach(function (ic) {
+            var k = ic.getAttribute('data-sort-ic');
+            if (sortKey !== k) {
+              ic.textContent = '↕';
+              ic.style.color = '#776655';
+            } else {
+              ic.textContent = sortOrder === 'asc' ? '▲' : '▼';
+              ic.style.color = 'var(--gold-bright)';
+            }
+          });
+          var chipsEl = document.getElementById('provSortChips');
+          if (chipsEl) {
+            chipsEl.innerHTML = PROV_SORT_ITEMS.map(function (item) {
+              var isActive = sortKey === item.k;
+              var arrow = isActive ? (sortOrder === 'asc' ? '▲' : '▼') : '';
+              return '<button type="button" class="sort-chip-btn ' + (isActive ? 'active' : '') + '" data-prov-sort="' + item.k + '" title="' + item.label + 'で並べ替え" aria-label="' + item.label + '">' +
+                '<span class="sort-chip-ic">' + item.ic + '</span> ' +
+                '<span class="sort-chip-txt-pc">' + item.label + '</span>' +
+                '<span class="sort-chip-txt-sp">' + item.sp + '</span>' +
+                (arrow ? '<span class="sort-chip-arrow">' + arrow + '</span>' : '') +
+              '</button>';
+            }).join('');
+            chipsEl.querySelectorAll('[data-prov-sort]').forEach(function (btn) {
+              btn.onclick = function () {
+                var k = btn.getAttribute('data-prov-sort');
+                if (sortKey === k) {
+                  sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                } else {
+                  sortKey = k;
+                  sortOrder = (k === 'name' || k === 'castle' || k === 'region' || k === 'owner' || k === 'governor') ? 'asc' : 'desc';
+                }
+                renderList();
+              };
+            });
+          }
+        }
+
+        function renderList() {
+          var allProvsNow = Array.from(State.computedProvs.values());
+          var myProvsNow = activeClanId ? allProvsNow.filter(function (p) { return p.ownerId === activeClanId; }) : [];
+          var source = (currentTab === 'my' && activeClanId) ? myProvsNow : allProvsNow;
+
+          if (tabMy) tabMy.classList.toggle('game-go', currentTab === 'my');
+          if (tabAll) tabAll.classList.toggle('game-go', currentTab === 'all');
 
           var rows = source.map(function (p) {
             var isBlank = !p.ownerId;
@@ -3692,116 +5609,151 @@
 
           rows.sort(function (a, b) {
             var diff = 0;
-            if (sortKey === 'name') diff = a.p.name.localeCompare(b.p.name, 'ja');
-            else if (sortKey === 'castle') diff = a.p.castle.localeCompare(b.p.castle, 'ja');
-            else if (sortKey === 'region') diff = (a.p.region || '').localeCompare(b.p.region || '', 'ja');
-            else if (sortKey === 'owner') diff = a.ownerName.localeCompare(b.ownerName, 'ja');
-            else if (sortKey === 'governor') diff = a.govName.localeCompare(b.govName, 'ja');
-            else if (sortKey === 'military') diff = (a.military ?? -1) - (b.military ?? -1);
-            else if (sortKey === 'politics') diff = (a.politics ?? -1) - (b.politics ?? -1);
-            else if (sortKey === 'stratagem') diff = (a.stratagem ?? -1) - (b.stratagem ?? -1);
-            else if (sortKey === 'troops') diff = a.troops - b.troops;
-            else diff = a.kokudaka - b.kokudaka;
+            if (sortKey === 'name') {
+              diff = a.p.name.localeCompare(b.p.name, 'ja');
+            } else if (sortKey === 'castle') {
+              // 居城：北から順（北緯が高い順。同緯度は城名五十音順）
+              var latA = getProvNorthLat(a.p.id);
+              var latB = getProvNorthLat(b.p.id);
+              diff = latB - latA;
+              if (Math.abs(diff) < 0.001) diff = a.p.castle.localeCompare(b.p.castle, 'ja');
+            } else if (sortKey === 'region') {
+              // 地方：北から順（北海道→東北→関東→中部→近畿→中国→四国→九州。同地方内は北から順）
+              var regA = REGION_NORTH_ORDER[a.p.region] || 99;
+              var regB = REGION_NORTH_ORDER[b.p.region] || 99;
+              diff = regA - regB;
+              if (diff === 0) {
+                var latA2 = getProvNorthLat(a.p.id);
+                var latB2 = getProvNorthLat(b.p.id);
+                diff = latB2 - latA2;
+              }
+            } else if (sortKey === 'owner') {
+              diff = a.ownerName.localeCompare(b.ownerName, 'ja');
+            } else if (sortKey === 'governor') {
+              diff = a.govName.localeCompare(b.govName, 'ja');
+            } else if (sortKey === 'military') {
+              diff = (a.military ?? -1) - (b.military ?? -1);
+            } else if (sortKey === 'politics') {
+              diff = (a.politics ?? -1) - (b.politics ?? -1);
+            } else if (sortKey === 'stratagem') {
+              diff = (a.stratagem ?? -1) - (b.stratagem ?? -1);
+            } else if (sortKey === 'troops') {
+              diff = a.troops - b.troops;
+            } else {
+              diff = a.kokudaka - b.kokudaka;
+            }
             return sortOrder === 'desc' ? -diff : diff;
           });
 
-          function sortIcon(k) {
-            if (sortKey !== k) return '<span style="color:#776655; font-size:12pt;">↕</span>';
-            return sortOrder === 'asc' ? '<span style="color:var(--gold-bright); font-size:12pt;">▲</span>' : '<span style="color:var(--gold-bright); font-size:12pt;">▼</span>';
+          updateSortIcons();
+
+          var cardsEl = document.getElementById('provCardsContainer');
+          if (rows.length === 0) {
+            tbodyEl.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:30px; color:#887766;">該当する領国が見つかりません</td></tr>';
+            if (cardsEl) cardsEl.innerHTML = '<div style="text-align:center; padding:30px; color:#887766;">該当する領国が見つかりません</div>';
+            return;
           }
-          function th(k, label) {
-            return '<th data-sort="' + k + '" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">' + label + ' ' + sortIcon(k) + '</th>';
+
+          // PCテーブル行
+          tbodyEl.innerHTML = rows.map(function (r) {
+            var badge = r.isBlank
+              ? '<span class="role-badge role-ronin">空白</span>'
+              : (r.isCap ? '<span class="role-badge role-daimyo">👑本拠</span>' : (r.govOff ? '<span class="role-badge role-governor">🏯城主</span>' : '<span class="role-badge role-vassal">城代</span>'));
+            return (
+              '<tr class="table-row-hover" data-row-prov="' + esc(r.p.id) + '">' +
+                '<td style="padding:9px; font-weight:bold; color:#fff;">' + esc(r.p.name) + '</td>' +
+                '<td style="padding:9px; color:var(--gold-pale);">🏯 ' + esc(r.p.castle) + '</td>' +
+                '<td style="padding:9px; color:#aa9988; font-size:11pt;">' + esc(r.p.region) + '</td>' +
+                '<td style="padding:9px; color:var(--gold-bright); font-weight:bold;">' + esc(r.ownerName) + '</td>' +
+                '<td style="padding:9px;">' + badge + ' ' + esc(r.govName) + '</td>' +
+                '<td style="padding:9px; text-align:right; color:#ff9999;">' + (r.military != null ? r.military : '—') + '</td>' +
+                '<td style="padding:9px; text-align:right; color:#99ff99;">' + (r.politics != null ? r.politics : '—') + '</td>' +
+                '<td style="padding:9px; text-align:right; color:#99ccff;">' + (r.stratagem != null ? r.stratagem : '—') + '</td>' +
+                '<td style="padding:9px; text-align:right; color:#fff;">' + r.troops.toLocaleString() + '人</td>' +
+                '<td style="padding:9px; text-align:right; font-weight:bold; color:var(--gold-bright);">' + (r.kokudaka / 10000).toFixed(1) + '万石</td>' +
+              '</tr>'
+            );
+          }).join('');
+
+          // スマホ用カード行
+          if (cardsEl) {
+            cardsEl.innerHTML = rows.map(function (r) {
+              var badge = r.isBlank
+                ? '<span class="role-badge role-ronin">空白</span>'
+                : (r.isCap ? '<span class="role-badge role-daimyo">👑本拠</span>' : (r.govOff ? '<span class="role-badge role-governor">🏯城主</span>' : '<span class="role-badge role-vassal">城代</span>'));
+              return (
+                '<div class="prov-card" data-row-prov="' + esc(r.p.id) + '">' +
+                  '<div class="card-head-row">' +
+                    '<div class="card-title-group">' +
+                      '<span class="card-title-main">' + esc(r.p.name) + '</span>' +
+                      '<span class="card-badge-region">' + esc(r.p.region) + '</span>' +
+                      '<span class="card-badge-clan" style="color:var(--gold-bright); font-weight:bold;">' + esc(r.ownerName) + '</span>' +
+                    '</div>' +
+                    '<div>' + badge + ' ' + esc(r.govName) + '</div>' +
+                  '</div>' +
+                  '<div class="card-info-row">' +
+                    '<div class="card-info-item">' +
+                      '<span class="card-lbl">🏯 居城:</span> <span class="card-val">' + esc(r.p.castle) + '</span>' +
+                    '</div>' +
+                    '<div class="card-stats-row">' +
+                      '<span class="card-stat-pill highlight-gold"><span>🌾</span> <strong>' + (r.kokudaka / 10000).toFixed(1) + '万石</strong></span>' +
+                      '<span class="card-stat-pill"><span>👥</span> <strong>兵' + Math.max(1, Math.round(r.troops / 1000)) + '千人</strong></span>' +
+                      '<span class="stat-tag mil">武 ' + (r.military != null ? r.military : '—') + '</span>' +
+                      '<span class="stat-tag pol">政 ' + (r.politics != null ? r.politics : '—') + '</span>' +
+                      '<span class="stat-tag int">知 ' + (r.stratagem != null ? r.stratagem : '—') + '</span>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>'
+              );
+            }).join('');
           }
 
-          var selectedClanName = activeClanId ? getClanFamilyName(activeClanId, year) : '';
-
-          modal.innerHTML =
-            '<div class="modal-window">' +
-              '<div class="modal-head">' +
-                '<div class="modal-head-title">❖ 領国録・城主と石高（' + fmtYear(year) + '年 ' + esc(State.currentScenario.title) + '）❖</div>' +
-                '<button type="button" class="modal-close-btn" id="closeProvListBtn">✕ 閉じる</button>' +
-              '</div>' +
-              '<div style="padding:10px 18px; background:rgba(0,0,0,0.4); border-bottom:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
-                '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-                  (activeClanId ? '<button type="button" class="nav-btn ' + (currentTab === 'my' ? 'game-go' : '') + '" id="tabProvMy">' + esc(selectedClanName) + 'の領国 (' + myProvs.length + '国)</button>' : '') +
-                  '<button type="button" class="nav-btn ' + (currentTab === 'all' ? 'game-go' : '') + '" id="tabProvAll">天下の領国 (' + allProvs.length + '国)</button>' +
-                '</div>' +
-                '<div style="display:flex; align-items:center; gap:8px;">' +
-                  '<span style="font-size:12pt;">検索:</span>' +
-                  '<input type="search" id="provListSearchInput" value="' + esc(searchQuery) + '" placeholder="国名・城名・領主・城主..." style="background:#140d08; color:#fff; border:1px solid var(--border-gold); padding:5px 10px; border-radius:4px; font-size:12pt; width:240px;">' +
-                '</div>' +
-              '</div>' +
-              '<div class="modal-body" style="padding:0 18px 18px;">' +
-                '<table style="width:100%; border-collapse:collapse; font-size:12pt;">' +
-                  '<thead><tr style="position:sticky; top:0; background:#261a12; border-bottom:2px solid var(--border-gold);">' +
-                    th('name', '国名') +
-                    th('castle', '居城') +
-                    th('region', '地方') +
-                    th('owner', '支配大名') +
-                    th('governor', '城主・当主') +
-                    th('military', '武勇') +
-                    th('politics', '内政') +
-                    th('stratagem', '知略') +
-                    th('troops', '駐留兵力') +
-                    th('kokudaka', '表高') +
-                  '</tr></thead>' +
-                  '<tbody>' +
-                    rows.map(function (r) {
-                      var badge = r.isBlank
-                        ? '<span class="role-badge role-ronin">空白</span>'
-                        : (r.isCap ? '<span class="role-badge role-daimyo">👑本拠</span>' : (r.govOff ? '<span class="role-badge role-governor">🏯城主</span>' : '<span class="role-badge role-vassal">城代</span>'));
-                      return (
-                        '<tr class="table-row-hover" data-row-prov="' + esc(r.p.id) + '">' +
-                          '<td style="padding:9px; font-weight:bold; color:#fff;">' + esc(r.p.name) + '</td>' +
-                          '<td style="padding:9px; color:var(--gold-pale);">🏯 ' + esc(r.p.castle) + '</td>' +
-                          '<td style="padding:9px;">' + esc(r.p.region) + '</td>' +
-                          '<td style="padding:9px; font-weight:bold;">' + esc(r.ownerName) + '</td>' +
-                          '<td style="padding:9px;">' + badge + ' <b style="color:#fff; margin-left:4px;">' + esc(r.govName) + '</b></td>' +
-                          '<td style="padding:9px; text-align:center;" class="st-mil">' + (r.military ?? '—') + '</td>' +
-                          '<td style="padding:9px; text-align:center;" class="st-pol">' + (r.politics ?? '—') + '</td>' +
-                          '<td style="padding:9px; text-align:center;" class="st-int">' + (r.stratagem ?? '—') + '</td>' +
-                          '<td style="padding:9px; text-align:right; font-weight:bold;">' + r.troops.toLocaleString() + '人</td>' +
-                          '<td style="padding:9px; text-align:right; color:var(--gold-bright); font-weight:bold;">' + (r.kokudaka / 10000).toFixed(1) + '万石</td>' +
-                        '</tr>'
-                      );
-                    }).join('') +
-                  '</tbody>' +
-                '</table>' +
-              '</div>' +
-            '</div>';
-
-          document.getElementById('closeProvListBtn').onclick = function () { modal.classList.add('hidden'); };
-          var tabMy = document.getElementById('tabProvMy');
-          if (tabMy) tabMy.onclick = function () { currentTab = 'my'; render(); };
-          document.getElementById('tabProvAll').onclick = function () { currentTab = 'all'; render(); };
-
-          var sInput = document.getElementById('provListSearchInput');
-          sInput.oninput = function (e) {
-            searchQuery = e.target.value;
-            render();
-            var ni = document.getElementById('provListSearchInput');
-            if (ni) { ni.focus(); ni.setSelectionRange(searchQuery.length, searchQuery.length); }
-          };
-
-          modal.querySelectorAll('[data-sort]').forEach(function (thEl) {
-            thEl.onclick = function () {
-              var k = thEl.getAttribute('data-sort');
-              if (sortKey === k) sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-              else { sortKey = k; sortOrder = 'desc'; }
-              render();
-            };
-          });
-
-          modal.querySelectorAll('[data-row-prov]').forEach(function (trEl) {
-            trEl.onclick = function () {
-              var pid = trEl.getAttribute('data-row-prov');
+          modal.querySelectorAll('[data-row-prov]').forEach(function (el) {
+            el.onclick = function () {
+              var pid = el.getAttribute('data-row-prov');
               modal.classList.add('hidden');
               selectProvinceOnMap(pid);
             };
           });
         }
 
-        render();
+        if (tabMy) tabMy.onclick = function () { currentTab = 'my'; renderList(); };
+        if (tabAll) tabAll.onclick = function () { currentTab = 'all'; renderList(); };
+
+        var sInput = document.getElementById('provListSearchInput');
+        var isComposing = false;
+        var searchDebounceTimer = null;
+        function doSearch() {
+          searchQuery = sInput.value;
+          renderList();
+        }
+
+        sInput.addEventListener('compositionstart', function () { isComposing = true; });
+        sInput.addEventListener('compositionend', function () {
+          isComposing = false;
+          clearTimeout(searchDebounceTimer);
+          doSearch();
+        });
+        sInput.addEventListener('input', function (e) {
+          if (isComposing || (e && e.isComposing)) return;
+          clearTimeout(searchDebounceTimer);
+          searchDebounceTimer = setTimeout(doSearch, 150);
+        });
+
+        modal.querySelectorAll('[data-sort]').forEach(function (thEl) {
+          thEl.onclick = function () {
+            var k = thEl.getAttribute('data-sort');
+            if (sortKey === k) sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            else { sortKey = k; sortOrder = (k === 'name' || k === 'castle' || k === 'region' || k === 'owner' || k === 'governor') ? 'asc' : 'desc'; }
+            renderList();
+          };
+        });
+
+        document.getElementById('closeProvListBtn').onclick = function () {
+          modal.classList.add('hidden');
+        };
+
+        renderList();
       }
 
       function openOfficerListModal() {
@@ -3811,7 +5763,7 @@
           modal.id = 'officerListModal';
           modal.className = 'modal-backdrop';
           modal.addEventListener('mousedown', function (e) {
-            if (e.target === modal) modal.classList.add('hidden');
+            if (e.target === modal) closeOffList();
           });
           document.body.appendChild(modal);
         }
@@ -3823,136 +5775,304 @@
         var sortOrder = 'desc';
         var searchQuery = '';
         var year = Number(State.currentScenario ? State.currentScenario.year : 1560);
+        var allActive = State.activeOfficers || [];
+        var myActive = activeClanId ? allActive.filter(function (o) { return o.clanId === activeClanId; }) : [];
+        var roninActive = allActive.filter(function (o) { return o.clanId === 'ronin'; });
+        var selectedClanName = activeClanId ? getClanFamilyName(activeClanId, year) : '';
 
-        function render() {
-          var allActive = State.activeOfficers || [];
-          var myActive = activeClanId ? allActive.filter(function (o) { return o.clanId === activeClanId; }) : [];
-          var roninActive = allActive.filter(function (o) { return o.clanId === 'ronin'; });
-          var list = (currentTab === 'my' && activeClanId) ? myActive.slice() : (currentTab === 'ronin' ? roninActive.slice() : allActive.slice());
+        function getOfficerProvName(o) {
+          var pid = o.assignedProvId || o.defaultProv;
+          return (State.provById.get(pid) && State.provById.get(pid).name) || PROV_JP_MAP[pid] || '諸国';
+        }
 
-          if (searchQuery) {
-            var q = searchQuery.trim().toLowerCase();
-            list = list.filter(function (o) {
-              var fam = getClanFamilyName(o.clanId, year);
-              return ((o.name || '') + ' ' + fam + ' ' + (o.skill || '')).toLowerCase().indexOf(q) !== -1;
-            });
-          }
+        function getOfficerStatusRank(o) {
+          if (o.isDaimyo) return 0;
+          if (o.assignedProvId) return 1;
+          if (o.clanId === 'ronin') return 3;
+          return 2;
+        }
 
-          list.sort(function (a, b) {
-            var diff = 0;
-            if (sortKey === 'name') diff = (a.name || '').localeCompare(b.name || '', 'ja');
-            else if (sortKey === 'clan') diff = getClanFamilyName(a.clanId, year).localeCompare(getClanFamilyName(b.clanId, year), 'ja');
-            else if (sortKey === 'age') diff = (year - (a.birthYear || 1530)) - (year - (b.birthYear || 1530));
-            else if (sortKey === 'politic') diff = (a.politic || 0) - (b.politic || 0);
-            else if (sortKey === 'intel') diff = (a.intel || 0) - (b.intel || 0);
-            else diff = (a.military || 0) - (b.military || 0);
-            return sortOrder === 'desc' ? -diff : diff;
-          });
-
-          function sortIcon(k) {
-            if (sortKey !== k) return '<span style="color:#776655; font-size:12pt;">↕</span>';
-            return sortOrder === 'asc' ? '<span style="color:var(--gold-bright); font-size:12pt;">▲</span>' : '<span style="color:var(--gold-bright); font-size:12pt;">▼</span>';
-          }
-          function th(k, label) {
-            return '<th data-sort="' + k + '" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">' + label + ' ' + sortIcon(k) + '</th>';
-          }
-
-          var selectedClanName = activeClanId ? getClanFamilyName(activeClanId, year) : '';
-
-          modal.innerHTML =
-            '<div class="modal-window">' +
-              '<div class="modal-head">' +
-                '<div class="modal-head-title">❖ 参陣武将録・名将一覧（' + fmtYear(year) + '年 ' + esc(State.currentScenario.title) + '）❖</div>' +
-                '<button type="button" class="modal-close-btn" id="closeOffListBtn">✕ 閉じる</button>' +
+        modal.innerHTML =
+          '<div class="modal-window">' +
+            '<div class="modal-head">' +
+              '<div class="modal-head-title">' +
+                '<span class="modal-head-title-pc">❖ 参陣武将録・名将一覧（' + fmtYear(year) + '年 ' + esc(State.currentScenario.title) + '）❖</span>' +
+                '<span class="modal-head-title-sp">👥 武将一覧（' + fmtYear(year) + '年）</span>' +
               '</div>' +
-              '<div style="padding:10px 18px; background:rgba(0,0,0,0.4); border-bottom:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
-                '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
-                  (activeClanId ? '<button type="button" class="nav-btn ' + (currentTab === 'my' ? 'game-go' : '') + '" id="tabOffMy">' + esc(selectedClanName) + 'の武将 (' + myActive.length + '名)</button>' : '') +
-                  '<button type="button" class="nav-btn ' + (currentTab === 'ronin' ? 'game-go' : '') + '" id="tabOffRonin">浪人・未仕官 (' + roninActive.length + '名)</button>' +
-                  '<button type="button" class="nav-btn ' + (currentTab === 'all' ? 'game-go' : '') + '" id="tabOffAll">天下の武将 (' + allActive.length + '名)</button>' +
+              '<button type="button" class="modal-close-btn" id="closeOffListBtn">✕</button>' +
+            '</div>' +
+            '<div class="modal-subbar">' +
+              '<div class="modal-subbar-tabs">' +
+                (activeClanId ? '<button type="button" class="nav-btn ' + (currentTab === 'my' ? 'game-go' : '') + '" id="tabOffMy"><span class="tab-txt-pc">' + esc(selectedClanName) + 'の武将 (' + myActive.length + '名)</span><span class="tab-txt-sp">⚔️ 配下 (' + myActive.length + ')</span></button>' : '') +
+                '<button type="button" class="nav-btn ' + (currentTab === 'ronin' ? 'game-go' : '') + '" id="tabOffRonin"><span class="tab-txt-pc">浪人・未仕官 (' + roninActive.length + '名)</span><span class="tab-txt-sp">🎋 浪人 (' + roninActive.length + ')</span></button>' +
+                '<button type="button" class="nav-btn ' + (currentTab === 'all' ? 'game-go' : '') + '" id="tabOffAll"><span class="tab-txt-pc">天下の武将 (' + allActive.length + '名)</span><span class="tab-txt-sp">👥 全員 (' + allActive.length + ')</span></button>' +
+              '</div>' +
+              '<div class="modal-subbar-controls">' +
+                '<div class="modal-search-box">' +
+                  '<span class="modal-search-label modal-search-label-pc">検索:</span><span class="modal-search-label modal-search-label-sp">🔍</span>' +
+                  '<input type="search" id="offListSearchInput" value="" placeholder="武将名・所属・特技..." class="modal-search-input" autocomplete="off">' +
                 '</div>' +
-                '<div style="display:flex; align-items:center; gap:8px;">' +
-                  '<span style="font-size:12pt;">検索:</span>' +
-                  '<input type="search" id="offListSearchInput" value="' + esc(searchQuery) + '" placeholder="武将名・所属・特技..." style="background:#140d08; color:#fff; border:1px solid var(--border-gold); padding:5px 10px; border-radius:4px; font-size:12pt; width:240px;">' +
+                '<div class="modal-sort-bar-wrap">' +
+                  '<div class="modal-sort-chips" id="offSortChips"></div>' +
                 '</div>' +
               '</div>' +
-              '<div class="modal-body" style="padding:0 18px 18px;">' +
-                '<table style="width:100%; border-collapse:collapse; font-size:12pt;">' +
+            '</div>' +
+            '<div class="modal-body modal-table-body">' +
+              '<div class="modal-table-scroll" id="offListTableScroll">' +
+                '<table class="modal-data-table">' +
                   '<thead><tr style="position:sticky; top:0; background:#261a12; border-bottom:2px solid var(--border-gold);">' +
-                    th('name', '武将名') +
-                    '<th style="padding:10px; color:var(--gold-bright); font-size:12pt;">身分</th>' +
-                    '<th style="padding:10px; color:var(--gold-bright); font-size:12pt;">所在国</th>' +
-                    th('clan', '所属勢力') +
-                    th('age', '年齢・生没年') +
-                    th('military', '武勇') +
-                    th('politic', '内政') +
-                    th('intel', '知略') +
-                    '<th style="padding:10px; color:var(--gold-bright); font-size:12pt;">特技</th>' +
+                    '<th data-sort="name" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">武将名 <span data-sort-ic="name">↕</span></th>' +
+                    '<th data-sort="status" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">身分 <span data-sort-ic="status">↕</span></th>' +
+                    '<th data-sort="prov" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">所在国 <span data-sort-ic="prov">↕</span></th>' +
+                    '<th data-sort="clan" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">所属勢力 <span data-sort-ic="clan">↕</span></th>' +
+                    '<th data-sort="age" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">年齢 <span data-sort-ic="age">↕</span></th>' +
+                    '<th data-sort="military" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">武勇 <span data-sort-ic="military">▼</span></th>' +
+                    '<th data-sort="intel" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">知略 <span data-sort-ic="intel">↕</span></th>' +
+                    '<th data-sort="politic" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">内政 <span data-sort-ic="politic">↕</span></th>' +
+                    '<th data-sort="skill" style="padding:10px; color:var(--gold-bright); cursor:pointer; white-space:nowrap; font-size:12pt;">特技・肩書 <span data-sort-ic="skill">↕</span></th>' +
                   '</tr></thead>' +
-                  '<tbody>' +
-                    list.map(function (o) {
-                      var badge = o.isDaimyo
-                        ? '<span class="role-badge role-daimyo">👑当主</span>'
-                        : (o.assignedProvId ? '<span class="role-badge role-governor">🏯城主</span>' : (o.clanId === 'ronin' ? '<span class="role-badge role-ronin">浪人</span>' : '<span class="role-badge role-vassal">家臣</span>'));
-                      var pid = o.assignedProvId || o.defaultProv;
-                      var pName = (State.provById.get(pid) && State.provById.get(pid).name) || PROV_JP_MAP[pid] || '諸国';
-                      var age = year - (o.birthYear || 1530);
-                      return (
-                        '<tr class="table-row-hover" data-row-off="' + esc(o.id) + '">' +
-                          '<td style="padding:9px; font-weight:bold; color:#fff;">' + esc(o.name) + '</td>' +
-                          '<td style="padding:9px;">' + badge + '</td>' +
-                          '<td style="padding:9px; color:var(--gold-pale);">' + esc(pName) + '</td>' +
-                          '<td style="padding:9px;">' + esc(getClanFamilyName(o.clanId, year)) + '</td>' +
-                          '<td style="padding:9px;">' + age + '歳 (' + fmtYear(o.birthYear) + '〜' + fmtYear(o.deathYear) + ')</td>' +
-                          '<td style="padding:9px; text-align:center;" class="st-mil">' + (o.military || 0) + '</td>' +
-                          '<td style="padding:9px; text-align:center;" class="st-pol">' + (o.politic || 0) + '</td>' +
-                          '<td style="padding:9px; text-align:center;" class="st-int">' + (o.intel || 0) + '</td>' +
-                          '<td style="padding:9px; color:#f3d27a;">' + esc(o.skill || '—') + '</td>' +
-                        '</tr>'
-                      );
-                    }).join('') +
-                  '</tbody>' +
+                  '<tbody id="offListTableBody"></tbody>' +
                 '</table>' +
               '</div>' +
-            '</div>';
+              '<div class="modal-cards-container" id="offCardsContainer"></div>' +
+            '</div>' +
+          '</div>';
 
-          document.getElementById('closeOffListBtn').onclick = function () { modal.classList.add('hidden'); };
-          var tabMy = document.getElementById('tabOffMy');
-          if (tabMy) tabMy.onclick = function () { currentTab = 'my'; render(); };
-          document.getElementById('tabOffRonin').onclick = function () { currentTab = 'ronin'; render(); };
-          document.getElementById('tabOffAll').onclick = function () { currentTab = 'all'; render(); };
+        var tbodyEl = document.getElementById('offListTableBody');
+        var tabMy = document.getElementById('tabOffMy');
+        var tabRonin = document.getElementById('tabOffRonin');
+        var tabAll = document.getElementById('tabOffAll');
 
-          var sInput = document.getElementById('offListSearchInput');
-          sInput.oninput = function (e) {
-            searchQuery = e.target.value;
-            render();
-            var ni = document.getElementById('offListSearchInput');
-            if (ni) { ni.focus(); ni.setSelectionRange(searchQuery.length, searchQuery.length); }
-          };
+        function closeOffList() {
+          modal.classList.add('hidden');
+        }
+        document.getElementById('closeOffListBtn').onclick = closeOffList;
 
-          modal.querySelectorAll('[data-sort]').forEach(function (thEl) {
-            thEl.onclick = function () {
-              var k = thEl.getAttribute('data-sort');
-              if (sortKey === k) sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-              else { sortKey = k; sortOrder = 'desc'; }
-              render();
+        var OFF_SORT_ITEMS = [
+          { k: 'name', label: '名前', sp: '名前', ic: 'あ' },
+          { k: 'prov', label: '所在', sp: '所在', ic: '🗾' },
+          { k: 'age', label: '年齢', sp: '年齢', ic: '⏳' },
+          { k: 'military', label: '武勇', sp: '武', ic: '武' },
+          { k: 'politic', label: '内政', sp: '政', ic: '政' },
+          { k: 'intel', label: '知略', sp: '知', ic: '知' }
+        ];
+
+        function updateSortIcons() {
+          modal.querySelectorAll('[data-sort-ic]').forEach(function (ic) {
+            var k = ic.getAttribute('data-sort-ic');
+            if (sortKey !== k) {
+              ic.textContent = '↕';
+              ic.style.color = '#776655';
+            } else {
+              ic.textContent = sortOrder === 'asc' ? '▲' : '▼';
+              ic.style.color = 'var(--gold-bright)';
+            }
+          });
+          var chipsEl = document.getElementById('offSortChips');
+          if (chipsEl) {
+            chipsEl.innerHTML = OFF_SORT_ITEMS.map(function (item) {
+              var isActive = sortKey === item.k;
+              var arrow = isActive ? (sortOrder === 'asc' ? '▲' : '▼') : '';
+              return '<button type="button" class="sort-chip-btn ' + (isActive ? 'active' : '') + '" data-off-sort="' + item.k + '" title="' + item.label + 'で並べ替え" aria-label="' + item.label + '">' +
+                '<span class="sort-chip-ic">' + item.ic + '</span> ' +
+                '<span class="sort-chip-txt-pc">' + item.label + '</span>' +
+                '<span class="sort-chip-txt-sp">' + (item.sp || item.label) + '</span>' +
+                (arrow ? '<span class="sort-chip-arrow">' + arrow + '</span>' : '') +
+              '</button>';
+            }).join('');
+            chipsEl.querySelectorAll('[data-off-sort]').forEach(function (btn) {
+              btn.onclick = function () {
+                var k = btn.getAttribute('data-off-sort');
+                if (sortKey === k) sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                else { sortKey = k; sortOrder = (k === 'name' || k === 'prov' || k === 'status' || k === 'age') ? 'asc' : 'desc'; }
+                renderList();
+              };
+            });
+          }
+        }
+
+        function renderList() {
+          var allActiveNow = State.activeOfficers || [];
+          var myActiveNow = activeClanId ? allActiveNow.filter(function (o) { return o.clanId === activeClanId; }) : [];
+          var roninActiveNow = allActiveNow.filter(function (o) { return o.clanId === 'ronin'; });
+
+          var source = allActiveNow;
+          if (currentTab === 'my' && activeClanId) source = myActiveNow;
+          else if (currentTab === 'ronin') source = roninActiveNow;
+
+          if (tabMy) tabMy.classList.toggle('game-go', currentTab === 'my');
+          if (tabRonin) tabRonin.classList.toggle('game-go', currentTab === 'ronin');
+          if (tabAll) tabAll.classList.toggle('game-go', currentTab === 'all');
+
+          var rows = source.map(function (o) {
+            var cName = (o.clanId && o.clanId !== 'ronin') ? getClanFamilyName(o.clanId, year) : '浪人・未仕官';
+            var provId = o.assignedProvId || o.defaultProv || '';
+            var provName = getOfficerProvName(o);
+            var statusRank = getOfficerStatusRank(o);
+            return {
+              o: o,
+              cName: cName,
+              provId: provId,
+              provName: provName,
+              statusRank: statusRank
             };
           });
 
-          modal.querySelectorAll('[data-row-off]').forEach(function (trEl) {
-            trEl.onclick = function () {
-              openOfficerBioModal(trEl.getAttribute('data-row-off'));
+          if (searchQuery) {
+            var q = searchQuery.trim().toLowerCase();
+            rows = rows.filter(function (r) {
+              var skills = (r.o.skill || '') + ' ' + (r.o.tactics || []).join(' ');
+              return (r.o.name + ' ' + (r.o.ruby || '') + ' ' + r.cName + ' ' + r.provName + ' ' + skills).toLowerCase().indexOf(q) !== -1;
+            });
+          }
+
+          rows.sort(function (a, b) {
+            var diff = 0;
+            if (sortKey === 'name') {
+              diff = (a.o.ruby || a.o.name).localeCompare(b.o.ruby || b.o.name, 'ja');
+            } else if (sortKey === 'status') {
+              diff = a.statusRank - b.statusRank;
+            } else if (sortKey === 'prov') {
+              // 所在国：北から順（北緯が高い領国順。同領国・緯度は武将名五十音順）
+              var latA = getProvNorthLat(a.provId);
+              var latB = getProvNorthLat(b.provId);
+              diff = latB - latA;
+              if (Math.abs(diff) < 0.001) diff = (a.o.ruby || a.o.name).localeCompare(b.o.ruby || b.o.name, 'ja');
+            } else if (sortKey === 'clan') {
+              diff = a.cName.localeCompare(b.cName, 'ja');
+            } else if (sortKey === 'age') {
+              var bA = a.o.birthYear != null ? Number(a.o.birthYear) : (a.o.birth != null ? Number(a.o.birth) : null);
+              var bB = b.o.birthYear != null ? Number(b.o.birthYear) : (b.o.birth != null ? Number(b.o.birth) : null);
+              var ageA = bA != null ? (year - bA) : -999;
+              var ageB = bB != null ? (year - bB) : -999;
+              diff = ageA - ageB;
+            }
+            else if (sortKey === 'military') diff = (a.o.military || 0) - (b.o.military || 0);
+            else if (sortKey === 'politic') diff = (a.o.politic || 0) - (b.o.politic || 0);
+            else if (sortKey === 'intel') diff = (a.o.intel || 0) - (b.o.intel || 0);
+            else if (sortKey === 'skill') {
+              var sA = a.o.skill || (a.o.tactics ? a.o.tactics.join('・') : '');
+              var sB = b.o.skill || (b.o.tactics ? b.o.tactics.join('・') : '');
+              diff = sA.localeCompare(sB, 'ja');
+            }
+            return sortOrder === 'desc' ? -diff : diff;
+          });
+
+          updateSortIcons();
+
+          var cardsEl = document.getElementById('offCardsContainer');
+          if (rows.length === 0) {
+            tbodyEl.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:30px; color:#887766;">該当する武将が見つかりません</td></tr>';
+            if (cardsEl) cardsEl.innerHTML = '<div style="text-align:center; padding:30px; color:#887766;">該当する武将が見つかりません</div>';
+            return;
+          }
+
+          // PCテーブル行
+          tbodyEl.innerHTML = rows.map(function (r) {
+            var o = r.o;
+            var isRonin = o.clanId === 'ronin';
+            var bYear = o.birthYear != null ? Number(o.birthYear) : (o.birth != null ? Number(o.birth) : null);
+            var age = (bYear != null && year >= bYear) ? (year - bYear) : null;
+            var statusBadge = o.isDaimyo
+              ? '<span class="role-badge role-daimyo">👑当主</span>'
+              : (o.assignedProvId ? '<span class="role-badge role-governor">🏯城主</span>' : (isRonin ? '<span class="role-badge role-ronin">🎋浪人</span>' : '<span class="role-badge role-vassal">家臣</span>'));
+            var skillsTxt = o.skill || (o.tactics && o.tactics.length ? o.tactics.slice(0, 3).join('・') : '—');
+            return (
+              '<tr class="table-row-hover" data-row-off="' + esc(o.id) + '">' +
+                '<td style="padding:8px; font-weight:bold; color:#fff;">' + esc(o.name) + '</td>' +
+                '<td style="padding:8px;">' + statusBadge + '</td>' +
+                '<td style="padding:8px; color:var(--gold-pale);">' + esc(r.provName) + '</td>' +
+                '<td style="padding:8px; color:var(--gold-bright); font-weight:bold;">' + esc(r.cName) + '</td>' +
+                '<td style="padding:8px; text-align:right; color:#ccc;">' + (age != null ? age + '歳' : '—') + '</td>' +
+                '<td style="padding:8px; text-align:right; color:#ff9999; font-weight:bold;">' + (o.military != null ? o.military : '—') + '</td>' +
+                '<td style="padding:8px; text-align:right; color:#99ccff; font-weight:bold;">' + (o.intel != null ? o.intel : '—') + '</td>' +
+                '<td style="padding:8px; text-align:right; color:#99ff99; font-weight:bold;">' + (o.politic != null ? o.politic : '—') + '</td>' +
+                '<td style="padding:8px; font-size:10pt; color:var(--gold-pale);">' + esc(skillsTxt) + '</td>' +
+              '</tr>'
+            );
+          }).join('');
+
+          // スマホ用カード行
+          if (cardsEl) {
+            cardsEl.innerHTML = rows.map(function (r) {
+              var o = r.o;
+              var isRonin = o.clanId === 'ronin';
+              var bYear = o.birthYear != null ? Number(o.birthYear) : (o.birth != null ? Number(o.birth) : null);
+              var age = (bYear != null && year >= bYear) ? (year - bYear) : null;
+              var statusBadge = o.isDaimyo
+                ? '<span class="role-badge role-daimyo">👑当主</span>'
+                : (o.assignedProvId ? '<span class="role-badge role-governor">🏯城主</span>' : (isRonin ? '<span class="role-badge role-ronin">🎋浪人</span>' : '<span class="role-badge role-vassal">家臣</span>'));
+              var skillsTxt = o.skill || (o.tactics && o.tactics.length ? o.tactics.slice(0, 3).join('・') : '');
+              return (
+                '<div class="off-card" data-row-off="' + esc(o.id) + '">' +
+                  '<div class="card-head-row">' +
+                    '<div class="card-title-group">' +
+                      '<span class="card-title-main">' + esc(o.name) + '</span>' +
+                      '<span class="card-badge-clan" style="color:var(--gold-bright); font-weight:bold;">' + esc(r.cName) + '</span>' +
+                      '<span class="card-badge-region">📍 ' + esc(r.provName) + '</span>' +
+                    '</div>' +
+                    '<div>' + statusBadge + '</div>' +
+                  '</div>' +
+                  '<div class="card-stats-row">' +
+                    '<span class="stat-tag mil">武 ' + (o.military != null ? o.military : (o.war != null ? o.war : '—')) + '</span>' +
+                    '<span class="stat-tag pol">政 ' + (o.politic != null ? o.politic : (o.politics != null ? o.politics : '—')) + '</span>' +
+                    '<span class="stat-tag int">知 ' + (o.intel != null ? o.intel : (o.stratagem != null ? o.stratagem : '—')) + '</span>' +
+                    '<span class="card-stat-pill"><span>⏳ 年齢</span> <strong>' + (age != null ? age + '歳' : '—') + '</strong></span>' +
+                    (skillsTxt ? '<span class="card-stat-pill" style="color:var(--gold-bright);"><span>✨ 特技</span> <strong>' + esc(skillsTxt) + '</strong></span>' : '') +
+                  '</div>' +
+                '</div>'
+              );
+            }).join('');
+          }
+
+          modal.querySelectorAll('[data-row-off]').forEach(function (el) {
+            el.onclick = function () {
+              var oid = el.getAttribute('data-row-off');
+              if (oid) openOfficerBioModal(oid);
             };
           });
         }
 
-        render();
+        if (tabMy) tabMy.onclick = function () { currentTab = 'my'; renderList(); };
+        if (tabRonin) tabRonin.onclick = function () { currentTab = 'ronin'; renderList(); };
+        if (tabAll) tabAll.onclick = function () { currentTab = 'all'; renderList(); };
+
+        var sInput = document.getElementById('offListSearchInput');
+        var isComposing = false;
+        var searchDebounceTimer = null;
+        function doSearch() {
+          searchQuery = sInput.value;
+          renderList();
+        }
+
+        sInput.addEventListener('compositionstart', function () { isComposing = true; });
+        sInput.addEventListener('compositionend', function () {
+          isComposing = false;
+          clearTimeout(searchDebounceTimer);
+          doSearch();
+        });
+        sInput.addEventListener('input', function (e) {
+          if (isComposing || (e && e.isComposing)) return;
+          clearTimeout(searchDebounceTimer);
+          searchDebounceTimer = setTimeout(doSearch, 150);
+        });
+
+        modal.querySelectorAll('[data-sort]').forEach(function (thEl) {
+          thEl.onclick = function () {
+            var k = thEl.getAttribute('data-sort');
+            if (sortKey === k) sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            else { sortKey = k; sortOrder = (k === 'name' || k === 'clan' || k === 'prov' || k === 'status' || k === 'age' || k === 'skill') ? 'asc' : 'desc'; }
+            renderList();
+          };
+        });
+
+        renderList();
       }
 
       // ==================== ゲーム本編の「武将名鑑・大名名鑑 (Encyclopedia.js)」完全同一実装 ====================
       var GENDAI_BIRTH = 1890;
       var ERA_ALIAS = {
-        nanbokucho: 'nanboku', azuchi: 'sengoku', azuchimomoyama: 'sengoku',
+        nanbokucho: 'muromachi', nanboku: 'muromachi', azuchi: 'sengoku', azuchimomoyama: 'sengoku',
         azuchi_momoyama: 'sengoku', edo_early: 'edo', edo_mid: 'edo',
         edo_late: 'edo', meiji: 'bakumatsu'
       };
@@ -4267,10 +6387,10 @@
                 '<span>' + (kind === 'officer' ? '武将名鑑' : '大名名鑑') + '</span>' +
                 '<small>' + (kind === 'officer' ? '— 古今の英傑列伝 —' : '— 群雄割拠・支配域の変遷 —') + '</small></div>' +
               '<div class="mk-tabs">' +
-                '<button type="button" class="mk-tab ' + (kind === 'officer' ? 'on' : '') + '" data-k="officer">武将名鑑</button>' +
-                '<button type="button" class="mk-tab ' + (kind === 'clan' ? 'on' : '') + '" data-k="clan">大名名鑑</button>' +
+                '<button type="button" class="mk-tab ' + (kind === 'officer' ? 'on' : '') + '" data-k="officer"><span class="mk-tab-pc">📜 武将名鑑</span><span class="mk-tab-sp">📜 武将</span></button>' +
+                '<button type="button" class="mk-tab ' + (kind === 'clan' ? 'on' : '') + '" data-k="clan"><span class="mk-tab-pc">🏯 大名名鑑</span><span class="mk-tab-sp">🏯 大名</span></button>' +
               '</div>' +
-              '<button type="button" class="mk-back" aria-label="一覧へ戻る">◀ 一覧</button>' +
+              '<button type="button" class="mk-back" aria-label="一覧へ戻る">◀</button>' +
               '<button type="button" class="mk-close" title="閉じる (Esc)">✕</button>' +
             '</div>' +
             '<div class="mk-body"></div>' +
@@ -4321,7 +6441,7 @@
             '<button type="button" class="mk-reset">条件解除</button>' +
           '</div>' +
           '<div class="mk-eras">' + [''].concat(ERAS.map(function (e) { return e.key; })).map(function (k) {
-            return '<button type="button" class="mk-chip ' + (k === '' ? 'on' : '') + '" data-era="' + k + '">' + (k ? getEraLabel(k) : '全時代') + '</button>';
+            return '<button type="button" class="mk-chip ' + (k === '' ? 'on' : '') + '" data-era="' + k + '">' + (k ? '<span class="era-txt-pc">' + getEraLabel(k) + '</span><span class="era-txt-sp">' + ({sengoku:'戦国',bakumatsu:'近代'}[k] || getEraLabel(k)) + '</span>' : '<span class="era-txt-pc">全時代</span><span class="era-txt-sp">全て</span>') + '</button>';
           }).join('') + '</div>' +
           '<div class="mk-main">' +
             '<div class="mk-listwrap"><div class="mk-count"></div><div class="mk-list"></div></div>' +
@@ -4709,15 +6829,41 @@
           });
         });
 
+        var scenBoxEl = document.getElementById('mapScenBox');
+        if (scenBoxEl) {
+          scenBoxEl.onclick = function () {
+            if (window.innerWidth <= 768) {
+              scenBoxEl.classList.toggle('is-expanded');
+            }
+          };
+        }
         document.getElementById('provinceListModalBtn').onclick = openProvinceListModal;
         document.getElementById('officerListModalBtn').onclick = openOfficerListModal;
-        document.getElementById('openClanMeikanBtn').onclick = function () { openEncyclopedia('clan', State.selectedClanId); };
-        document.getElementById('openOfficerMeikanBtn').onclick = function () { openEncyclopedia('officer'); };
+        window.openProvinceListModal = openProvinceListModal;
+        window.openOfficerListModal = openOfficerListModal;
+        window.selectScenarioByFilteredIndex = selectScenarioByFilteredIndex;
+        window.selectProvinceOnMap = selectProvinceOnMap;
+        window.resetAllSelectionAndHighlight = resetAllSelectionAndHighlight;
+        window.openEncyclopedia = openEncyclopedia;
+        window.closeEncyclopedia = closeEncyclopedia;
+        if (document.getElementById('openClanMeikanBtn')) {
+          document.getElementById('openClanMeikanBtn').onclick = function () { openEncyclopedia('clan', State.selectedClanId); };
+        }
+        if (document.getElementById('openOfficerMeikanBtn')) {
+          document.getElementById('openOfficerMeikanBtn').onclick = function () { openEncyclopedia('officer'); };
+        }
+        var combinedBtn = document.getElementById('openCombinedMeikanBtn');
+        if (combinedBtn) {
+          combinedBtn.onclick = function () {
+            openEncyclopedia(State.selectedClanId ? 'clan' : 'officer', State.selectedClanId);
+          };
+        }
         document.getElementById('btnOpenAbout').onclick = function () {
           document.getElementById('aboutModalBody').innerHTML =
             '<div style="margin-bottom:14px;">' +
               '<h3 style="color:var(--gold-bright); font-size:14pt; margin-bottom:6px;">🗾 日本史 勢力図・人物一覧 ～日本通史総覧～ について</h3>' +
               '<p>紀元前663年（神武東征）から1877年（西南戦争）までの全 <b>' + State.scenarios.length + ' シナリオ・全国 ' + State.provinces.length + ' 領国・全 ' + State.officers.length.toLocaleString() + ' 名の人物列伝</b>を閲覧できる日本通史総覧アーカイブです。</p>' +
+              '<p style="margin-top:6px; font-size:11pt; opacity:0.9;">※ 各領国の石高は、慶長郷帳（1604～1610年）をもとに推計した値です。</p>' +
             '</div>' +
             '<div style="background:rgba(0,0,0,0.4); border:1px solid var(--border-gold); border-radius:8px; padding:12px 16px;">' +
               '<h4 style="color:var(--gold-bright); font-size:13pt; margin-bottom:6px;">📌 主な特徴と操作方法</h4>' +
@@ -4729,6 +6875,16 @@
             '</div>';
           openModal('aboutModal');
         };
+
+        var btnContact = document.getElementById('btnContactForm');
+        if (btnContact) {
+          btnContact.onclick = function (e) {
+            var scId = State.currentScenario && State.currentScenario.id ? State.currentScenario.id : '';
+            if (scId) {
+              btnContact.href = 'form.html?scenario=' + encodeURIComponent(scId);
+            }
+          };
+        }
       }
 
       if (document.readyState === 'loading') {
@@ -4738,5 +6894,6 @@
       }
     })();
   </script>
+
 </body>
 </html>

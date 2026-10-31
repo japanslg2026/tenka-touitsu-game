@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>修正依頼・お問い合わせ | 日本史 勢力図・人物一覧</title>
+  <style>
+    :root {
+      --bg-main: #14110f;
+      --bg-card: rgba(26, 21, 18, 0.94);
+      --bg-input: #1f1a16;
+      --border-gold: #8c6d3b;
+      --border-sub: #443729;
+      --gold-bright: #f0c36d;
+      --gold-hover: #ffd987;
+      --text-main: #f5f0e6;
+      --text-sub: #bba895;
+      --text-muted: #807163;
+      --accent-red: #c0392b;
+      --accent-badge: #4a3822;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+      background: var(--bg-main);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(140, 109, 59, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(192, 57, 43, 0.08) 0%, transparent 40%);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.65;
+      padding: 24px 16px 48px;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* ヘッダーエリア */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-sub);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gold-bright);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 6px 14px;
+      background: rgba(140, 109, 59, 0.15);
+      border: 1px solid var(--border-gold);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      background: rgba(140, 109, 59, 0.35);
+      color: #fff;
+      border-color: var(--gold-bright);
+      transform: translateX(-2px);
+    }
+
+    .site-tag {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* タイトルセクション */
+    .header-banner {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .banner-badge {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #4a341b, #2c1e11);
+      color: var(--gold-bright);
+      border: 1px solid var(--border-gold);
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .page-title .icon {
+      font-size: 26px;
+    }
+
+    .lead-desc {
+      font-size: 14px;
+      color: var(--text-sub);
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    /* カード本体 */
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(240, 195, 109, 0.15);
+      padding: 32px 28px;
+      backdrop-filter: blur(10px);
+    }
+
+    /* フォーム項目 */
+    .form-section-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--gold-bright);
+      border-left: 3px solid var(--gold-bright);
+      padding-left: 10px;
+      margin: 28px 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .badge-req {
+      background: var(--accent-red);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: normal;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    .badge-opt {
+      background: var(--accent-badge);
+      color: var(--text-sub);
+      font-size: 10.5px;
+      font-weight: normal;
+      padding: 1px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--border-sub);
+    }
+
+    .field-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* 入力パーツ */
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-sub);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 14.5px;
+      font-family: inherit;
+      padding: 11px 14px;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--gold-bright);
+      background: #25201b;
+      box-shadow: 0 0 0 2px rgba(240, 195, 109, 0.2);
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f0c36d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 14px;
+      padding-right: 38px;
+    }
+
+    select optgroup {
+      background: #191410;
+      color: var(--gold-bright);
+      font-weight: bold;
+      padding: 4px 0;
+    }
+
+    select option {
+      background: #1f1a16;
+      color: var(--text-main);
+      padding: 4px 8px;
+    }
+
+    textarea {
+      height: 150px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    /* テンプレート挿入ボタン群 */
+    .template-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px dashed var(--border-sub);
+    }
+
+    .template-label {
+      font-size: 12px;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tmpl-btn {
+      background: rgba(140, 109, 59, 0.2);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-bright);
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tmpl-btn:hover {
+      background: rgba(240, 195, 109, 0.3);
+      color: #fff;
+    }
+
+    /* 送信ボタンエリア */
+    .submit-area {
+      margin-top: 32px;
+      text-align: center;
+    }
+
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 380px;
+      background: linear-gradient(180deg, #6e4e1e 0%, #3d2a0f 100%);
+      color: #fff8dc;
+      border: 1px solid var(--gold-bright);
+      border-radius: 6px;
+      padding: 13px 28px;
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(180deg, #876025 0%, #4f3614 100%);
+      color: #fff;
+      border-color: #ffd987;
+      box-shadow: 0 6px 20px rgba(240, 195, 109, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    /* 送信確認・注記 */
+    .note-box {
+      margin-top: 24px;
+      padding: 14px 16px;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.7;
+    }
+
+    .note-box ul {
+      padding-left: 18px;
+      margin-top: 4px;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      body {
+        padding: 16px 10px 36px;
+      }
+      .form-card {
+        padding: 22px 16px;
+      }
+      .page-title {
+        font-size: 20px;
+      }
+      .template-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .template-btns-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- ナビゲーションバー -->
+    <div class="top-bar">
+      <a href="./index.html" class="back-link" id="topBackLink">
+        <span aria-hidden="true">←</span> 勢力図マップに戻る
+      </a>
+      <span class="site-tag">日本史 勢力図・人物一覧</span>
+    </div>
+
+    <!-- ヘッダー -->
+    <header class="header-banner">
+      <span class="banner-badge">CONTACT & FEEDBACK</span>
+      <h1 class="page-title">
+        <span class="icon" aria-hidden="true">📜</span>
+        修正依頼・お問い合わせフォーム
+      </h1>
+      <p class="lead-desc">
+        武将の能力値・生没年の誤り、勢力図・領国の訂正、動作不具合や新機能のご要望など、お気軽にお寄せください。
+      </p>
+    </header>
+
+    <!-- フォーム本体 -->
+    <main class="form-card">
+      <form action="https://formspree.io/f/xqppdgpa" method="POST" id="feedbackForm">
+        
+        <!-- セクション1: 分類と対象シナリオ -->
+        <div class="form-section-title">
+          <span>1. 依頼種別と該当シナリオの選択</span>
+        </div>
+
+        <!-- 依頼種別 -->
+        <div class="form-group">
+          <label for="category">
+            依頼種別
+            <span class="badge-req">必須</span>
+          </label>
+          <select id="category" name="category" required>
+            <option value="" disabled selected>選択してください</option>
+            <option value="武将データ修正">🏯 武将データの修正（能力値・生没年・所属・列伝など）</option>
+            <option value="勢力図・領国修正">🗺️ 勢力図・領国の修正（支配大名・国境・本拠地など）</option>
+            <option value="年表・テキスト誤字修正">📜 年表・歴史解説・テキスト誤字脱字の修正</option>
+            <option value="不具合・バグ報告">🐛 システムの不具合・バグ報告（表示崩れ、動作不良など）</option>
+            <option value="新機能・仕様要望">💡 新機能・シナリオ追加のご要望</option>
+            <option value="その他">✉️ その他・ご感想</option>
+          </select>
+        </div>
+
+        <!-- 該当シナリオ選択メニュー -->
+        <div class="form-group">
+          <label for="scenario">
+            該当するシナリオ
+            <span class="badge-req">必須</span>
+          </label>
+          <select id="scenario" name="scenario" required>
+            <option value="" disabled selected>該当するシナリオを選択してください</option>
+            <option value="all_or_common">【全般・シナリオ共通 / 不問】</option>
+        <optgroup label="━━ 古代・飛鳥・奈良 ━━">
+          <option value="-663">【前663年】神武東征 (神武前紀戊午年)</option>
+          <option value="97">【97年】ヤマトタケル西征 (景行27年)</option>
+          <option value="240">【240年】邪馬台国と狗奴国（九州説） (正始元年)</option>
+          <option value="240_yamato">【240年】邪馬台国の黎明と纏向（大和説） (正始元年)</option>
+          <option value="645">【645年】乙巳の変・大化の改新 (皇極4年/大化元年)</option>
+          <option value="672">【672年】壬申の乱 (天智10年/弘文元年)</option>
+        </optgroup>
+        <optgroup label="━━ 平安・院政・源平 ━━">
+          <option value="801">【801年】東北征討 (延暦20年)</option>
+          <option value="939">【939年】承平・天慶の乱 (天慶2年)</option>
+          <option value="1019">【1019年】刀伊の入寇 (寛仁3年)</option>
+          <option value="1028">【1028年】平忠常の乱 (長元元年)</option>
+          <option value="1056">【1056年】前九年の役 (天喜四年)</option>
+          <option value="1087">【1087年】後三年の役 (寛治元年)</option>
+          <option value="1156">【1156年】保元の乱 (保元元年)</option>
+          <option value="1159">【1159年】平治の乱 (平治元年)</option>
+          <option value="1180">【1180年】治承・寿永の乱 (治承4年)</option>
+          <option value="1183">【1183年】義仲入京 (寿永2年)</option>
+          <option value="1184">【1184年】一の谷の戦い (寿永3年 (元暦元年))</option>
+        </optgroup>
+        <optgroup label="━━ 鎌倉・南北朝 ━━">
+          <option value="1185">【1185年】壇ノ浦の戦い (元暦2年 (寿永4年))</option>
+          <option value="1189">【1189年】義経追討 (文治5年)</option>
+          <option value="1221">【1221年】承久の乱 (承久3年)</option>
+          <option value="1274">【1274年】文永の役（元寇） (文永11年)</option>
+          <option value="1331">【1331年】元弘の乱 (元弘元年)</option>
+          <option value="1333">【1333年】建武の新政 (元弘3年 (正慶2年))</option>
+          <option value="1336">【1336年】湊川の戦い (建武3年 (延元元年))</option>
+          <option value="1350">【1350年】観応の擾乱 (観応元年 (正平5年))</option>
+          <option value="1359">【1359年】筑後川の戦い (正平14年 (延文4年))</option>
+          <option value="1391">【1391年】明徳の乱 (明徳2年)</option>
+        </optgroup>
+        <optgroup label="━━ 室町・戦国前中紀 ━━">
+          <option value="1400">【1400年】伊達政宗の乱 (応永7年)</option>
+          <option value="1438">【1438年】永享の乱 (永享10年)</option>
+          <option value="1457">【1457年】堀越公方成立 (長禄元年 (享徳6年))</option>
+          <option value="1467">【1467年】応仁の乱 (応仁元年)</option>
+          <option value="1493">【1493年】明応の政変 (明応2年)</option>
+          <option value="1495">【1495年】北条早雲の野望 (明応4年)</option>
+          <option value="1531">【1531年】大物崩れの戦い (享禄4年)</option>
+          <option value="1538">【1538年】国府台合戦 (天文7年)</option>
+          <option value="1546">【1546年】河越夜戦 (天文15年)</option>
+          <option value="1555">【1555年】厳島の戦い (弘治元年)</option>
+          <option value="1560">【1560年】桶狭間の戦い (永禄3年)</option>
+        </optgroup>
+        <optgroup label="━━ 織豊（安土桃山） ━━">
+          <option value="1570">【1570年】信長包囲網 (元亀元年)</option>
+          <option value="1573">【1573年】三方ヶ原の戦い (元亀4年)</option>
+          <option value="1576">【1576年】木津川口の戦い (天正4年)</option>
+          <option value="1577">【1577年】手取川の戦い (天正5年)</option>
+          <option value="1582">【1582年】本能寺の変前夜 (天正10年)</option>
+          <option value="1584">【1584年】小牧長久手の戦い (天正十二年)</option>
+          <option value="1587">【1587年】秀吉の九州征伐 (天正十五年)</option>
+          <option value="1590">【1590年】小田原征伐 (天正18年)</option>
+          <option value="1592">【1592年】文禄の役 (文禄元年)</option>
+          <option value="1600">【1600年】関ヶ原の戦い (慶長5年)</option>
+        </optgroup>
+        <optgroup label="━━ 江戸時代 ━━">
+          <option value="1614">【1614年】大坂の陣 (慶長19年)</option>
+          <option value="1637">【1637年】島原の乱 (寛永14年)</option>
+          <option value="1651">【1651年】慶安の変 (慶安4年)</option>
+          <option value="1702">【1702年】赤穂浪士討ち入り (元禄15年)</option>
+          <option value="1721">【1721年】享保の改革 (享保6年)</option>
+          <option value="1789">【1789年】寛政の改革 (寛政元年)</option>
+          <option value="1837">【1837年】大塩平八郎の乱 (天保8年)</option>
+        </optgroup>
+        <optgroup label="━━ 幕末・維新 ━━">
+          <option value="1853">【1853年】ペリー来航 (嘉永6年)</option>
+          <option value="1860">【1860年】桜田門外の変 (万延元年)</option>
+          <option value="1866">【1866年】薩長同盟 (慶応2年)</option>
+          <option value="1868">【1868年】戊辰戦争 (慶応4年 (明治元年))</option>
+          <option value="1877">【1877年】西南戦争 (明治10年)</option>
+        </optgroup>
+        <optgroup label="━━ 特別シナリオ ━━">
+          <option value="allstar_feudal">【1582年】全領国オールスター群雄割拠 (百花繚乱元年)</option>
+        </optgroup>
+          </select>
+          <div class="field-hint">※特定のシナリオに関するご指摘の場合は該当の年代を選択してください。</div>
+        </div>
+
+        <!-- セクション2: 修正内容の詳細 -->
+        <div class="form-section-title">
+          <span>2. 修正・ご報告の内容</span>
+        </div>
+
+        <!-- 対象の名称 -->
+        <div class="form-group">
+          <label for="target_name">
+            対象の武将名・大名家名・国名など
+            <span class="badge-opt">任意</span>
+          </label>
+          <input type="text" id="target_name" name="target_name" placeholder="例: 織田信長、尾張国、伊達政宗 など">
+          <div class="field-hint">※修正対象が明確な場合は入力してください。件名にも反映されます。</div>
+        </div>
+
+        <!-- 件名 -->
+        <div class="form-group">
+          <label for="title">
+            件名
+            <span class="badge-req">必須</span>
+          </label>
+          <input type="text" id="title" name="title" placeholder="例: 【武将修正】1560年 織田信長の生没年について" required>
+        </div>
+
+        <!-- 本文・詳細 -->
+        <div class="form-group">
+          <label for="detail">
+            修正・報告内容の詳細
+            <span class="badge-req">必須</span>
+          </label>
+
+          <!-- テンプレート簡単入力バー -->
+          <div class="template-bar">
+            <span class="template-label">📝 簡単入力テンプレート:</span>
+            <div class="template-btns-group">
+              <button type="button" class="tmpl-btn" data-tmpl="officer">武将修正用</button>
+              <button type="button" class="tmpl-btn" data-tmpl="map">勢力図修正用</button>
+              <button type="button" class="tmpl-btn" data-tmpl="bug">不具合報告用</button>
+              <button type="button" class="tmpl-btn" data-tmpl="feature">ご要望用</button>
+            </div>
+          </div>
+
+          <textarea id="detail" name="detail" placeholder="発生している現象、正しい表記や数値、典拠（史料や書籍等）などを分かりやすくご記入ください。" required></textarea>
+        </div>
+
+        <!-- セクション3: ご連絡先（任意） -->
+        <div class="form-section-title">
+          <span>3. ご連絡先</span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">
+            返信用メールアドレス
+            <span class="badge-opt">任意</span>
+          </label>
+          <input type="email" id="email" name="_replyto" placeholder="your-email@example.com">
+          <div class="field-hint">※返信や確認のご連絡を希望される場合のみご記入ください。空欄でも送信可能です。</div>
+        </div>
+
+        <!-- 送信ボタン -->
+        <div class="submit-area">
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <span aria-hidden="true">✉️</span> 修正依頼・メッセージを送信
+          </button>
+        </div>
+
+        <!-- 送信上の注意事項 -->
+        <div class="note-box">
+          <strong>【ご確認事項】</strong>
+          <ul>
+            <li>お寄せいただいたご意見・歴史データの修正提案は、ゲームおよび勢力図の精度向上のために大切に確認・活用させていただきます。</li>
+            <li>諸説ある歴史的解釈については、ゲームバランスや通説・最新の研究動向等を総合的に勘案の上、反映を判断いたします。</li>
+          </ul>
+        </div>
+
+      </form>
+    </main>
+
+    <!-- フッター戻るリンク -->
+    <div style="text-align: center; margin-top: 24px;">
+      <a href="./index.html" class="back-link">
+        <span aria-hidden="true">←</span> 日本史 勢力図・人物一覧へ戻る
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    (function() {
+      var categorySelect = document.getElementById('category');
+      var scenarioSelect = document.getElementById('scenario');
+      var targetInput = document.getElementById('target_name');
+      var titleInput = document.getElementById('title');
+      var detailTextarea = document.getElementById('detail');
+      var tmplButtons = document.querySelectorAll('.tmpl-btn');
+
+      // 1. URLパラメータからシナリオを自動選択
+      var urlParams = new URLSearchParams(window.location.search);
+      var paramScenario = urlParams.get('scenario');
+      if (paramScenario) {
+        // optionの中からvalueが一致するものを探す
+        for (var i = 0; i < scenarioSelect.options.length; i++) {
+          if (scenarioSelect.options[i].value === paramScenario) {
+            scenarioSelect.selectedIndex = i;
+            break;
+          }
+        }
+      }
+
+      // 2. 件名の自動サジェスト（未入力または自動生成されたものの場合に更新）
+      var userEditedTitle = false;
+      titleInput.addEventListener('input', function() {
+        userEditedTitle = titleInput.value.trim().length > 0;
+      });
+
+      function updateTitleSuggestion() {
+        if (userEditedTitle) return;
+        var cat = categorySelect.value || '';
+        var scOpt = scenarioSelect.options[scenarioSelect.selectedIndex];
+        var scText = (scOpt && scOpt.value && scOpt.value !== 'all_or_common') ? scOpt.textContent.replace(/^【.*?】/, '').replace(/\(.*\)/, '').trim() : '';
+        var scYear = '';
+        if (scOpt && scOpt.textContent.match(/【(.*?)】/)) {
+          scYear = RegExp.$1;
+        }
+        var target = targetInput.value.trim();
+
+        if (!cat && !scText && !target) return;
+
+        var parts = [];
+        if (cat) parts.push('【' + cat + '】');
+        if (scYear) {
+          parts.push(scYear + (scText ? ' ' + scText : ''));
+        } else if (scText) {
+          parts.push(scText);
+        }
+        if (target) {
+          parts.push(parts.length > 0 ? '- ' + target : target);
+        }
+
+        if (parts.length > 0) {
+          titleInput.value = parts.join(' ');
+        }
+      }
+
+      categorySelect.addEventListener('change', updateTitleSuggestion);
+      scenarioSelect.addEventListener('change', updateTitleSuggestion);
+      targetInput.addEventListener('input', updateTitleSuggestion);
+
+      // 3. テンプレート挿入機能
+      var templates = {
+        officer: [
+          '【対象武将】',
+          '【該当シナリオ】',
+          '【現在の記載（誤）】',
+          '【正しい情報（正）】',
+          '【出典・根拠・参考史料（任意）】',
+          '【詳細・備考】'
+        ].join('\n'),
+        map: [
+          '【該当の国・城・地域】',
+          '【該当シナリオ】',
+          '【現在の勢力・支配大名】',
+          '【正しい勢力・支配大名】',
+          '【出典・根拠（任意）】',
+          '【詳細・備考】'
+        ].join('\n'),
+        bug: [
+          '【発生した現象・不具合】',
+          '【発生した画面・操作手順】',
+          '【ご利用の環境】（例: Windows 11 Edge / iPhone Safari など）',
+          '【詳細・備考】'
+        ].join('\n'),
+        feature: [
+          '【ご要望・アイデアの種類】（新機能 / 新シナリオ / UI改善 など）',
+          '【具体的な内容・希望する動作】',
+          '【理由・背景など】'
+        ].join('\n')
+      };
+
+      tmplButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var key = btn.getAttribute('data-tmpl');
+          var tmpl = templates[key];
+          if (!tmpl) return;
+
+          if (detailTextarea.value.trim() !== '') {
+            if (!confirm('入力欄の内容をテンプレートに置き換えますか？（追記したい場合はキャンセルを押してください）')) {
+              detailTextarea.value = detailTextarea.value.trim() + '\n\n' + tmpl;
+              detailTextarea.focus();
+              return;
+            }
+          }
+          detailTextarea.value = tmpl;
+          detailTextarea.focus();
+        });
+      });
+
+      // 4. 送信時のボタン状態変更（二重送信防止）
+      var form = document.getElementById('feedbackForm');
+      var submitBtn = document.getElementById('submitBtn');
+      form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        submitBtn.innerHTML = '<span>⏳ 送信中...</span>';
+      });
+
+    })();
+  </script>
+</body>
+</html>

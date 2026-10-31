@@ -92,11 +92,13 @@ body.sl-start-open { overflow: hidden !important; }
 /* 地図 */
 .sl-map-body { position: relative; overflow: hidden !important; display: flex; }
 .sl-svgmap { width: 100%; height: 100%; display: block; background: radial-gradient(ellipse at 50% 40%, #1a2430 0%, #10161d 100%); }
-.sl-prov { stroke: rgba(15, 12, 10, 0.85); stroke-width: 0.8; stroke-linejoin: round; vector-effect: non-scaling-stroke; cursor: pointer; fill-opacity: .9; transition: fill-opacity .2s, filter .2s; }
-.sl-prov:hover { fill-opacity: 1; filter: brightness(1.25); }
+.sl-prov { stroke: none; stroke-linejoin: round; vector-effect: non-scaling-stroke; cursor: pointer; fill-opacity: .92; paint-order: fill stroke; transition: fill-opacity .2s, filter .2s; }
+.sl-prov:hover { fill-opacity: 1; filter: brightness(1.22); }
 .sl-svgmap.has-sel .sl-prov { fill-opacity: .38; }
 .sl-svgmap.has-sel .sl-prov:hover { fill-opacity: .7; }
-.sl-svgmap.has-sel .sl-prov.sel { fill-opacity: 1; stroke: #ffe9a8; stroke-width: 1.6; filter: drop-shadow(0 0 3px rgba(255, 220, 120, .55)); }
+.sl-svgmap.has-sel .sl-prov.sel { fill-opacity: 1; stroke: none; filter: brightness(1.15); }
+.sl-borders { pointer-events: none; }
+.sl-borders .sl-border-line, .sl-borders .sl-coastline, .sl-borders .sl-coast-line { vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
 .sl-map-info { display: inline-flex; align-items: center; gap: 6px; }
 .sl-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(255,255,255,.4); }
 .sl-tip { position: absolute; pointer-events: none; opacity: 0; transition: opacity .12s; background: rgba(16,14,12,.94); border: 1px solid var(--sl-line-strong); border-radius: 6px; padding: 5px 9px; font-size: 10pt; color: var(--sl-text); display: flex; flex-direction: column; gap: 2px; white-space: nowrap; z-index: 5; }
@@ -194,64 +196,766 @@ html body #startModal.sl-active.sl-active .sl-start-btn:hover { filter: brightne
 html:not(.sl-phone) #startModal.sl-active .sl-root { grid-template-columns: minmax(250px,16%) minmax(268px,17.5%) 1fr !important; }
 
 /* ===== resp: スマホ用レスポンシブ新レイアウト ===== */
-html.sl-phone #startModal.sl-active > .modal-card { height: 100dvh !important; padding: 0 8px !important; }
-html.sl-phone #startModal.sl-active .start-game-title { min-height: 60px !important; font-size: 18px !important; letter-spacing: .06em; padding-right: 220px !important; white-space: nowrap; overflow: hidden; }
-html.sl-phone #startModal.sl-active .start-header-actions { position: absolute !important; top: 6px !important; right: 8px !important; display: flex !important; gap: 6px !important; flex-direction: row !important; }
+html.sl-phone #startModal.sl-active > .modal-card {
+  height: 100dvh !important;
+  padding: 0 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+/* 上部ヘッダー：タイトルとアクションボタン */
+html.sl-phone #startModal.sl-active .start-game-title {
+  min-height: 48px !important;
+  height: 48px !important;
+  line-height: 48px !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  letter-spacing: .08em !important;
+  color: var(--sl-gold) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  padding-left: 4px !important;
+  max-width: calc(100% - 210px) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  text-align: left !important;
+  border-bottom: 0 !important;
+}
+
+html.sl-phone #startModal.sl-active .start-header-actions {
+  position: absolute !important;
+  top: 6px !important;
+  right: 8px !important;
+  display: flex !important;
+  gap: 4px !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
 html.sl-phone .start-header-actions .opening-btn-text { display: none !important; }
-html.sl-phone .start-header-actions button { min-width: 48px !important; min-height: 48px !important; width: 48px !important; height: 48px !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; border-radius: 12px !important; }
-html.sl-phone .start-header-actions .opening-btn-icon { font-size: 22px !important; margin: 0 !important; line-height: 1 !important; }
-@media (max-width: 380px) { html.sl-phone #startModal.sl-active .start-game-title { padding-right: 200px !important; } html.sl-phone .start-header-actions button { width: 44px !important; min-width: 44px !important; height: 44px !important; min-height: 44px !important; } }
-/* ステップタブ */
-.sl-steps { flex: 0 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; margin-bottom: 8px; border: 1px solid var(--sl-line); border-radius: 14px; background: rgba(0,0,0,.35); }
-.sl-step { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; border: 0; border-radius: 10px; background: transparent; color: #d9ccb0; font-size: 16px !important; font-weight: bold; font-family: inherit; }
-.sl-step i { font-style: normal; font-size: 20px; } .sl-step span { font-size: 16px !important; }
-.sl-step.on { background: linear-gradient(180deg, #e9c968, #c9a13d); color: #1a140c; box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+html.sl-phone .start-header-actions button,
+html.sl-phone .start-header-actions a.load-record-top-btn {
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 9px !important;
+  border: 1px solid rgba(212,175,55,0.4) !important;
+  background: rgba(25, 18, 12, 0.9) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.6) !important;
+  cursor: pointer !important;
+  transition: transform .1s, background .15s !important;
+}
+html.sl-phone .start-header-actions button:active,
+html.sl-phone .start-header-actions a.load-record-top-btn:active {
+  transform: scale(0.94);
+  background: rgba(212,175,55,0.2) !important;
+}
+html.sl-phone .start-header-actions .opening-btn-icon {
+  font-size: 18px !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+/* ステップタブ（3ステップ和風モダンナビ） */
+.sl-steps {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 3px;
+  margin-bottom: 6px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 12px;
+  background: rgba(18, 14, 10, 0.92);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.sl-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 42px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: #d6cab0;
+  font-size: 15px !important;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.sl-step i { font-style: normal; font-size: 17px; }
+.sl-step span { font-size: 15px !important; letter-spacing: 0.04em; }
+.sl-step.on {
+  background: linear-gradient(180deg, #f4dc86 0%, #d8b244 55%, #ab8222 100%) !important;
+  color: #140d04 !important;
+  font-weight: 900 !important;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.35), inset 0 1px 0 rgba(255,255,255,0.5) !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+}
+
 /* 1カラム・ステップ切替 */
-html.sl-phone #startModal.sl-active .sl-root.sl-m { display: flex !important; flex-direction: column; gap: 8px; grid-template-columns: none !important; padding-bottom: 8px; }
-.sl-root.sl-m > .sl-panel { display: none; }
-.sl-root.sl-m[data-step="1"] > .sl-scen, .sl-root.sl-m[data-step="2"] > .sl-daimyo { display: flex; flex: 1 1 auto; }
-.sl-root.sl-m[data-step="3"] > .sl-desc { display: flex; flex: 0 1 auto; max-height: 30%; }
-.sl-root.sl-m[data-step="3"] > .sl-map { display: flex; flex: 1 1 auto; min-height: 260px; }
+html.sl-phone #startModal.sl-active .sl-root.sl-m {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  grid-template-columns: none !important;
+  grid-template-rows: none !important;
+  padding-bottom: 4px !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+.sl-root.sl-m > .sl-panel { display: none !important; }
+.sl-root.sl-m[data-step="1"] > .sl-scen,
+.sl-root.sl-m[data-step="2"] > .sl-daimyo {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+}
+.sl-root.sl-m[data-step="3"] > .sl-desc {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  max-height: 38% !important;
+  min-height: 100px !important;
+  overflow: hidden !important;
+}
+.sl-root.sl-m[data-step="3"] > .sl-map {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  min-height: 220px !important;
+}
 .sl-root.sl-m .sl-foot { display: none !important; }
-/* 年代: アイコン付きチップ（横スクロール） */
-html.sl-phone #startModal.sl-active #scenarioEraTabs { display: flex !important; flex-wrap: nowrap; overflow-x: auto !important; gap: 6px; padding: 8px !important; scrollbar-width: none; }
-html.sl-phone #startModal.sl-active #scenarioEraTabs .era-tab-btn { flex: 0 0 auto; width: auto !important; min-height: 44px !important; padding: 4px 12px !important; display: inline-flex !important; align-items: center; gap: 4px; }
-html.sl-phone #startModal.sl-active #scenarioEraTabs .era-tab-btn i { font-style: normal; font-size: 18px !important; }
-html.sl-phone #startModal.sl-active #scenarioEraTabs[data-era-filter] .era-tab-btn, html.sl-phone #startModal.sl-active #scenarioEraTabs .era-tab-btn { overflow: visible; }
-html.sl-phone #startModal.sl-active .scenario-btn { min-height: 56px !important; padding: 8px 10px !important; }
-/* 難易度: アイコンのセグメント */
-html.sl-phone #startModal.sl-active .sl-diff .diff-selector-wrapper { padding: 4px !important; margin: 0 !important; gap: 6px !important; }
+
+/* ==================== Step 1: シナリオ選択のスマホ強化 ==================== */
+/* 選択中シナリオのプレビューカード */
+.sl-phone-scen-preview {
+  flex: 0 0 auto;
+  background: linear-gradient(135deg, rgba(35, 25, 17, 0.95), rgba(20, 14, 9, 0.98));
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-left: 4px solid var(--sl-gold);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 0 8px 6px 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sl-scen-prev-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.sl-scen-prev-badge {
+  font-size: 13px !important;
+  font-weight: bold;
+  color: #140d04;
+  background: linear-gradient(180deg, #f3db83, #d4af37);
+  padding: 1px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.sl-scen-prev-title {
+  font-size: 16px !important;
+  font-weight: 900;
+  color: #fff2c4;
+  letter-spacing: .02em;
+}
+.sl-scen-prev-gengo {
+  font-size: 12px !important;
+  color: #e5c378;
+  margin-left: auto;
+  background: rgba(0,0,0,0.4);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.sl-scen-prev-lore {
+  font-size: 13px !important;
+  line-height: 1.45;
+  color: #e8dcc4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sl-scen-prev-factions {
+  font-size: 12px !important;
+  color: #ffd98a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.sl-scen-prev-factions b { color: #f4ead6; }
+.sl-scen-prev-next-btn {
+  margin-top: 2px;
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: linear-gradient(180deg, #c0392b, #8e1b10);
+  border: 1px solid #e7c565;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px !important;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: filter .15s;
+}
+.sl-scen-prev-next-btn:active { filter: brightness(1.2); }
+
+/* 年代チップ（横スクロール） */
+html.sl-phone #startModal.sl-active #scenarioEraTabs {
+  display: flex !important;
+  flex-wrap: nowrap;
+  overflow-x: auto !important;
+  gap: 6px;
+  padding: 6px 8px !important;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  background: rgba(14, 10, 7, 0.6);
+  border-bottom: 1px solid var(--sl-line);
+}
+html.sl-phone #startModal.sl-active #scenarioEraTabs::-webkit-scrollbar { display: none; }
+html.sl-phone #startModal.sl-active #scenarioEraTabs .era-tab-btn {
+  flex: 0 0 auto;
+  width: auto !important;
+  min-height: 34px !important;
+  padding: 4px 12px !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(212, 175, 55, 0.3) !important;
+  background: rgba(255,255,255,0.04) !important;
+  color: #d6cab0 !important;
+}
+html.sl-phone #startModal.sl-active #scenarioEraTabs .era-tab-btn[style*="display: none"],
+html.sl-phone #startModal.sl-active #scenarioEraTabs .era-tab-btn[style*="display:none"] {
+  display: none !important;
+}
+html.sl-phone #startModal.sl-active #scenarioEraTabs .era-tab-btn.active {
+  background: linear-gradient(180deg, #f0d27a, #c9a240) !important;
+  color: #140d04 !important;
+  font-weight: bold !important;
+  border-color: #f3dc92 !important;
+  box-shadow: 0 2px 6px rgba(212,175,55,0.3) !important;
+}
+html.sl-phone #startModal.sl-active #scenarioEraTabs .era-tab-btn i { display: none !important; }
+
+html.sl-phone #startModal.sl-active .scenario-btn {
+  min-height: 52px !important;
+  padding: 7px 10px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(212,175,55,0.2) !important;
+  background: rgba(255,255,255,0.03) !important;
+  margin-bottom: 4px !important;
+}
+html.sl-phone #startModal.sl-active .scenario-btn.selected {
+  background: linear-gradient(90deg, rgba(212,175,55,0.26), rgba(212,175,55,0.06)) !important;
+  border-color: #e6c35c !important;
+  box-shadow: 0 0 10px rgba(230,195,92,0.25) inset !important;
+}
+
+/* ==================== Step 2: 大名選択のスマホ強化 ==================== */
+/* 難易度セレクター */
+html.sl-phone #startModal.sl-active .sl-diff {
+  padding: 6px 8px !important;
+  border-bottom: 1px solid var(--sl-line);
+}
+html.sl-phone #startModal.sl-active .sl-diff .diff-selector-wrapper {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+  border: 0 !important;
+}
 html.sl-phone #startModal.sl-active .sl-diff .diff-selector-label { display: none !important; }
-html.sl-phone #startModal.sl-active .sl-diff .diff-selector-group { grid-template-columns: repeat(4, 1fr) !important; gap: 4px !important; }
-html.sl-phone #startModal.sl-active .sl-diff .diff-option-btn { min-height: 52px !important; padding: 2px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 0 !important; }
-html.sl-phone #startModal.sl-active .sl-diff .diff-btn-sub { display: none !important; }
-html.sl-phone #startModal.sl-active .sl-diff .sl-dicon { font-style: normal; font-size: 20px !important; line-height: 1.1; }
-html.sl-phone #startModal.sl-active .daimyo-card { min-height: 52px !important; padding: 8px 10px !important; }
+html.sl-phone #startModal.sl-active .sl-diff .diff-selector-group {
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 5px !important;
+}
+html.sl-phone #startModal.sl-active .sl-diff .diff-option-btn {
+  min-height: 38px !important;
+  padding: 4px 2px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(212,175,55,0.25) !important;
+  background: rgba(255,255,255,0.03) !important;
+  color: #f4eee0 !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+}
+html.sl-phone #startModal.sl-active .sl-diff .diff-option-btn .diff-btn-name {
+  font-size: 14px !important;
+  letter-spacing: 0.05em;
+}
+html.sl-phone #startModal.sl-active .sl-diff .diff-option-btn .diff-btn-sub,
+html.sl-phone #startModal.sl-active .sl-diff .diff-option-btn .sl-dicon {
+  display: none !important;
+}
+html.sl-phone #startModal.sl-active .sl-diff .diff-option-btn.selected {
+  background: rgba(212,175,55,0.22) !important;
+  border-color: #e6c35c !important;
+  color: #ffd76a !important;
+  box-shadow: 0 0 8px rgba(230,195,92,0.3) inset !important;
+}
+
+/* 難易度説明リアルタイムバー（左端寄せ） */
+.sl-diff-desc-bar {
+  margin-top: 5px;
+  padding: 4px 8px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 6px;
+  font-size: 12px !important;
+  line-height: 1.4;
+  color: #ffd76a;
+  text-align: left !important;
+}
+
+/* 大名ツールバー（検索バー ＋ 地方フィルター） */
+.sl-daimyo-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px 8px;
+  background: rgba(14, 10, 7, 0.85);
+  border-bottom: 1px solid var(--sl-line);
+}
+.sl-daimyo-search-wrap {
+  position: relative;
+  width: 100%;
+}
+.sl-daimyo-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 8px;
+  padding: 7px 32px 7px 10px;
+  color: #f5eedc;
+  font-size: 14px !important;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .15s;
+}
+.sl-daimyo-search-input:focus {
+  border-color: #ffd700;
+  box-shadow: 0 0 6px rgba(255,215,0,0.3);
+}
+.sl-daimyo-search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #a59a86;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 6px;
+  display: none;
+}
+.sl-daimyo-search-input:not(:placeholder-shown) + .sl-daimyo-search-clear {
+  display: block;
+}
+
+/* 地方別フィルターチップ（横スクロール） */
+.sl-region-chips {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 5px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 0;
+}
+.sl-region-chips::-webkit-scrollbar { display: none; }
+.sl-reg-chip {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 12.5px !important;
+  font-family: inherit;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  background: rgba(255,255,255,0.04);
+  color: #d6cab0;
+  cursor: pointer;
+  transition: all .12s ease;
+}
+.sl-reg-chip.active {
+  background: linear-gradient(180deg, #f0d27a, #c9a240);
+  color: #140d04;
+  font-weight: bold;
+  border-color: #f3dc92;
+  box-shadow: 0 2px 6px rgba(212,175,55,0.25);
+}
+
+/* 選択中大名へのクイックジャンプバー */
+.sl-daimyo-jump-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px dashed rgba(212, 175, 55, 0.4);
+  border-radius: 6px;
+  margin: 4px 8px;
+  font-size: 13px !important;
+  color: #ffd98a;
+  cursor: pointer;
+}
+.sl-daimyo-jump-bar:active {
+  background: rgba(212, 175, 55, 0.22);
+}
+.sl-daimyo-jump-btn {
+  font-size: 12px !important;
+  color: #140d04;
+  background: var(--sl-gold);
+  border: 0;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 大名カードのスマホ最適化 */
+html.sl-phone #startModal.sl-active .daimyo-card {
+  min-height: 54px !important;
+  padding: 8px 10px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(212,175,55,0.2) !important;
+  background: rgba(255,255,255,0.035) !important;
+  margin-bottom: 5px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  position: relative !important;
+}
+html.sl-phone #startModal.sl-active .daimyo-card.sl-filtered-out {
+  display: none !important;
+}
+html.sl-phone #startModal.sl-active .daimyo-card.selected {
+  background: linear-gradient(90deg, rgba(212,175,55,0.28), rgba(212,175,55,0.08)) !important;
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 10px rgba(255,215,0,0.3) inset, 0 2px 8px rgba(0,0,0,0.5) !important;
+}
+html.sl-phone #startModal.sl-active .daimyo-card .daimyo-card-stats {
+  display: flex !important;
+  flex: 1 0 100% !important;
+  gap: 10px !important;
+  font-size: 13.5px !important;
+  margin-top: 4px !important;
+  padding: 2px 4px !important;
+  background: rgba(0,0,0,0.25) !important;
+  border-radius: 4px;
+}
+html.sl-phone #startModal.sl-active .daimyo-card .daimyo-card-stats > span {
+  font-size: 13.5px !important;
+}
+
+/* 大名カード内の「詳細 ℹ️」ボタン */
+.sl-card-detail-btn {
+  margin-left: auto;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  background: rgba(20, 15, 10, 0.85);
+  color: #ffd76a;
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 12px !important;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+.sl-card-detail-btn:active {
+  background: rgba(212, 175, 55, 0.3);
+}
+
+/* ==================== Step 3: 勢力図・解説のスマホ強化 ==================== */
+/* シナリオ解説パネルのスクロール化 */
+html.sl-phone #startModal.sl-active .sl-desc .sl-body {
+  overflow-y: auto !important;
+  padding: 6px 10px !important;
+}
+html.sl-phone #startModal.sl-active #scenarioDescBox {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+html.sl-phone #startModal.sl-active #scenarioDescBox > div:first-child {
+  padding-bottom: 4px !important;
+  margin-bottom: 4px !important;
+}
+
+/* 家伝・固有戦法を独立カードとして表示 */
+.sl-desc-lore-box {
+  background: rgba(25, 18, 12, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-left: 3px solid #ff9f6a;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-top: 6px;
+  font-size: 13px !important;
+  line-height: 1.45;
+}
+.sl-desc-lore-box .sl-tac {
+  color: #ffe08a;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+.sl-desc-lore-box .sl-lore-txt {
+  color: #e8dcc4;
+}
+
 /* 地図カード */
+html.sl-phone .sl-map .sl-head {
+  padding: 5px 8px !important;
+}
 html.sl-phone .sl-map .sl-head > span { white-space: nowrap; flex: 0 0 auto; }
-html.sl-phone .sl-map-lore { -webkit-line-clamp: 3; }
-html.sl-phone .sl-map-reset { min-height: 44px; padding: 0 14px !important; }
-/* 下部固定バー */
-.sl-mbar { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--sl-line-strong); background: rgba(15,13,11,.96); }
-.sl-mbar-sel { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 10px; border: 1px solid var(--sl-line); border-radius: 12px; background: rgba(255,255,255,.05); color: #f4ead6; }
-.sl-mbar-sel .sl-dot { flex: 0 0 auto; width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(255,255,255,.5); display: inline-block; }
-.sl-mbar-txt { font-size: 16px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sl-mbar-go { flex: 0 0 auto; min-height: 52px; min-width: 104px; border: 0; border-radius: 12px; font-family: inherit; font-size: 20px !important; font-weight: bold; letter-spacing: .1em; color: #fff; background: linear-gradient(180deg, #c0392b, #8e1b10); box-shadow: 0 0 0 1px #e7c565 inset, 0 3px 10px rgba(0,0,0,.5); }
+html.sl-phone .sl-map-reset {
+  min-height: 36px;
+  padding: 0 12px !important;
+  font-size: 13.5px !important;
+  top: 6px;
+  right: 6px;
+}
+
+/* 地図タップ時の領国情報バー */
+.sl-map-touch-info {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  right: 6px;
+  z-index: 10;
+  background: rgba(16, 12, 8, 0.94);
+  border: 1px solid var(--sl-gold);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+  animation: slInfoFadeIn .2s ease;
+}
+@keyframes slInfoFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.sl-map-touch-txt {
+  font-size: 13px !important;
+  color: #f5eedc;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sl-map-touch-txt b { color: #ffd76a; }
+.sl-map-touch-select-btn {
+  background: linear-gradient(180deg, #f0d27a, #c9a240);
+  border: 1px solid #f3dc92;
+  border-radius: 6px;
+  color: #140d04;
+  font-weight: bold;
+  font-size: 13px !important;
+  padding: 4px 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ==================== 下部固定バー（出陣フッター） ==================== */
+.sl-mbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(212, 175, 55, 0.4);
+  background: linear-gradient(180deg, rgba(20, 15, 10, 0.98), rgba(12, 9, 6, 1));
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.7);
+}
+.sl-mbar-sel {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 10px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  color: #f4ead6;
+  cursor: pointer;
+}
+.sl-mbar-sel .sl-dot {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.6);
+  display: inline-block;
+}
+.sl-mbar-sel .sl-mbar-kamon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 0 2px rgba(255,215,0,0.5));
+}
+.sl-mbar-txt {
+  font-size: 15px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sl-mbar-detail-btn {
+  flex: 0 0 auto;
+  min-height: 48px;
+  padding: 0 10px;
+  background: rgba(25, 18, 12, 0.9);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 10px;
+  color: #ffd76a;
+  font-size: 13px !important;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+}
+.sl-mbar-detail-btn:active {
+  background: rgba(212, 175, 55, 0.25);
+}
+.sl-mbar-go {
+  flex: 0 0 auto;
+  min-height: 48px;
+  min-width: 112px;
+  border: 1px solid #ffd700;
+  border-radius: 10px;
+  font-family: 'Kaisei Opti','Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size: 18px !important;
+  font-weight: 900;
+  letter-spacing: .08em;
+  color: #fff;
+  background: linear-gradient(180deg, #d32f2f 0%, #b71c1c 100%);
+  box-shadow: 0 0 10px rgba(211, 47, 47, 0.4), 0 2px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: filter .12s;
+}
+.sl-mbar-go:active {
+  filter: brightness(1.2);
+}
+
+/* ==================== 大名詳細ポップアップのスマホ3段固定レイアウト ==================== */
+html.sl-phone #daimyoPopup .daimyo-popup-card {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  background: #140d08 !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-header {
+  flex: 0 0 auto !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.4) !important;
+  background: linear-gradient(180deg, #24160d, #180f08) !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-close-btn {
+  top: 8px !important;
+  right: 8px !important;
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 18px !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-scrollable-body {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 10px 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-footer-actions {
+  flex: 0 0 auto !important;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom)) !important;
+  border-top: 1px solid rgba(212, 175, 55, 0.4) !important;
+  background: #120c07 !important;
+  flex-direction: column-reverse !important;
+  gap: 6px !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-start-btn {
+  width: 100% !important;
+  min-height: 48px !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-cancel-btn {
+  width: 100% !important;
+  min-height: 36px !important;
+  font-size: 13.5px !important;
+  padding: 4px 8px !important;
+}
+html.sl-phone #daimyoPopup #popupStrategyDiagram {
+  min-height: 200px !important;
+  max-height: 260px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+html.sl-phone #daimyoPopup #popupStrategyDiagram svg {
+  max-width: 100% !important;
+  height: auto !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-stats {
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 5px !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-stat {
+  padding: 4px 6px !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-stat .label {
+  font-size: 11.5px !important;
+}
+html.sl-phone #daimyoPopup .daimyo-popup-stat .val {
+  font-size: 15px !important;
+}
 html:not(.sl-phone) #startModal.sl-active .scenario-btn .scen-title, html:not(.sl-phone) #startModal.sl-active .scenario-btn .scen-sub { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
 html.sl-phone .sl-tip { display: none !important; }
 html.sl-phone #startModal.sl-active #scenarioDescBox > div:first-child { flex-direction: column !important; align-items: flex-start !important; gap: 2px; }
 html.sl-phone #startModal.sl-active #scenarioDescBox > div:first-child > span { white-space: nowrap; }
 html:not(.sl-phone) #startModal.sl-active .sl-diff .diff-option-btn { padding: 2px 0 !important; white-space: nowrap; }
-html.sl-phone #startModal.sl-active .start-game-title { padding-right: 0 !important; max-width: calc(100% - 214px) !important; text-overflow: ellipsis; display: block !important; line-height: 60px; }
-@media (max-width: 380px) { html.sl-phone #startModal.sl-active .start-game-title { max-width: calc(100% - 196px) !important; } }
-html.sl-phone #startModal.sl-active .start-game-title { letter-spacing: 0 !important; }
-@media (max-width: 380px) { html.sl-phone #startModal.sl-active .start-game-title { font-size: 16px !important; } }
 
 /* ===== bgm: 音楽ON/OFFボタン ===== */
 .bgm-toggle-btn.is-muted { opacity: .75; filter: grayscale(.4); }
-html.sl-phone #startModal.sl-active .start-game-title { font-size: 16px !important; max-width: calc(100% - 244px) !important; }
-html.sl-phone #startModal.sl-active .start-header-actions { gap: 4px !important; }
-html.sl-phone .start-header-actions button { width: 44px !important; min-width: 44px !important; height: 44px !important; min-height: 44px !important; }
 
 /* ===== tactic: 固有戦法（家伝の上） ===== */
 #startModal.sl-active .sl-map-lore { display: block !important; -webkit-line-clamp: unset !important; overflow: visible; }
@@ -321,3 +1025,108 @@ html.sl-phone #startModal.sl-active .sl-map-info.sl-sel-badge { box-sizing: bord
 html.sl-phone #startModal.sl-active .sl-sel-badge .sl-sel-kamon { filter: none; }
 /* deploy47: 髑髏絵文字の代替 甲冑ピクトグラム */
 .armor-icon { display: inline-block; width: 1em; height: 1em; vertical-align: middle; flex: 0 0 auto; }
+
+/* 乱世より前／乱世より後 まとめボタン（1行シンプル表示） */
+.era-cushion-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  margin: 4px 0 !important;
+  padding: 0 12px !important;
+  background: linear-gradient(135deg, rgba(38, 26, 16, 0.95), rgba(22, 14, 8, 0.98)) !important;
+  border: 1px dashed rgba(212, 175, 55, 0.5) !important;
+  border-radius: 4px !important;
+  color: var(--sl-text, #f5ebd0) !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease !important;
+}
+.era-cushion-btn:hover {
+  border-color: #ffd700 !important;
+  border-style: solid !important;
+  background: linear-gradient(135deg, rgba(58, 38, 22, 0.95), rgba(35, 22, 12, 0.98)) !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3) !important;
+}
+.era-cushion-btn.open {
+  background: linear-gradient(135deg, rgba(55, 36, 18, 0.98), rgba(32, 20, 10, 0.98)) !important;
+  border-style: solid !important;
+  border-color: #ffd700 !important;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 6px rgba(255, 215, 0, 0.2) !important;
+}
+.era-cushion-btn .cushion-icon {
+  font-size: 8.5pt !important;
+  color: #ffd700 !important;
+  transition: transform 0.2s ease !important;
+  display: inline-block !important;
+  flex: 0 0 auto !important;
+}
+.era-cushion-btn.open .cushion-icon {
+  transform: rotate(90deg) !important;
+}
+.era-cushion-btn .cushion-title {
+  color: #ffd700 !important;
+  font-size: 10pt !important;
+  font-weight: bold !important;
+  flex: 0 0 auto !important;
+}
+.era-cushion-btn .cushion-note {
+  font-size: 8.5pt !important;
+  color: #c9b99a !important;
+  flex: 1 1 auto !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+/* 乱世より前モード: 乱世より前ボタンが一番上で、下に前シナリオのみ展開 */
+#scenarioSelectorGroup.mode-pre-sengoku #btnCushionPre {
+  border-color: #ffd700 !important;
+  border-style: solid !important;
+}
+#scenarioSelectorGroup.mode-pre-sengoku .scenario-btn[data-era="sengoku_climax"],
+#scenarioSelectorGroup.mode-pre-sengoku .scenario-btn[data-era="unification"],
+#scenarioSelectorGroup.mode-pre-sengoku .scenario-btn[data-era="virtual"],
+#scenarioSelectorGroup.mode-pre-sengoku #btnCushionPost {
+  display: none !important;
+}
+
+/* 乱世より後モード: ボタンが一番上に配置され、下にシナリオが続く */
+#scenarioSelectorGroup.mode-post-sengoku #btnCushionPost {
+  order: -10 !important;
+  border-color: #ffd700 !important;
+  border-style: solid !important;
+}
+#scenarioSelectorGroup.mode-post-sengoku .scenario-btn[data-era="sengoku_climax"],
+#scenarioSelectorGroup.mode-post-sengoku .scenario-btn[data-era="unification"],
+#scenarioSelectorGroup.mode-post-sengoku .scenario-btn[data-era="virtual"],
+#scenarioSelectorGroup.mode-post-sengoku #btnCushionPre {
+  display: none !important;
+}
+
+/* 出陣ボタンの強力な強調表示（黄金の威厳） */
+html body #startModal.sl-active.sl-active .sl-start-btn {
+  background: linear-gradient(180deg, #ffe885 0%, #e6ba38 48%, #c59318 100%) !important;
+  border: 2.5px solid #fff2a8 !important;
+  color: #120a02 !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 4px 14px rgba(0, 0, 0, 0.65), inset 0 1.5px 0 rgba(255, 255, 255, 0.9) !important;
+  font-weight: 900 !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(0);
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+html body #startModal.sl-active.sl-active .sl-start-btn:hover {
+  background: linear-gradient(180deg, #fff2a8 0%, #f5cb4a 48%, #dc9e1a 100%) !important;
+  filter: brightness(1.12) contrast(1.05) !important;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 6px 18px rgba(0, 0, 0, 0.75), inset 0 1.5px 0 #fff !important;
+  transform: translateY(-2px) scale(1.01);
+}
+html body #startModal.sl-active.sl-active .sl-start-btn:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.6) !important;
+}

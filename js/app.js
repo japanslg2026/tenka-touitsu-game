@@ -9,9 +9,9 @@
  * @typedef {import('./types.js').GameSaveData} GameSaveData
  */
 
-import { GameState, GameStateMethods } from './core/GameState.js?v=20261025_d74';
-import { UIManager, UIManagerMethods } from './ui/UIManager.js?v=20261025_d74';
-import { MapRenderer, MapRendererMethods } from './render/MapRenderer.js?v=20261025_ui48';
+import { GameState, GameStateMethods } from './core/GameState.js?v=20261031_sound_sync';
+import { UIManager, UIManagerMethods } from './ui/UIManager.js?v=20261031_sound_sync';
+import { MapRenderer, MapRendererMethods } from './render/MapRenderer.js?v=20261031_highlight_fix';
 import { ComputerLogic, ComputerLogicMethods } from './ai/ComputerLogic.js?v=20261025_ui49';
 import { DataLoader } from './core/DataLoader.js?v=20261025_d74';
 import * as GameRules from './core/GameRules.js?v=20261025_d74';

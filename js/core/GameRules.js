@@ -2577,7 +2577,6 @@ export const OFFICER_AFFILIATION_RULES = [
   {
     id: 'taira_evacuate_settsu_1183',
     officerIds: [
-      'off_jd_360',
       'off_taira_norimori',
       'off_taira_kagekiyo',
       'off_jd_005',

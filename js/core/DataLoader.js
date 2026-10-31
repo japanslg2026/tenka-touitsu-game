@@ -15,15 +15,20 @@ export class DataLoader {
    */
   static async loadAllData() {
     try {
-      const v = '20261025_d74';
-      const [scenarios, officers, provinces, clansData, governorsData, eventsData] = await Promise.all([
+      const v = '20261031_officers_add';
+      const [scenarios, officers, provinces, clansData, governorsData, eventsData, mapBordersData] = await Promise.all([
         DataLoader.fetchJson(`data/scenarios.json?v=${v}`),
         DataLoader.fetchJson(`data/officers.json?v=${v}`),
         DataLoader.fetchJson(`data/provinces.json?v=${v}`),
         DataLoader.fetchJson(`data/clans.json?v=${v}`),
         DataLoader.fetchJson(`data/governors.json?v=${v}`),
-        DataLoader.fetchJson(`data/events.json?v=${v}`)
+        DataLoader.fetchJson(`data/events.json?v=${v}`),
+        DataLoader.fetchJson(`data/map_borders.json?v=${v}`).catch(() => null)
       ]);
+
+      if (mapBordersData && typeof window !== 'undefined') {
+        window.MAP_BORDERS_DATA = mapBordersData;
+      }
 
       const gameData = {
         scenarios: scenarios || [],

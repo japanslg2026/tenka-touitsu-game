@@ -119,13 +119,26 @@ export class OpeningMovie {
 
     this.isPlaying = false;
     this.isPaused = false;
-    this.isMuted = false;
+    this.isMuted = (typeof window !== 'undefined' && window.SengokuSoundSync) ? window.SengokuSoundSync.isMuted : false;
     this.animId = null;
     this.startTime = 0;
     this.pausedMoment = 0;
     this.elapsed = 0;
     this.lastFrameTime = 0;
     this.duration = 60.0;
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('sengoku-sound-mute-changed', (e) => {
+        this.isMuted = !!e.detail?.isMuted;
+        if (this.muteBtn && !this._audioBlocked) {
+          this.muteBtn.innerHTML = this.isMuted
+            ? '<span class="ctrl-icon">🔇</span><span class="ctrl-text">消音中</span>'
+            : '<span class="ctrl-icon">🔊</span><span class="ctrl-text">音声</span>';
+          this.muteBtn.title = this.isMuted ? '音声を再生' : '音声を消音';
+          this.muteBtn.classList.toggle('is-muted', this.isMuted);
+        }
+      });
+    }
 
     // 内部仮想解像度（FHD 16:9）。実キャンバスは CSS px × devicePixelRatio
     this.V_WIDTH = 1920;
@@ -240,6 +253,19 @@ export class OpeningMovie {
 
     if (this.pauseBtn) this.pauseBtn.innerHTML = '<span class="ctrl-icon">⏸</span><span class="ctrl-text">停止</span>';
 
+    // 最新のミュート状態を同期反映
+    const curMuted = (typeof window !== 'undefined' && window.SengokuSoundSync)
+      ? window.SengokuSoundSync.isMuted
+      : (this.music ? (!!this.music.isBgmMuted || !!this.music.isMuted) : false);
+    this.isMuted = curMuted;
+    if (this.muteBtn) {
+      this.muteBtn.innerHTML = this.isMuted
+        ? '<span class="ctrl-icon">🔇</span><span class="ctrl-text">消音中</span>'
+        : '<span class="ctrl-icon">🔊</span><span class="ctrl-text">音声</span>';
+      this.muteBtn.title = this.isMuted ? '音声を再生' : '音声を消音';
+      this.muteBtn.classList.toggle('is-muted', this.isMuted);
+    }
+
     if (this.music) {
       try {
         if (typeof this.music.init === 'function') this.music.init();
@@ -249,13 +275,16 @@ export class OpeningMovie {
         console.warn('[OpeningMovie] BGM start error:', err);
       }
     }
-    // 自動再生制限：音声が止められていたら映像だけ先に流し、消音表示から音を出せるようにする
+    // 自動再生制限：消音設定ではないのにブラウザ制限で音声が止められていたら、映像だけ先に流し「音を出す」案内を表示
     this._audioBlocked = false;
     setTimeout(() => {
       const ctx = this.music && this.music.ctx;
-      if (this.isPlaying && (!ctx || ctx.state !== 'running')) {
+      if (this.isPlaying && !this.isMuted && (!ctx || ctx.state !== 'running')) {
         this._audioBlocked = true;
-        if (this.muteBtn) this.muteBtn.innerHTML = '<span class="ctrl-icon">🔇</span><span class="ctrl-text">音を出す</span>';
+        if (this.muteBtn) {
+          this.muteBtn.innerHTML = '<span class="ctrl-icon">🔇</span><span class="ctrl-text">音を出す</span>';
+          this.muteBtn.title = '音声を許可して再生';
+        }
       }
     }, 300);
 
@@ -316,17 +345,39 @@ export class OpeningMovie {
         const go = () => { try { if (typeof this.music.playTrack === 'function') this.music.playTrack('op', true); } catch (e) {} };
         if (ctx && ctx.state === 'suspended') ctx.resume().then(go).catch(() => {}); else go();
       } catch (e) {}
-      if (this.muteBtn) this.muteBtn.innerHTML = '<span class="ctrl-icon">🔊</span><span class="ctrl-text">音声</span>';
+      if (typeof window !== 'undefined' && window.SengokuSoundSync) {
+        window.SengokuSoundSync.setMuted(false);
+      } else if (this.music && typeof this.music.setAllMuted === 'function') {
+        this.music.setAllMuted(false);
+      }
+      this.isMuted = false;
+      if (this.muteBtn) {
+        this.muteBtn.innerHTML = '<span class="ctrl-icon">🔊</span><span class="ctrl-text">音声</span>';
+        this.muteBtn.title = '音声を消音';
+        this.muteBtn.classList.remove('is-muted');
+      }
       return;
     }
-    this.isMuted = !this.isMuted;
-    if (this.music && typeof this.music.toggleBgm === 'function') {
-      try { this.music.toggleBgm(); } catch (e) {}
+    if (typeof window !== 'undefined' && window.SengokuSoundSync) {
+      this.isMuted = window.SengokuSoundSync.toggle();
+    } else if (this.music && typeof this.music.toggleAllMuted === 'function') {
+      this.isMuted = this.music.toggleAllMuted();
+    } else {
+      this.isMuted = !this.isMuted;
+      if (this.music && typeof this.music.toggleBgm === 'function') {
+        try { this.music.toggleBgm(); } catch (e) {}
+      }
+      try { localStorage.setItem('sengoku_bgm_muted', this.isMuted ? '1' : '0'); } catch (_) {}
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('sengoku-sound-mute-changed', { detail: { isMuted: this.isMuted } }));
+      }
     }
     if (this.muteBtn) {
       this.muteBtn.innerHTML = this.isMuted
         ? '<span class="ctrl-icon">🔇</span><span class="ctrl-text">消音中</span>'
         : '<span class="ctrl-icon">🔊</span><span class="ctrl-text">音声</span>';
+      this.muteBtn.title = this.isMuted ? '音声を再生' : '音声を消音';
+      this.muteBtn.classList.toggle('is-muted', this.isMuted);
     }
   }
 

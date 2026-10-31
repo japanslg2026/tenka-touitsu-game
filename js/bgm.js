@@ -45,6 +45,8 @@ class SengokuMusicEngine {
     this.masterVolume = 0.75;
     this.bgmVolume = 0.60;
     this.seVolume = 0.85;
+    // BGM消音状態を localStorage ('sengoku_bgm_muted') から読み出し反映
+    this.loadBgmSettings();
     // 効果音（SE）の ON/OFF・音量は BGM とは別に localStorage へ保存（既定 ON）
     this.loadSeSettings();
 
@@ -3013,6 +3015,18 @@ class SengokuMusicEngine {
     return this._silentSink;
   }
 
+  loadBgmSettings() {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      const muted = localStorage.getItem('sengoku_bgm_muted');
+      if (muted !== null) {
+        const isM = (muted === '1');
+        this.isBgmMuted = isM;
+        this.isMuted = isM;
+      }
+    } catch (e) { /* 保存領域が使えないときは既定値（OFFではない） */ }
+  }
+
   loadSeSettings() {
     try {
       if (typeof localStorage === 'undefined') return;
@@ -3083,36 +3097,52 @@ class SengokuMusicEngine {
     this.saveSeSettings();
   }
 
-  toggleMute() {
+  setAllMuted(muted) {
     this.init();
-    this.isMuted = !this.isMuted;
-    if (this.ctx && this.masterGain) {
-      if (this.ctx.state === 'suspended') this.ctx.resume();
-      const target = this.isMuted ? 0 : this.masterVolume;
-      this.masterGain.gain.setValueAtTime(target, this.ctx.currentTime);
+    const isM = !!muted;
+    this.isBgmMuted = isM;
+    this.isMuted = isM;
+    try {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('sengoku_bgm_muted', isM ? '1' : '0');
+      }
+    } catch (_) {}
+    if (this.ctx) {
+      if (!isM && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
+      if (this.masterGain) {
+        const targetMaster = this.isMuted ? 0 : this.masterVolume;
+        this.masterGain.gain.setValueAtTime(targetMaster, this.ctx.currentTime);
+      }
+      if (this.bgmGain) {
+        const targetBgm = this.isBgmMuted ? 0 : this.bgmVolume;
+        this.bgmGain.gain.setValueAtTime(targetBgm, this.ctx.currentTime);
+      }
     }
-    return this.isMuted;
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('sengoku-sound-mute-changed', {
+        detail: { isMuted: isM }
+      }));
+      try { window.SengokuSoundSync?.syncAllUI?.(); } catch (_) {}
+    }
+    return isM;
+  }
+
+  toggleAllMuted() {
+    return this.setAllMuted(!(this.isBgmMuted || this.isMuted));
+  }
+
+  toggleMute() {
+    return this.toggleAllMuted();
   }
 
   setMute(muted) {
-    this.init();
-    this.isMuted = !!muted;
-    if (this.ctx && this.masterGain) {
-      if (this.ctx.state === 'suspended') this.ctx.resume();
-      const target = this.isMuted ? 0 : this.masterVolume;
-      this.masterGain.gain.setValueAtTime(target, this.ctx.currentTime);
-    }
-    return this.isMuted;
+    return this.setAllMuted(muted);
   }
 
   toggleBgmMute() {
-    this.init();
-    this.isBgmMuted = !this.isBgmMuted;
-    if (this.bgmGain) {
-      const target = this.isBgmMuted ? 0 : this.bgmVolume;
-      this.bgmGain.gain.setValueAtTime(target, this.ctx.currentTime);
-    }
-    return this.isBgmMuted;
+    return this.toggleAllMuted();
   }
 
   toggleBgm() {
@@ -3169,3 +3199,74 @@ window.sengokuMusic = new Proxy(_rawSengokuMusic, {
     return undefined;
   }
 });
+
+// ============================================================================
+// 全画面共通の音響・BGMミュートUI同期機構 (初期画面・オープニング・ゲーム本編画面を完全連動)
+// ============================================================================
+window.SengokuSoundSync = {
+  KEY: 'sengoku_bgm_muted',
+  get isMuted() {
+    if (window.sengokuMusic) return !!(window.sengokuMusic.isBgmMuted || window.sengokuMusic.isMuted);
+    try { return localStorage.getItem('sengoku_bgm_muted') === '1'; } catch (_) { return false; }
+  },
+  setMuted(v) {
+    const isM = !!v;
+    if (window.sengokuMusic && typeof window.sengokuMusic.setAllMuted === 'function') {
+      return window.sengokuMusic.setAllMuted(isM);
+    }
+    try { localStorage.setItem('sengoku_bgm_muted', isM ? '1' : '0'); } catch (_) {}
+    this.syncAllUI();
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('sengoku-sound-mute-changed', { detail: { isMuted: isM } }));
+    }
+    return isM;
+  },
+  toggle() {
+    return this.setMuted(!this.isMuted);
+  },
+  syncAllUI() {
+    const isM = this.isMuted;
+    // 1. 初期画面・名鑑モーダルのBGMボタン
+    document.querySelectorAll('.bgm-toggle-btn').forEach(b => {
+      const i = b.querySelector('.opening-btn-icon'); if (i) i.textContent = isM ? '🔇' : '🔊';
+      const t = b.querySelector('.opening-btn-text'); if (t) t.textContent = isM ? 'BGM 切' : 'BGM';
+      const lbl = isM ? '音楽を再生' : '音楽を消す';
+      b.title = lbl;
+      b.setAttribute('aria-label', lbl);
+      b.setAttribute('aria-pressed', isM ? 'true' : 'false');
+      b.classList.toggle('is-muted', isM);
+    });
+    // 2. オープニングムービーの音声ボタン
+    const opBtn = document.getElementById('openingMuteBtn');
+    if (opBtn) {
+      const i = opBtn.querySelector('.ctrl-icon'); if (i) i.textContent = isM ? '🔇' : '🔊';
+      const t = opBtn.querySelector('.ctrl-text'); if (t) t.textContent = isM ? '消音中' : '音声';
+      const lbl = isM ? '音声を再生' : '音声を消音';
+      opBtn.title = lbl;
+      opBtn.classList.toggle('is-muted', isM);
+    }
+    // 3. ゲーム本編ヘッダーの音量ボタン（進行ボタンがあるメイン画面）
+    const soundBtn = document.getElementById('soundToggleBtn');
+    const soundText = document.getElementById('soundText');
+    const soundIcon = document.getElementById('soundIcon');
+    if (soundText) soundText.textContent = isM ? '音: OFF' : '音: ON';
+    if (soundIcon) soundIcon.textContent = isM ? '🔇' : '🔊';
+    if (soundBtn) {
+      soundBtn.title = isM ? '音声を再生 (現在消音中)' : '音声を消音 (現在再生中)';
+      soundBtn.classList.toggle('is-muted', isM);
+    }
+  }
+};
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => window.SengokuSoundSync.syncAllUI());
+  } else {
+    window.SengokuSoundSync.syncAllUI();
+  }
+}
+if (typeof window !== 'undefined') {
+  window.addEventListener('sengoku-sound-mute-changed', () => {
+    try { window.SengokuSoundSync.syncAllUI(); } catch (_) {}
+  });
+}

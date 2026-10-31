@@ -78,7 +78,7 @@ export const ComputerLogicMethods = {
       prov.governorId = leader.id;
       prov.governance = 'direct';
       const koku = Number(prov.kokudaka) || 50000;
-      prov.troops = Math.max(prov.troops || 0, Math.round((koku / 1000) * 10 + 1200));
+      prov.troops = Math.max(prov.troops || 0, this.getProvinceInitialTroops(koku));
       prov.rice = Math.min(this.getProvinceRiceCap(prov), Math.max(prov.rice || 0, Math.round(koku / 1000 * 1.5 + 40))); // 上限（2026-10-11 bh）
       prov.commerce = Math.min(this.getProvinceCommerceCap(prov), Math.max(prov.commerce || 0, Math.round((this.getProvinceBaseCommerce ? this.getProvinceBaseCommerce(prov) : koku / 2000) * 1.5 + 30))); // 国ごとの商業係数（2026-10-11 cd）・上限（2026-10-11 bl）
       prov.defense = Math.max(prov.defense || 0, 50);
@@ -526,7 +526,7 @@ export const ComputerLogicMethods = {
         capital.commerce = Math.min(this.getProvinceCommerceCap(capital), (Number(capital.commerce) || 50) + 2); // 上限（2026-10-11 bl）
         capital.defense = Math.min(100, (Number(capital.defense) || 50) + 2);
         const capRiceGain = capital.rice - capRiceBefore; // 実際の増分で記録（2026-10-11 bk）
-        this.log(`🌾【オート政務・本拠開発】本拠・${capital.name}にて開墾・治水と城壁修築を実施しました。(${capRiceGain > 0 ? `石高+${capRiceGain}` : '石高は上限'}, 城防+2)`);
+        this.log(`🌾【オート政務・本拠開発】本拠・${capital.name}にて開墾・治水と城壁修築を実施しました。(${capRiceGain > 0 ? `石高+${(capRiceGain / 10).toFixed(1)}万石` : '石高は上限'}, 城防+2)`);
         continue;
       }
 
@@ -2040,7 +2040,7 @@ export const ComputerLogicMethods = {
     // プレイヤー後方領国も治安良好なら緩やかに自然補充 (40〜80人)
     const myProvs = this.isSpectatorMode ? [] : this.provinces.filter(p => p.ownerId === this.playerClanId);
     myProvs.forEach(p => {
-      const maxTroops = p.rice * 12 + 2500;
+      const maxTroops = this.getProvinceTroopCap(p);
       if (!this.isProvinceFrontier(p) && (p.order || 80) >= 70 && p.troops < maxTroops) {
         const naturalRecovery = Math.round(40 + Math.random() * 40);
         p.troops = Math.min(maxTroops, p.troops + naturalRecovery);
@@ -2058,8 +2058,8 @@ export const ComputerLogicMethods = {
       const polRatio = (ability.politics || 70) / 100;
 
       clanProvs.forEach(p => {
-        // 石高に応じた兵力上限（石高×10 + 2000）でインフレを完全に防止
-        const maxTroops = p.rice * 10 + 3000;
+        // 兵力上限（初期兵力 + 石高×10%）でインフレを完全に防止
+        const maxTroops = this.getProvinceTroopCap(p);
 
         if (personality === 'domestic') {
           // 内政型：城防・治安の維持が最優先、兵力は上限まで堅実に小幅補充（自国をガチガチに固める）

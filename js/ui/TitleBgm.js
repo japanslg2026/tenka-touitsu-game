@@ -9,11 +9,26 @@
   let done = false, startClicked = false, unlocked = false;
   const store = (v) => { try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (_) {} };
   const stored = () => { try { return localStorage.getItem(KEY) === '1'; } catch (_) { return false; } };
-  const muted = () => { const e = m(); return e ? !!e.isBgmMuted : stored(); };
+  const muted = () => {
+    if (window.SengokuSoundSync) return window.SengokuSoundSync.isMuted;
+    const e = m(); return e ? (!!e.isBgmMuted || !!e.isMuted) : stored();
+  };
   const movieOn = () => { const mm = document.getElementById('openingMovieModal'); return !!(mm && !mm.classList.contains('hidden')); };
   const ctxRunning = () => { const e = m(); return !!(e && e.ctx && e.ctx.state === 'running'); };
 
-  function applyStored() { const e = m(); if (!e) return; if (stored() !== !!e.isBgmMuted) { try { e.toggleBgmMute(); } catch (_) { e.isBgmMuted = stored(); } } }
+  function applyStored() {
+    const e = m();
+    const st = stored();
+    if (window.SengokuSoundSync) {
+      window.SengokuSoundSync.syncAllUI();
+    }
+    if (!e) return;
+    if (typeof e.setAllMuted === 'function') {
+      e.setAllMuted(st);
+    } else if (st !== !!e.isBgmMuted) {
+      try { e.toggleBgmMute(); } catch (_) { e.isBgmMuted = st; }
+    }
+  }
   function ensure() {
     const e = m(); if (!e || done || movieOn() || muted()) return;
     if (!unlocked && !ctxRunning()) return; // ユーザー操作前は鳴らさない（自動再生制限でエラーを出さない）
@@ -83,8 +98,15 @@
   function toggle(ev) {
     if (ev) { ev.preventDefault(); ev.stopPropagation(); }
     const e = m(); unlock();
-    if (e) { try { e.toggleBgmMute(); } catch (_) { e.isBgmMuted = !e.isBgmMuted; } }
-    store(muted()); paint();
+    if (window.SengokuSoundSync) {
+      window.SengokuSoundSync.toggle();
+    } else if (e && typeof e.toggleAllMuted === 'function') {
+      e.toggleAllMuted();
+    } else {
+      if (e) { try { e.toggleBgmMute(); } catch (_) { e.isBgmMuted = !e.isBgmMuted; } }
+      store(muted());
+      paint();
+    }
     if (!muted()) setTimeout(ensure, 30);
   }
   function makeBtn(cls) {
@@ -95,7 +117,14 @@
   function addHeaderBtn() {
     const bar = document.querySelector('#startModal .start-header-actions');
     if (!bar || bar.querySelector('.bgm-toggle-btn')) return;
-    bar.insertBefore(makeBtn('load-record-top-btn'), bar.firstChild); paint();
+    const op = bar.querySelector('#startOpeningMovieBtn');
+    const b = makeBtn('load-record-top-btn');
+    if (op && op.nextSibling) {
+      bar.insertBefore(b, op.nextSibling);
+    } else {
+      bar.appendChild(b);
+    }
+    paint();
   }
   function addMeikanBtn(ov) {
     const head = ov.querySelector('.mk-head'), close = ov.querySelector('.mk-close');
@@ -104,6 +133,10 @@
   }
   function boot() {
     applyStored(); addHeaderBtn(); paint();
+    window.addEventListener('sengoku-sound-mute-changed', () => {
+      paint();
+      if (!muted()) setTimeout(ensure, 30);
+    });
     new MutationObserver(ms => ms.forEach(r => r.addedNodes.forEach(n => { if (n.nodeType === 1 && n.classList.contains('mk-overlay')) addMeikanBtn(n); })))
       .observe(document.body, { childList: true });
     document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('#daimyoPopupStartBtn')) {

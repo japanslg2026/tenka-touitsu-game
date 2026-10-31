@@ -25,10 +25,14 @@
   <link rel="stylesheet" href="css/encyclopedia.css?v=20261025_bgm">
   <link rel="stylesheet" href="css/startscreen.css?v=20261025_ui48">
   <script>
-    // スマホ判定: 画面幅768px以下、またはタッチ主体(pointer:coarse)で短辺500px以下 → スマホ用レスポンシブ新レイアウト
+    // スマホ判定: 画面幅768px以下、タッチ主体、または ?mobile=1 / ?phone=1 パラメータ → スマホ用レスポンシブ新レイアウト
     (function(){var mm=function(q){return window.matchMedia&&matchMedia(q).matches;};
-      var phone=mm('(max-width: 768px)')||(mm('(pointer: coarse)')&&Math.min(screen.width,screen.height)<=500);
-      window.SENGOKU_IS_PHONE=phone; var de=document.documentElement; de.classList.add('sl-desktop'); if(phone) de.classList.add('sl-phone');})();
+      var pSearch = location.search;
+      var forcePhone = pSearch.indexOf('mobile=1') !== -1 || pSearch.indexOf('phone=1') !== -1;
+      var phone=forcePhone || mm('(max-width: 768px)')||(mm('(pointer: coarse)')&&Math.min(screen.width,screen.height)<=500);
+      window.SENGOKU_IS_PHONE=phone; var de=document.documentElement; de.classList.add('sl-desktop'); if(phone) de.classList.add('sl-phone');
+      /* セーフガード: 新レイアウトが一定時間内に構築されない場合は旧レイアウトを表示 */
+      setTimeout(function(){ if(!de.classList.contains('sl-ready')) de.classList.remove('sl-desktop'); }, 15000);})();
   </script>
 </head>
 <body>
@@ -294,7 +298,7 @@
               <span class="cost cmd-cost" style="color:#ccc;">金50 (糧なし)</span>
             </div>
             <div class="cmd-sub-desc" style="color:#ccc;">
-              石高+20〜28, 商業+20〜28 (当主内政力依存)
+              石高+2.0〜4.0万石, 商業+20〜40貫 (内政力依存)
             </div>
           </button>
 
@@ -393,6 +397,103 @@
     background: rgba(212, 175, 55, 0.15) !important;
     box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
   }
+  .era-cushion-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    margin: 4px 0 !important;
+    padding: 0 12px !important;
+    background: linear-gradient(135deg, rgba(38, 26, 16, 0.95), rgba(22, 14, 8, 0.98)) !important;
+    border: 1px dashed rgba(212, 175, 55, 0.5) !important;
+    border-radius: 4px !important;
+    color: var(--sl-text, #f5ebd0) !important;
+    cursor: pointer !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    transition: all 0.2s ease !important;
+  }
+  .era-cushion-btn:hover {
+    border-color: #ffd700 !important;
+    border-style: solid !important;
+    background: linear-gradient(135deg, rgba(58, 38, 22, 0.95), rgba(35, 22, 12, 0.98)) !important;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3) !important;
+  }
+  .era-cushion-btn.open {
+    background: linear-gradient(135deg, rgba(55, 36, 18, 0.98), rgba(32, 20, 10, 0.98)) !important;
+    border-style: solid !important;
+    border-color: #ffd700 !important;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4), 0 0 6px rgba(255, 215, 0, 0.2) !important;
+  }
+  .era-cushion-btn .cushion-icon {
+    font-size: 8.5pt !important;
+    color: #ffd700 !important;
+    transition: transform 0.2s ease !important;
+    display: inline-block !important;
+    flex: 0 0 auto !important;
+  }
+  .era-cushion-btn.open .cushion-icon {
+    transform: rotate(90deg) !important;
+  }
+  .era-cushion-btn .cushion-title {
+    color: #ffd700 !important;
+    font-size: 10pt !important;
+    font-weight: bold !important;
+    flex: 0 0 auto !important;
+  }
+  .era-cushion-btn .cushion-note {
+    font-size: 8.5pt !important;
+    color: #c9b99a !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  /* 乱世より前モード: 乱世より前ボタンが一番上で、下に前シナリオのみ展開 */
+  #scenarioSelectorGroup.mode-pre-sengoku #btnCushionPre {
+    border-color: #ffd700 !important;
+    border-style: solid !important;
+  }
+  #scenarioSelectorGroup.mode-pre-sengoku .scenario-btn[data-era="sengoku_climax"],
+  #scenarioSelectorGroup.mode-pre-sengoku .scenario-btn[data-era="unification"],
+  #scenarioSelectorGroup.mode-pre-sengoku .scenario-btn[data-era="virtual"],
+  #scenarioSelectorGroup.mode-pre-sengoku #btnCushionPost {
+    display: none !important;
+  }
+  /* 乱世より後モード: ボタンが一番上に配置され、下にシナリオが続く */
+  #scenarioSelectorGroup.mode-post-sengoku #btnCushionPost {
+    order: -10 !important;
+    border-color: #ffd700 !important;
+    border-style: solid !important;
+  }
+  #scenarioSelectorGroup.mode-post-sengoku .scenario-btn[data-era="sengoku_climax"],
+  #scenarioSelectorGroup.mode-post-sengoku .scenario-btn[data-era="unification"],
+  #scenarioSelectorGroup.mode-post-sengoku .scenario-btn[data-era="virtual"],
+  #scenarioSelectorGroup.mode-post-sengoku #btnCushionPre {
+    display: none !important;
+  }
+
+  /* 「この大名で出陣」ボタンの強調表示 */
+  #startModal .sl-start-btn {
+    background: linear-gradient(180deg, #ffe885 0%, #e6ba38 48%, #c59318 100%) !important;
+    border: 2px solid #fff2a8 !important;
+    color: #120a02 !important;
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+    font-weight: 900 !important;
+    transition: all 0.2s ease !important;
+  }
+  #startModal .sl-start-btn:hover {
+    background: linear-gradient(180deg, #fff0a0 0%, #f0c848 48%, #d8a020 100%) !important;
+    filter: brightness(1.1) !important;
+    box-shadow: 0 0 24px rgba(255, 215, 0, 0.75), 0 6px 16px rgba(0, 0, 0, 0.7), inset 0 1px 0 #fff !important;
+    transform: translateY(-1px);
+  }
+
   .diff-option-btn {
     transition: all 0.2s ease;
   }
@@ -443,195 +544,203 @@
 
       <!-- 時代別クイック切替タブ -->
       <div class="scenario-era-tabs" id="scenarioEraTabs">
-        <button class="era-tab-btn active" data-era="all">❖ すべて (全動乱+仮想)</button>
-        <button class="era-tab-btn" data-era="ancient">古代・平安 (前663〜1159)</button>
-        <button class="era-tab-btn" data-era="medieval">中世武士 (1180〜1391)</button>
-        <button class="era-tab-btn" data-era="sengoku_early">戦国黎明 (1400〜1546)</button>
-        <button class="era-tab-btn" data-era="sengoku_climax">戦国乱世 (1555〜1577)</button>
-        <button class="era-tab-btn" data-era="unification">天下統一 (1582〜1614)</button>
-        <button class="era-tab-btn" data-era="edo_bakumatsu">泰平・幕末 (1637〜1877)</button>
-        <button class="era-tab-btn" data-era="virtual">🎲 仮想乱世</button>
+        <button class="era-tab-btn era-tab-pre" data-era="ancient" style="display:none;">古代・平安</button>
+        <button class="era-tab-btn era-tab-pre" data-era="genpei_kamakura" style="display:none;">源平・鎌倉</button>
+        <button class="era-tab-btn era-tab-pre" data-era="muromachi" style="display:none;">室町</button>
+        <button class="era-tab-btn" data-era="sengoku_climax">戦国乱世</button>
+        <button class="era-tab-btn" data-era="unification">天下統一</button>
+        <button class="era-tab-btn era-tab-post" data-era="edo_bakumatsu" style="display:none;">泰平・幕末</button>
       </div>
 
       <!-- 全59シナリオ年代順スクロールグリッド -->
       <div class="scenario-selector-container">
         <div class="scenario-selector-group" id="scenarioSelectorGroup">
-        <button class="scenario-btn" data-scen-id="-663" data-era="ancient">
+        <!-- 乱世より前まとめボタン -->
+        <button type="button" class="era-cushion-btn pre-sengoku-btn" id="btnCushionPre" aria-expanded="false" title="乱世より前のシナリオを表示（クリックで開閉）">
+          <span class="cushion-icon">▶</span>
+          <strong class="cushion-title">📜 乱世より前</strong>
+        </button>
+        <button class="scenario-btn" style="display:none;" data-scen-id="-663" data-era="ancient">
           <span class="scen-badge">前663年</span>
           <strong class="scen-title">神武東征</strong>
           <span class="scen-sub">神武天皇と長髄彦</span>
         </button>
-        <button class="scenario-btn" data-scen-id="97" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="97" data-era="ancient">
           <span class="scen-badge">97年</span>
           <strong class="scen-title">ヤマトタケル西征</strong>
           <span class="scen-sub">熊襲・出雲討伐</span>
         </button>
-        <button class="scenario-btn" data-scen-id="240" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="240" data-era="ancient">
           <span class="scen-badge">240年</span>
           <strong class="scen-title">邪馬台国九州説</strong>
           <span class="scen-sub">卑弥呼vs卑弥弓呼</span>
         </button>
-        <button class="scenario-btn" data-scen-id="240_yamato" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="240_yamato" data-era="ancient">
           <span class="scen-badge">240年</span>
           <strong class="scen-title">邪馬台国大和説</strong>
           <span class="scen-sub">卑弥呼とヤマト王権</span>
         </button>
-        <button class="scenario-btn" data-scen-id="645" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="645" data-era="ancient">
           <span class="scen-badge">645年</span>
           <strong class="scen-title">乙巳の変・大化の改新</strong>
           <span class="scen-sub">中大兄皇子と蘇我入鹿</span>
         </button>
-        <button class="scenario-btn" data-scen-id="672" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="672" data-era="ancient">
           <span class="scen-badge">672年</span>
           <strong class="scen-title">壬申の乱</strong>
           <span class="scen-sub">大海人皇子と大友皇子</span>
         </button>
-        <button class="scenario-btn" data-scen-id="801" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="801" data-era="ancient">
           <span class="scen-badge">801年</span>
           <strong class="scen-title">東北征討</strong>
           <span class="scen-sub">田村麻呂vsアテルイ</span>
         </button>
-        <button class="scenario-btn" data-scen-id="939" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="939" data-era="ancient">
           <span class="scen-badge">939年</span>
           <strong class="scen-title">承平・天慶の乱</strong>
           <span class="scen-sub">将門・純友</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1019" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1019" data-era="ancient">
           <span class="scen-badge">1019年</span>
           <strong class="scen-title">刀伊の入寇</strong>
           <span class="scen-sub">藤原隆家・大宰府</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1028" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1028" data-era="ancient">
           <span class="scen-badge">1028年</span>
           <strong class="scen-title">平忠常の乱</strong>
           <span class="scen-sub">房総の乱</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1056" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1056" data-era="ancient">
           <span class="scen-badge">1056年</span>
           <strong class="scen-title">前九年の役</strong>
           <span class="scen-sub">黄海激突・奥羽</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1087" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1087" data-era="ancient">
           <span class="scen-badge">1087年</span>
           <strong class="scen-title">後三年の役</strong>
           <span class="scen-sub">義家・金沢柵</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1156" data-era="ancient">
+                <button class="scenario-btn" style="display:none;" data-scen-id="1154" data-era="ancient">
+          <span class="scen-badge">1154年</span>
+          <strong class="scen-title">鎮西八郎為朝</strong>
+          <span class="scen-sub">剛勇無双の弓取り</span>
+        </button>
+        <button class="scenario-btn" style="display:none;" data-scen-id="1156" data-era="ancient">
           <span class="scen-badge">1156年</span>
           <strong class="scen-title">保元の乱</strong>
           <span class="scen-sub">清盛と義朝</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1159" data-era="ancient">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1159" data-era="ancient">
           <span class="scen-badge">1159年</span>
           <strong class="scen-title">平治の乱</strong>
           <span class="scen-sub">清盛と義朝</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1180" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1180" data-era="genpei_kamakura">
           <span class="scen-badge">1180年</span>
           <strong class="scen-title">治承・寿永の乱</strong>
           <span class="scen-sub">頼朝の挙兵</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1183" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1183" data-era="genpei_kamakura">
           <span class="scen-badge">1183年</span>
           <strong class="scen-title">義仲入京</strong>
           <span class="scen-sub">木曾義仲</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1184" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1184" data-era="genpei_kamakura">
           <span class="scen-badge">1184年</span>
           <strong class="scen-title">一の谷の戦い</strong>
           <span class="scen-sub">源義経</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1185" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1185" data-era="genpei_kamakura">
           <span class="scen-badge">1185年</span>
           <strong class="scen-title">壇ノ浦の戦い</strong>
           <span class="scen-sub">平家滅亡</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1189" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1189" data-era="genpei_kamakura">
           <span class="scen-badge">1189年</span>
           <strong class="scen-title">義経追討</strong>
           <span class="scen-sub">奥州合戦</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1221" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1221" data-era="genpei_kamakura">
           <span class="scen-badge">1221年</span>
           <strong class="scen-title">承久の乱</strong>
           <span class="scen-sub">後鳥羽上皇</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1274" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1274" data-era="genpei_kamakura">
           <span class="scen-badge">1274年</span>
           <strong class="scen-title">文永の役（元寇）</strong>
           <span class="scen-sub">時宗と蒙古</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1331" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1331" data-era="genpei_kamakura">
           <span class="scen-badge">1331年</span>
           <strong class="scen-title">元弘の乱</strong>
           <span class="scen-sub">千早城の戦</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1333" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1333" data-era="genpei_kamakura">
           <span class="scen-badge">1333年</span>
           <strong class="scen-title">建武の新政</strong>
           <span class="scen-sub">幕府滅亡</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1336" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1336" data-era="muromachi">
           <span class="scen-badge">1336年</span>
           <strong class="scen-title">湊川の戦い</strong>
           <span class="scen-sub">建武の内乱</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1350" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1350" data-era="muromachi">
           <span class="scen-badge">1350年</span>
           <strong class="scen-title">観応の擾乱</strong>
           <span class="scen-sub">尊氏vs直義</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1359" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1359" data-era="muromachi">
           <span class="scen-badge">1359年</span>
           <strong class="scen-title">筑後川の戦い</strong>
           <span class="scen-sub">九州の戦い</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1391" data-era="medieval">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1391" data-era="muromachi">
           <span class="scen-badge">1391年</span>
           <strong class="scen-title">明徳の乱</strong>
           <span class="scen-sub">義満vs山名</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1400" data-era="sengoku_early">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1400" data-era="muromachi">
           <span class="scen-badge">1400年</span>
           <strong class="scen-title">伊達政宗の乱</strong>
           <span class="scen-sub">伊達政宗の乱</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1438" data-era="sengoku_early">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1438" data-era="muromachi">
           <span class="scen-badge">1438年</span>
           <strong class="scen-title">永享の乱</strong>
           <span class="scen-sub">万人恐怖</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1457" data-era="sengoku_early">
+        <button class="scenario-btn" data-scen-id="1457" data-era="sengoku_climax">
           <span class="scen-badge">1457年</span>
           <strong class="scen-title">堀越公方成立</strong>
           <span class="scen-sub">享徳の乱</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1467" data-era="sengoku_early">
+        <button class="scenario-btn" data-scen-id="1467" data-era="sengoku_climax">
           <span class="scen-badge">1467年</span>
           <strong class="scen-title">応仁の乱</strong>
           <span class="scen-sub">下剋上開幕</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1493" data-era="sengoku_early">
+        <button class="scenario-btn" data-scen-id="1493" data-era="sengoku_climax">
           <span class="scen-badge">1493年</span>
           <strong class="scen-title">明応の政変</strong>
           <span class="scen-sub">早雲伊豆討入</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1495" data-era="sengoku_early">
+        <button class="scenario-btn" data-scen-id="1495" data-era="sengoku_climax">
           <span class="scen-badge">1495年</span>
           <strong class="scen-title">北条早雲の野望</strong>
           <span class="scen-sub">北条早雲</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1531" data-era="sengoku_early">
+        <button class="scenario-btn" data-scen-id="1531" data-era="sengoku_climax">
           <span class="scen-badge">1531年</span>
           <strong class="scen-title">大物崩れの戦い</strong>
           <span class="scen-sub">細川晴元と高国</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1538" data-era="sengoku_early">
+        <button class="scenario-btn" data-scen-id="1538" data-era="sengoku_climax">
           <span class="scen-badge">1538年</span>
           <strong class="scen-title">国府台合戦</strong>
           <span class="scen-sub">小弓公方vs北条</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1546" data-era="sengoku_early">
+        <button class="scenario-btn" data-scen-id="1546" data-era="sengoku_climax">
           <span class="scen-badge">1546年</span>
           <strong class="scen-title">河越夜戦</strong>
           <span class="scen-sub">氏康乾坤一擲</span>
@@ -701,71 +810,75 @@
           <strong class="scen-title">大坂の陣</strong>
           <span class="scen-sub">真田丸咆哮</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1637" data-era="edo_bakumatsu">
+        <!-- 乱世より後まとめボタン -->
+        <button type="button" class="era-cushion-btn post-sengoku-btn" id="btnCushionPost" aria-expanded="false" title="乱世より後のシナリオを表示（クリックで開閉）">
+          <span class="cushion-icon">▶</span>
+          <strong class="cushion-title">📜 乱世より後</strong>
+        </button>
+        <button class="scenario-btn" style="display:none;" data-scen-id="1637" data-era="edo_bakumatsu">
           <span class="scen-badge">1637年</span>
           <strong class="scen-title">島原の乱</strong>
           <span class="scen-sub">天草四郎</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1651" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1651" data-era="edo_bakumatsu">
           <span class="scen-badge">1651年</span>
           <strong class="scen-title">慶安の変</strong>
           <span class="scen-sub">由比正雪</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1702" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1702" data-era="edo_bakumatsu">
           <span class="scen-badge">1702年</span>
           <strong class="scen-title">赤穂浪士討ち入り</strong>
           <span class="scen-sub">大石内蔵助</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1721" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1721" data-era="edo_bakumatsu">
           <span class="scen-badge">1721年</span>
           <strong class="scen-title">享保の改革</strong>
           <span class="scen-sub">徳川吉宗</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1789" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1789" data-era="edo_bakumatsu">
           <span class="scen-badge">1789年</span>
           <strong class="scen-title">寛政の改革</strong>
           <span class="scen-sub">松平定信</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1837" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1837" data-era="edo_bakumatsu">
           <span class="scen-badge">1837年</span>
           <strong class="scen-title">大塩平八郎の乱</strong>
           <span class="scen-sub">大坂蜂起</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1853" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1853" data-era="edo_bakumatsu">
           <span class="scen-badge">1853年</span>
           <strong class="scen-title">ペリー来航</strong>
           <span class="scen-sub">黒船浦賀</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1860" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1860" data-era="edo_bakumatsu">
           <span class="scen-badge">1860年</span>
           <strong class="scen-title">桜田門外の変</strong>
           <span class="scen-sub">井伊直弼</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1866" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1866" data-era="edo_bakumatsu">
           <span class="scen-badge">1866年</span>
           <strong class="scen-title">薩長同盟</strong>
           <span class="scen-sub">龍馬奔走</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1868" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1868" data-era="edo_bakumatsu">
           <span class="scen-badge">1868年</span>
           <strong class="scen-title">戊辰戦争</strong>
           <span class="scen-sub">維新胎動</span>
         </button>
-        <button class="scenario-btn" data-scen-id="1877" data-era="edo_bakumatsu">
+        <button class="scenario-btn" style="display:none;" data-scen-id="1877" data-era="edo_bakumatsu">
           <span class="scen-badge">1877年</span>
           <strong class="scen-title">西南戦争</strong>
           <span class="scen-sub">西郷挙兵</span>
         </button>
         <button class="scenario-btn" data-scen-id="allstar_feudal" data-era="virtual" style="border-color:#d4af37; background:linear-gradient(135deg, rgba(70,50,20,0.7), rgba(40,25,10,0.8));">
           <span class="scen-badge" style="background:linear-gradient(45deg,#d4af37,#e67e22); color:#fff;">仮想</span>
-          <strong class="scen-title" style="color:#ffd700;">全領国オールスター群雄割拠</strong>
-          <span class="scen-sub" style="color:#ffeaa7;">全国77国・一国一大名</span>
+          <strong class="scen-title" style="color:#ffd700;">群雄割拠</strong>
+          <span class="scen-sub" style="color:#ffeaa7;">オールスター</span>
         </button>
         </div>
       </div>
     
-
-    <!-- シナリオ詳細解説ボックス -->
+<!-- シナリオ詳細解説ボックス -->
       <div class="scenario-desc-box" id="scenarioDescBox" style="background:rgba(20,14,10,0.95); border:1px solid var(--border-gold); border-radius:4px; padding:10px 16px; margin-top:6px; margin-bottom: 6px; font-size: 12pt; line-height:1.35;">
         <!-- JSで動的生成 -->
       </div>
@@ -784,8 +897,8 @@
         <button class="diff-option-btn" data-diff="hard" style="padding:2px 8px; font-size:12pt;" title="【上級：風雲再起】金350/米500、敵AI徴兵速度1.3倍、好戦度+20%、10カ国制覇で包囲網早期結成">
           <span class="diff-btn-name">【上級】</span><span class="diff-btn-sub">風雲再起 <span style="color:#aaa; font-size:12pt;">(金350/米500)</span></span>
         </button>
-        <button class="diff-option-btn" data-diff="hell" style="padding:2px 8px; font-size:12pt;" title="【修羅/超級：戦国地獄】金250/米300、敵AI徴兵速度1.6倍、敵軍攻撃力+20%、全大名が敵対、包囲網頻発">
-          <span class="diff-btn-name">【修羅】</span><span class="diff-btn-sub">戦国地獄 <span style="color:#ff9999; font-size:12pt;">(包囲網)</span></span>
+        <button class="diff-option-btn" data-diff="hell" style="padding:2px 8px; font-size:12pt;" title="【超級：戦国地獄】金250/米300、敵AI徴兵速度1.6倍、敵軍攻撃力+20%、全大名が敵対、包囲網頻発">
+          <span class="diff-btn-name">【超級】</span><span class="diff-btn-sub">戦国地獄 <span style="color:#ff9999; font-size:12pt;">(包囲網)</span></span>
         </button>
       </div>
     </div>
@@ -1739,15 +1852,16 @@
   <!-- モジュール化されたJavaScript群 (順序保証ロード) -->
   <!-- 1. 全149大名家・全シナリオ・全77領国データベース -->
   <script src="assets/kamons.js?v=20261025_kamon2"></script>
+  <script src="js/data/map_borders.js?v=20261031_border"></script>
   
   <!-- 2. 菅野よう子風 洗練和風交響BGMエンジン (全15曲) -->
-  <script src="js/bgm.js?v=20261025_sfx53"></script>
+  <script src="js/bgm.js?v=20261031_sound_sync"></script>
 
   <!-- 3. 戦国天下統一伝 ゲームエンジン本体 -->
-  <script type="module" src="js/app.js?v=20261025_d74"></script>
+  <script type="module" src="js/app.js?v=20261031_highlight_fix"></script>
   <script type="module" src="js/ui/Encyclopedia.js?v=20261025_d74"></script>
-  <script src="js/ui/StartScreenLayout.js?v=20261025_ui48"></script>
-  <script src="js/ui/TitleBgm.js?v=20261025_sfx49"></script>
+  <script src="js/ui/StartScreenLayout.js?v=20261031_fix1"></script>
+  <script src="js/ui/TitleBgm.js?v=20261031_sound_sync"></script>
 
 
 

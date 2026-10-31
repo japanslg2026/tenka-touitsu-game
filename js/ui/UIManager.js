@@ -18,7 +18,7 @@
 
 
 
-import { OpeningMovie } from './OpeningMovie.js';
+import { OpeningMovie } from './OpeningMovie.js?v=20261031_sound_sync';
 
 
 
@@ -398,6 +398,10 @@ export const UIManagerMethods = {
 
 
 
+      this.preSengokuOpen = false;
+      this.postSengokuOpen = false;
+      this.updateScenarioTabsAndList();
+
       const modal = document.getElementById('startModal');
 
       if (modal) {
@@ -418,32 +422,36 @@ export const UIManagerMethods = {
 
 
 
-          // 1. 時代タブ
-
-          const tab = e.target.closest('.era-tab-btn');
-
-          if (tab) {
-
-            document.querySelectorAll('.era-tab-btn').forEach(t => t.classList.remove('active'));
-
-            tab.classList.add('active');
-
-            const targetEra = tab.dataset.era;
-
-            document.querySelectorAll('.scenario-btn').forEach(btn => {
-
-              btn.style.display = (targetEra === 'all' || btn.dataset.era === targetEra) ? '' : 'none';
-
-            });
-
-            if (this.audio && this.audio.playHyoshigi) {
-
-              this.audio.playHyoshigi();
-
+          // 0.5 乱世より前／乱世より後 まとめボタン
+          const cushionBtn = e.target.closest('.era-cushion-btn');
+          if (cushionBtn) {
+            if (cushionBtn.id === 'btnCushionPre') {
+              this.preSengokuOpen = !this.preSengokuOpen;
+              if (this.preSengokuOpen) this.postSengokuOpen = false;
+            } else if (cushionBtn.id === 'btnCushionPost') {
+              this.postSengokuOpen = !this.postSengokuOpen;
+              if (this.postSengokuOpen) this.preSengokuOpen = false;
             }
-
+            this.updateScenarioTabsAndList({ scrollToTop: true });
+            if (this.audio && this.audio.playHyoshigi) {
+              this.audio.playHyoshigi();
+            }
             return;
+          }
 
+          // 1. 時代タブ
+          const tab = e.target.closest('.era-tab-btn');
+          if (tab) {
+            const wasActive = tab.classList.contains('active');
+            document.querySelectorAll('.era-tab-btn').forEach(t => t.classList.remove('active'));
+            if (!wasActive) {
+              tab.classList.add('active');
+            }
+            this.updateScenarioTabsAndList();
+            if (this.audio && this.audio.playHyoshigi) {
+              this.audio.playHyoshigi();
+            }
+            return;
           }
 
 
@@ -606,7 +614,7 @@ export const UIManagerMethods = {
 
       hard:   { name: '上級・風雲再起', lines: ['初期資金 金350／米500', '敵AIの徴兵速度 1.3倍', '敵の好戦度 +20%', '10か国制覇で包囲網が早期結成'] },
 
-      hell:   { name: '修羅・戦国地獄', lines: ['初期資金 金250／米300', '敵AIの徴兵速度 1.6倍', '敵軍の攻撃力 +20%', '全大名が敵対し、包囲網が頻発'] }
+      hell:   { name: '超級・戦国地獄', lines: ['初期資金 金250／米300', '敵AIの徴兵速度 1.6倍', '敵軍の攻撃力 +20%', '全大名が敵対し、包囲網が頻発'] }
 
     }[key];
 
@@ -627,6 +635,137 @@ export const UIManagerMethods = {
   },
 
 
+
+  updateScenarioTabsAndList({ scrollToTop = false } = {}) {
+    const preOpen = !!this.preSengokuOpen;
+    const postOpen = !!this.postSengokuOpen;
+
+    const group = document.getElementById('scenarioSelectorGroup');
+    if (group) {
+      group.classList.toggle('mode-pre-sengoku', preOpen);
+      group.classList.toggle('mode-post-sengoku', postOpen);
+    }
+
+    // 1. クッションボタンの表示・開閉状態更新（シンプル表示）
+    const preBtn = document.getElementById('btnCushionPre');
+    if (preBtn) {
+      preBtn.setAttribute('aria-expanded', preOpen ? 'true' : 'false');
+      preBtn.classList.toggle('open', preOpen);
+      const icon = preBtn.querySelector('.cushion-icon');
+      if (icon) icon.textContent = preOpen ? '▼' : '▶';
+      const note = preBtn.querySelector('.cushion-note');
+      if (note) note.textContent = '';
+    }
+    const postBtn = document.getElementById('btnCushionPost');
+    if (postBtn) {
+      postBtn.setAttribute('aria-expanded', postOpen ? 'true' : 'false');
+      postBtn.classList.toggle('open', postOpen);
+      const icon = postBtn.querySelector('.cushion-icon');
+      if (icon) icon.textContent = postOpen ? '▼' : '▶';
+      const note = postBtn.querySelector('.cushion-note');
+      if (note) note.textContent = '';
+    }
+
+    // 2. 時代タブの連動表示・非表示
+    // 乱世より前モード時: 古代・平安、源平・鎌倉、室町の3つに絞る
+    // 乱世より後モード時: 泰平・幕末のみに絞る
+    // 通常時（どちらも閉）: 戦国乱世、天下統一のみ表示
+    document.querySelectorAll('#scenarioEraTabs .era-tab-btn').forEach(tab => {
+      const era = tab.dataset.era;
+      if (preOpen) {
+        tab.style.display = ['ancient', 'genpei_kamakura', 'muromachi'].includes(era) ? '' : 'none';
+      } else if (postOpen) {
+        tab.style.display = (era === 'edo_bakumatsu') ? '' : 'none';
+      } else {
+        tab.style.display = ['sengoku_climax', 'unification'].includes(era) ? '' : 'none';
+      }
+    });
+
+    // 非表示になったタブが active だった場合は解除
+    const activeTab = document.querySelector('.era-tab-btn.active');
+    if (activeTab && activeTab.style.display === 'none') {
+      activeTab.classList.remove('active');
+    }
+
+    // 現在選択されている時代タブ
+    const curActive = document.querySelector('.era-tab-btn.active');
+    const targetEra = curActive ? curActive.dataset.era : null;
+
+    // 3. シナリオボタンの表示・非表示（乱世より前・乱世より後で対称に挙動統一）
+    document.querySelectorAll('.scenario-btn').forEach(btn => {
+      const era = btn.dataset.era;
+      const isPre = (era === 'ancient' || era === 'genpei_kamakura' || era === 'muromachi');
+      const isPost = (era === 'edo_bakumatsu');
+      const isSengoku = (era === 'sengoku_climax' || era === 'unification' || era === 'virtual');
+
+      // 乱世より前モード時: 前シナリオのみ表示、戦国・後は非表示
+      if (preOpen) {
+        if (!isPre) {
+          btn.style.display = 'none';
+          return;
+        }
+      } else if (isPre) {
+        btn.style.display = 'none';
+        return;
+      }
+
+      // 乱世より後モード時: 後シナリオのみ表示、戦国・前は非表示
+      if (postOpen) {
+        if (!isPost) {
+          btn.style.display = 'none';
+          return;
+        }
+      } else if (isPost) {
+        btn.style.display = 'none';
+        return;
+      }
+
+      // 通常時（前も後も閉）で戦国シナリオの場合
+      if (!preOpen && !postOpen && isSengoku) {
+        if (targetEra && targetEra !== 'all') {
+          btn.style.display = (era === targetEra) ? '' : 'none';
+        } else {
+          btn.style.display = '';
+        }
+        return;
+      }
+
+      // フィルター適用
+      if (targetEra && targetEra !== 'all') {
+        btn.style.display = (era === targetEra) ? '' : 'none';
+      } else {
+        btn.style.display = '';
+      }
+    });
+
+    // 4. クッションボタン自体の表示制御
+    if (preBtn) {
+      if (postOpen) {
+        preBtn.style.display = 'none';
+      } else {
+        preBtn.style.display = (!targetEra || ['ancient', 'genpei_kamakura', 'muromachi', 'sengoku_climax'].includes(targetEra)) ? '' : 'none';
+      }
+    }
+    if (postBtn) {
+      if (preOpen) {
+        postBtn.style.display = 'none';
+      } else {
+        postBtn.style.display = (!targetEra || ['unification', 'edo_bakumatsu'].includes(targetEra)) ? '' : 'none';
+      }
+    }
+
+    // スクロールコンテナのスクロール位置を最上部に合わせる
+    if (scrollToTop) {
+      const container = document.querySelector('.sl-scen-body') || document.querySelector('.scenario-selector-container');
+      if (container) {
+        container.scrollTop = 0;
+      }
+    }
+
+    if (window.SengokuStartLayout && window.SengokuStartLayout.refresh) {
+      window.SengokuStartLayout.refresh();
+    }
+  },
 
   playOpeningMovie() {
 
@@ -829,6 +968,10 @@ export const UIManagerMethods = {
         this.gold = this._playableFunds(d, 'gold');
 
         this.rice = this._playableFunds(d, 'rice');
+
+        if (window.SengokuStartLayout && typeof window.SengokuStartLayout.selectClan === 'function') {
+          window.SengokuStartLayout.selectClan(d.id, { scroll: false, silent: true });
+        }
 
 
 
@@ -3606,17 +3749,9 @@ export const UIManagerMethods = {
 
       const v = Number(n) || 0;
 
-      if (v >= 10000) {
+      const man = v >= 5000 ? (v / 10000) : (v / 10);
 
-        const man = v / 10000;
-
-        const text = man >= 100 ? String(Math.round(man)) : (Math.round(man * 10) / 10).toFixed(1).replace(/\.0$/, '');
-
-        return `${text}万石`;
-
-      }
-
-      return `${v.toLocaleString('ja-JP')}石`;
+      return `${man.toFixed(1)}万石`;
 
     };
 
@@ -4798,7 +4933,7 @@ export const UIManagerMethods = {
 
                       <td class="fac-td-rice" style="padding:10px 10px; text-align:right; color:#2ecc71; font-weight:bold;">
 
-                        ${f.totalRice.toLocaleString()} 石
+                        ${(f.totalRice / 10).toFixed(1)} 万石
 
                       </td>
 
@@ -7142,17 +7277,17 @@ export const UIManagerMethods = {
 
           const troopsUnit = era ? era.troopsUnit : '人';
 
-          const kokuLbl = era ? `${era.kokudakaLabel} (${era.kokudakaUnit})` : '石高 (糧)';
+          const kokuLbl = era ? `${era.kokudakaLabel} (万石)` : '石高 (万石)';
 
-          const kokuValUnit = era ? era.kokudakaUnit : '石';
+          const kokuValUnit = '万石';
 
           const goldValUnit = era ? era.goldUnit : '貫';
 
 
 
-          // 扶養兵力上限（石高 * 12 + 2500）および各ステータス上限判定
+          // 兵力上限（初期兵力 + 石高×10%）および各ステータス上限判定
 
-          const maxTroops = Math.round((Number(p.rice) || 0) * 12 + 2500);
+          const maxTroops = Math.round(typeof this.getProvinceTroopCap === 'function' ? this.getProvinceTroopCap(p) : ((Number(p.rice) || 0) * 12 + 2500));
 
           const isTroopsMax = (Number(p.troops) || 0) >= maxTroops;
 
@@ -7200,7 +7335,7 @@ export const UIManagerMethods = {
 
               <div class="prov-stat-row"><span>城郭防御</span><span class="val${isDefenseMax ? ' is-max' : ''}" style="${isDefenseMax ? maxStyle : ''}" title="${isDefenseMax ? '城郭防御上限 (100)' : '防御上限: 100'}">${p.defense} / 100</span></div>
 
-              <div class="prov-stat-row"><span>${kokuLbl}</span><span class="val${isRiceMax ? ' is-max' : ''}" style="${isRiceMax ? maxStyle : ''}" title="${isRiceMax ? `石高上限に到達 (${maxRice} ${kokuValUnit})` : (maxRice > 0 ? `石高上限: ${maxRice} ${kokuValUnit}` : '')}">${p.rice} ${kokuValUnit}</span></div>
+              <div class="prov-stat-row"><span>${kokuLbl}</span><span class="val${isRiceMax ? ' is-max' : ''}" style="${isRiceMax ? maxStyle : ''}" title="${isRiceMax ? `石高上限に到達 (${(maxRice / 10).toFixed(1)} ${kokuValUnit})` : (maxRice > 0 ? `石高上限: ${(maxRice / 10).toFixed(1)} ${kokuValUnit}` : '')}">${(Number(p.rice) / 10).toFixed(1)} ${kokuValUnit}</span></div>
 
               <div class="prov-stat-row"><span>商業 (金)</span><span class="val${isCommerceMax ? ' is-max' : ''}" style="${isCommerceMax ? maxStyle : ''}" title="${isCommerceMax ? `商業上限に到達 (${maxCommerce} ${goldValUnit})` : (maxCommerce > 0 ? `商業上限: ${maxCommerce} ${goldValUnit}` : '')}">${p.commerce} ${goldValUnit}</span></div>
 
@@ -7434,7 +7569,7 @@ export const UIManagerMethods = {
 
         <span style="display:inline-flex; align-items:center; gap:3px;">👥 兵力: <strong style="color:#eee;">${p.troops.toLocaleString()}</strong>人</span>
 
-        <span style="display:inline-flex; align-items:center; gap:3px;">🌾 石高: <strong style="color:#ffcc66;">${p.rice}</strong>石</span>
+        <span style="display:inline-flex; align-items:center; gap:3px;">🌾 石高: <strong style="color:#ffcc66;">${(Number(p.rice) / 10).toFixed(1)}</strong>万石</span>
 
         <span style="display:inline-flex; align-items:center; gap:3px;">💰 商業: <strong style="color:#ffd700;">${p.commerce}</strong>貫</span>
 
@@ -7624,7 +7759,7 @@ export const UIManagerMethods = {
 
         <td class="gov-td-troops" style="padding:6px 10px; color:#ffaaaa;">${p.troops.toLocaleString()} 人</td>
 
-        <td class="gov-td-eco" style="padding:6px 10px; color:#ffd700;">${p.rice} / ${p.commerce}</td>
+        <td class="gov-td-eco" style="padding:6px 10px; color:#ffd700;">${(Number(p.rice) / 10).toFixed(1)}万石 / ${p.commerce}貫</td>
 
         <td class="gov-td-select" style="padding:6px 10px;">
 
@@ -8674,7 +8809,7 @@ export const UIManagerMethods = {
 
       hard:   { text: '【上級】', color: '#e67e22', border: '#d35400', bg: 'rgba(230,126,34,0.25)' },
 
-      hell:   { text: '【修羅】', color: '#ff6666', border: '#aa3333', bg: 'rgba(100,20,20,0.4)' }
+      hell:   { text: '【超級】', color: '#ff6666', border: '#aa3333', bg: 'rgba(100,20,20,0.4)' }
 
     };
 
@@ -9926,7 +10061,7 @@ export const UIManagerMethods = {
 
       hard: '💡 <strong>【上級・風雲再起】</strong> 自軍金350/米500 ｜ 敵AI徴兵速度: 1.3倍 ｜ 敵好戦度+20% ｜ 包囲網: 10国制覇で早期結成',
 
-      hell: '💡 <strong>【修羅・戦国地獄】</strong> 自軍金250/米300 ｜ 敵AI徴兵速度: 1.6倍 ｜ 敵軍突撃力+20% ｜ 全大名敵対・包囲網頻発'
+      hell: '💡 <strong>【超級・戦国地獄】</strong> 自軍金250/米300 ｜ 敵AI徴兵速度: 1.6倍 ｜ 敵軍突撃力+20% ｜ 全大名敵対・包囲網頻発'
 
     };
 
@@ -10010,65 +10145,101 @@ export const UIManagerMethods = {
 
 
 
-document.getElementById('soundToggleBtn')?.addEventListener('click', () => {
+    const syncMainSoundUI = (isMuted) => {
+      const soundBtn = document.getElementById('soundToggleBtn');
+      const soundText = document.getElementById('soundText');
+      const soundIcon = document.getElementById('soundIcon');
+      if (soundText) soundText.textContent = isMuted ? '音: OFF' : '音: ON';
+      if (soundIcon) soundIcon.textContent = isMuted ? '🔇' : '🔊';
+      if (soundBtn) {
+        soundBtn.title = isMuted ? '音声を再生 (現在消音中)' : '音声を消音 (現在再生中)';
+        soundBtn.classList.toggle('is-muted', isMuted);
+      }
+    };
 
+    document.getElementById('soundToggleBtn')?.addEventListener('click', () => {
       this.music.init();
-
-      const isMuted = this.music.toggleMute();
-
-      document.getElementById('soundText').textContent = isMuted ? '音: OFF' : '音: ON';
-
-      document.getElementById('soundIcon').textContent = isMuted ? '🔇' : '🔊';
-
-
+      let isMuted;
+      if (typeof window !== 'undefined' && window.SengokuSoundSync) {
+        isMuted = window.SengokuSoundSync.toggle();
+      } else if (typeof this.music.toggleAllMuted === 'function') {
+        isMuted = this.music.toggleAllMuted();
+      } else {
+        isMuted = this.music.toggleMute();
+        this.music.isBgmMuted = isMuted;
+        try { localStorage.setItem('sengoku_bgm_muted', isMuted ? '1' : '0'); } catch (_) {}
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('sengoku-sound-mute-changed', { detail: { isMuted } }));
+        }
+      }
+      syncMainSoundUI(isMuted);
 
       const slider = document.getElementById('volumeSlider');
-
       if (slider && !isMuted && parseFloat(slider.value) === 0) {
-
         slider.value = 0.7;
-
         this.music.setVolume(0.7);
-
       }
 
+      // 消音解除時：もし曲が止まっていたら、ゲーム中の季節曲（または大名専用曲）を再生再開
+      if (!isMuted && (!this.music.timerId || this.music.currentTrack === 'op')) {
+        try {
+          if (this.currentScenarioId) {
+            const trk = (typeof this.getSeasonTrackKey === 'function') ? this.getSeasonTrackKey() : 'spring';
+            this.music.playTrack(trk, false);
+          }
+        } catch (_) {}
+      }
     });
-
-
 
     document.getElementById('volumeSlider')?.addEventListener('input', (e) => {
-
       this.music.init();
-
       const val = parseFloat(e.target.value);
-
-      if (this.music.isMuted && val > 0) {
-
-        this.music.isMuted = false;
-
-        document.getElementById('soundText').textContent = '音: ON';
-
-        document.getElementById('soundIcon').textContent = '🔊';
-
-      }
-
-      this.music.setVolume(val);
-
       if (val === 0) {
-
-        document.getElementById('soundText').textContent = '音: OFF';
-
-        document.getElementById('soundIcon').textContent = '🔇';
-
-      } else if (!this.music.isMuted) {
-
-        document.getElementById('soundText').textContent = '音: ON';
-
-        document.getElementById('soundIcon').textContent = '🔊';
-
+        if (typeof window !== 'undefined' && window.SengokuSoundSync) {
+          window.SengokuSoundSync.setMuted(true);
+        } else if (typeof this.music.setAllMuted === 'function') {
+          this.music.setAllMuted(true);
+        } else {
+          this.music.setMute(true);
+          this.music.isBgmMuted = true;
+          try { localStorage.setItem('sengoku_bgm_muted', '1'); } catch (_) {}
+          window.dispatchEvent(new CustomEvent('sengoku-sound-mute-changed', { detail: { isMuted: true } }));
+        }
+        syncMainSoundUI(true);
+      } else {
+        const isCurrentlyMuted = !!(this.music.isMuted || this.music.isBgmMuted);
+        if (isCurrentlyMuted) {
+          if (typeof window !== 'undefined' && window.SengokuSoundSync) {
+            window.SengokuSoundSync.setMuted(false);
+          } else if (typeof this.music.setAllMuted === 'function') {
+            this.music.setAllMuted(false);
+          } else {
+            this.music.setMute(false);
+            this.music.isBgmMuted = false;
+            try { localStorage.setItem('sengoku_bgm_muted', '0'); } catch (_) {}
+            window.dispatchEvent(new CustomEvent('sengoku-sound-mute-changed', { detail: { isMuted: false } }));
+          }
+          syncMainSoundUI(false);
+          if (!this.music.timerId || this.music.currentTrack === 'op') {
+            try {
+              if (this.currentScenarioId) {
+                const trk = (typeof this.getSeasonTrackKey === 'function') ? this.getSeasonTrackKey() : 'spring';
+                this.music.playTrack(trk, false);
+              }
+            } catch (_) {}
+          }
+        }
+        this.music.setVolume(val);
       }
-
     });
+
+    window.addEventListener('sengoku-sound-mute-changed', (e) => {
+      syncMainSoundUI(!!e.detail?.isMuted);
+    });
+    const initMuted = (typeof window !== 'undefined' && window.SengokuSoundSync)
+      ? window.SengokuSoundSync.isMuted
+      : (this.music ? (!!this.music.isBgmMuted || !!this.music.isMuted) : false);
+    syncMainSoundUI(initMuted);
 
 
 

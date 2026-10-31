@@ -436,7 +436,7 @@ export const ERA_CONFIG = {
 
     conquestGoal: '日本全土統一・大和建国',
 
-    calcNote: (rice) => `稲実 ${rice}束 （現代換算: 約${rice}石 / 最大動員: ${(rice * 12 + 2500).toLocaleString()}人）`
+    calcNote: (rice) => `稲実 ${rice}束 （現代換算: 約${(rice / 10).toFixed(1)}万石 / 最大動員: ${(rice * 12 + 2500).toLocaleString()}人）`
 
   },
 
@@ -480,7 +480,7 @@ export const ERA_CONFIG = {
 
     conquestGoal: '武家一統・天下静謐',
 
-    calcNote: (rice) => `貫高 約${Math.round(rice * 0.2)}貫文 （玄米 ${rice}石相当 / 扶養兵力: ${(rice * 12 + 2500).toLocaleString()}騎）`
+    calcNote: (rice) => `貫高 約${Math.round(rice * 0.2)}貫文 （玄米 ${(rice / 10).toFixed(1)}万石相当 / 扶養兵力: ${(rice * 12 + 2500).toLocaleString()}騎）`
 
   },
 
@@ -524,7 +524,7 @@ export const ERA_CONFIG = {
 
     conquestGoal: '天下布武・全土統一',
 
-    calcNote: (rice) => `表高 ${rice}石 （扶養動員上限: ${(rice * 12 + 2500).toLocaleString()}人）`
+    calcNote: (rice) => `表高 ${(rice / 10).toFixed(1)}万石 （扶養動員上限: ${(rice * 12 + 2500).toLocaleString()}人）`
 
   },
 
@@ -568,7 +568,7 @@ export const ERA_CONFIG = {
 
     conquestGoal: '近代日本統一・版籍奉還',
 
-    calcNote: (rice) => `藩力実高 ${rice}石 （動員兵力: ${(rice * 12 + 2500).toLocaleString()}名 / 産興力 ${Math.round(rice * 1.5).toLocaleString()}両相当）`
+    calcNote: (rice) => `藩力実高 ${(rice / 10).toFixed(1)}万石 （動員兵力: ${(rice * 12 + 2500).toLocaleString()}名 / 産興力 ${Math.round(rice * 1.5).toLocaleString()}両相当）`
 
   }
 
@@ -1220,9 +1220,9 @@ export const GameStateMethods = {
 
     const kokudaka = Number(p.kokudaka) || 0;
 
-    // 駐留兵力: 石高に比例 (石高÷1000×8 + 400、最低500人)
+    // 駐留兵力: 石高×2.5%を100未満切り捨て＋1000
 
-    if (isBad(p.troops)) p.troops = Math.max(500, Math.round((kokudaka / 1000) * 8 + 400));
+    if (isBad(p.troops)) p.troops = this.getProvinceInitialTroops(kokudaka);
 
     // 兵糧 (石): 石高÷1000 (20〜80石)
 
@@ -6585,9 +6585,9 @@ export const GameStateMethods = {
 
   updateTokugawaSurname(announce = false) {
 
-    const okehazamaDone = Boolean(this.okehazamaOccurred || this.historicalFlagEventHappened('okehazamaOccurred'));
+    // 史実: 永禄6年（1563）に元康から家康へ改名。桶狭間（1560）の時点ではまだ松平元康
 
-    const isIeyasuEra = okehazamaDone || (this.year > 1560) || (this.year === 1560 && this.seasonIdx >= 2);
+    const isIeyasuEra = (this.year >= 1563);
 
     const targetName = isIeyasuEra ? '徳川家康' : '松平元康';
 
@@ -6689,9 +6689,11 @@ export const GameStateMethods = {
 
     // 5. アナウンス
 
-    if (announce && isIeyasuEra) {
+    if (announce && this.year === 1563 && !this._ieyasuAnnounced) {
 
-      this.log('📜【独立改名】松平元康公は今川の束縛を脱して三河岡崎城にて自立を果たし、「徳川家康」へと改名しました！', 'important');
+      this._ieyasuAnnounced = true;
+
+      this.log('📜【改名】松平元康公は今川義元より賜った「元」の字を捨て、「徳川家康」へと改名しました！', 'important');
 
       if (this.audio) this.audio.playHyoshigi();
 
@@ -10299,7 +10301,9 @@ export const GameStateMethods = {
 
     if (!this.playerDaimyo && scen) {
 
-      this.playerDaimyo = scen.playables[0];
+      const match = this.playerClanId ? scen.playables.find(p => p.id === this.playerClanId) : null;
+
+      this.playerDaimyo = match || scen.playables.find(p => p.id === scen.recommendedClan) || scen.playables[0];
 
       this.playerClanId = this.playerDaimyo.id;
 
@@ -11534,9 +11538,10 @@ export const GameStateMethods = {
 
       const { min, max } = this.getHeatRange(key);
 
-      const unit = key === 'rice' ? '石' : '人';
+      const minText = key === 'rice' ? `${(min / 10).toFixed(1)}万石` : `${min.toLocaleString()}人`;
+      const maxText = key === 'rice' ? `${(max / 10).toFixed(1)}万石` : `${max.toLocaleString()}人`;
 
-      legend.innerHTML = `<span class="heat-num heat-num-${key}">${min.toLocaleString()}${unit}</span><span class="heat-grad heat-grad-${key}" style="background:${this.heatRampCss(key)}"></span><span class="heat-num heat-num-${key}">${max.toLocaleString()}${unit}</span>`;
+      legend.innerHTML = `<span class="heat-num heat-num-${key}">${minText}</span><span class="heat-grad heat-grad-${key}" style="background:${this.heatRampCss(key)}"></span><span class="heat-num heat-num-${key}">${maxText}</span>`;
 
     }
 
@@ -12430,6 +12435,28 @@ export const GameStateMethods = {
 
 
 
+  // ---- 兵力の初期配置と上限 ----
+  // 初期兵力 = 石高×2.5% を100未満切り捨て + 1000
+  getProvinceInitialTroops(kokudaka) {
+    const k = Number(kokudaka) || 0;
+    return Math.floor(k * 0.025 / 100) * 100 + 1000;
+  },
+
+  // 兵力の上限 = 初期兵力 + 石高×10%（増加分の上限）。シナリオ指定の初期兵力がそれより大きければそれを基準にする
+  getProvinceTroopCap(p) {
+    if (!p) return 0;
+    const list = (window.PROVINCES_DATA && window.PROVINCES_DATA.length) ? window.PROVINCES_DATA
+      : (typeof INITIAL_PROVINCES !== 'undefined' ? INITIAL_PROVINCES : []);
+    const init = (list || []).find(x => x.id === p.id);
+    const koku = Number(init?.kokudaka) || Number(p.kokudaka) || 0;
+    let base = this.getProvinceInitialTroops(koku);
+    const scen = this.currentScenario
+      || (typeof SCENARIOS !== 'undefined' ? SCENARIOS : []).find(s => String(s.id) === String(this.currentScenarioId));
+    const pt = Number(scen?.provinceTroops?.[p.id]);
+    if (pt > 0) base = Math.max(base, pt);
+    return base + Math.floor(koku * 0.1);
+  },
+
   // ---- 石高（p.rice）の上限（2026-10-11 bh）----
 
   // 土地の基準石高（provinces.json の kokudaka ÷1000、最低20）× 2。開始時に兵糧を積んだ国はその値まで
@@ -12704,7 +12731,7 @@ export const GameStateMethods = {
 
     if ((Number(p.rice) || 0) >= maxRice && (Number(p.commerce) || 0) >= maxCommerce) {
 
-      this.showOrderResult('⚠ 開発の上限', `${p.name}は石高（上限${maxRice}石）・商業（上限${maxCommerce}貫）とも上限まで開発しきっています。これ以上の内政振興はできません。`, '#e67e22');
+      this.showOrderResult('⚠ 開発の上限', `${p.name}は石高（上限${(maxRice / 10).toFixed(1)}万石）・商業（上限${maxCommerce}貫）とも上限まで開発しきっています。これ以上の内政振興はできません。`, '#e67e22');
 
       return;
 
@@ -12720,7 +12747,7 @@ export const GameStateMethods = {
 
     p.rice = Math.min(maxRice, riceBefore + riceGain);
 
-    const riceCapNote = p.rice - riceBefore < riceGain ? `（石高は上限${maxRice}石${p.rice - riceBefore > 0 ? `、+${p.rice - riceBefore}のみ` : 'のため伸びず'}）` : '';
+    const riceCapNote = p.rice - riceBefore < riceGain ? `（石高は上限${(maxRice / 10).toFixed(1)}万石${p.rice - riceBefore > 0 ? `、+${((p.rice - riceBefore) / 10).toFixed(1)}万石のみ` : 'のため伸びず'}）` : '';
 
     const commerceBefore = Number(p.commerce) || 0;
 
@@ -12752,9 +12779,9 @@ export const GameStateMethods = {
 
     const polDesc = effStats.politics >= 85 ? '【名君の仁政】' : effStats.politics <= 50 ? '【拙劣な民政】' : '【内政振興】';
 
-    this.log(`${govTag}${polDesc}${p.name}にて新田開墾・商業振興を推進！(実効内政:${effStats.politics}) 石高+${p.rice - riceBefore}, 商業+${commerceAdded}, 治安+${orderGain}%。`);
+    this.log(`${govTag}${polDesc}${p.name}にて新田開墾・商業振興を推進！(実効内政:${effStats.politics}) 石高+${((p.rice - riceBefore) / 10).toFixed(1)}万石, 商業+${commerceAdded}, 治安+${orderGain}%。`);
 
-    this.showOrderResult('🌾 内政振興 完了', `${p.name} 石高+${p.rice - riceBefore} (${p.rice}/${maxRice}石)${riceCapNote} ｜ 商業+${commerceAdded} (${p.commerce}/${maxCommerce}貫)${commerceCapNote} ｜ 治安+${orderGain}%`, '#2ecc71');
+    this.showOrderResult('🌾 内政振興 完了', `${p.name} 石高+${((p.rice - riceBefore) / 10).toFixed(1)}万石 (${(p.rice / 10).toFixed(1)}/${(maxRice / 10).toFixed(1)}万石)${riceCapNote} ｜ 商業+${commerceAdded} (${p.commerce}/${maxCommerce}貫)${commerceCapNote} ｜ 治安+${orderGain}%`, '#2ecc71');
 
     this.updateUI({ provId: p.id });
 
@@ -12806,9 +12833,9 @@ export const GameStateMethods = {
 
     const effStats = this.getEffectiveStats(p.id);
 
-    // 石高に基づく兵力上限（石高×12 + 2500）でインフレを防止
+    // 兵力上限（初期兵力 + 石高×10%）でインフレを防止
 
-    const maxTroops = p.rice * 12 + 2500;
+    const maxTroops = this.getProvinceTroopCap(p);
 
     const milRatio = (effStats.military || 50) / 100;
 
@@ -14483,6 +14510,7 @@ export const GameStateMethods = {
       this.rice -= siegeRiceCost;
 
       this.updateStatusHeader();
+      try { window.SengokuSoundSync?.syncAllUI?.(); } catch (_) {}
 
       let morLoss = 8 + Math.floor(Math.random() * 5);
 
@@ -15890,7 +15918,7 @@ export const GameStateMethods = {
 
         <div style="font-size:11pt; color:#fff; margin-bottom:4px;">当主: <strong>${lordName}</strong></div>
 
-        <div style="font-size:10pt; color:#aaa; margin-bottom:6px;">兵力: ${totalTroops.toLocaleString()}人 ｜ 石高: ${totalRice.toLocaleString()}石</div>
+        <div style="font-size:10pt; color:#aaa; margin-bottom:6px;">兵力: ${totalTroops.toLocaleString()}人 ｜ 石高: ${(totalRice / 10).toFixed(1)}万石</div>
 
         <div style="display:flex; justify-content:space-between; font-size:10.5pt; background:rgba(255,255,255,0.06); padding:3px 6px; border-radius:3px;">
 
@@ -19943,6 +19971,7 @@ export const GameStateMethods = {
     try {
 
       this.updateStatusHeader();
+      try { window.SengokuSoundSync?.syncAllUI?.(); } catch (_) {}
 
       const provId = opts.provId !== undefined ? opts.provId : this.selectedProvId;
 
